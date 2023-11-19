@@ -7,7 +7,7 @@
 #define MAP_FILE_NAME   					"Cincinnati.bmp"                          // Name you gave to BMP map file. Max is 50 chars
 #define MY_LAT										39.07466                                  // Coordinates for QTH
 #define MY_LON										-84.42677
-#define MY_CALL										"QSD22"                                   // Default max is 10 chars
+#define MY_CALL										"YOUR CALL"                                   // Default max is 10 chars
 #define MY_TIMEZONE          			"EST: "                                   // Default max is 10 chars
 //DB2OO, 29-AUG-23: TIME_24H to display 24 hour times (Utility.cpp). If this is not defined 12h display will be used
 #define TIME_24H                  1

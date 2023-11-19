@@ -80,10 +80,11 @@ void FilterSetSSB() {
     //    centerTuneFlag = 1; //AFP 10-03-22
     //SetFreq();               //  AFP 10-04-22
   //  ShowFrequency();
+    UpdateDecoderField();   // Adjust Morse decoder graphics.
   }
   //notchPosOld = filter_pos;
     tft.writeTo(L1);  // Exit function in layer 1.  KF5N August 3, 2023
-    UpdateDecoderField();   // Adjust Morse decoder graphics.
+
 }
 
 
