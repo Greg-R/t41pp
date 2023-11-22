@@ -805,10 +805,12 @@ int EEPROMOptions() {
 
     case 4:
       CopyEEPROMToSD();  // Save current EEPROM value to SD
+      saveConfiguration(filename, EEPROMData);
       break;
 
     case 5:
       CopySDToEEPROM();  // Copy from SD to EEPROM
+      loadConfiguration(filename, EEPROMData);
       EEPROMRead();      // KF5N
       tft.writeTo(L2);   // This is specifically to clear the bandwidth indicator bar.  KF5N August 7, 2023
       tft.clearMemory();

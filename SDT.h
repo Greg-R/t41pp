@@ -14,6 +14,8 @@ extern struct maps myMapFiles[];
 
 //======================================== Library include files ========================================================
 #include <Adafruit_GFX.h>
+//#include "JSON.cpp"
+#include <ArduinoJson.h>
 #include "Fonts/FreeMonoBold24pt7b.h"
 #include "Fonts/FreeMonoBold18pt7b.h"
 #include "Fonts/FreeMono24pt7b.h"
@@ -1096,7 +1098,7 @@ struct secondaryMenuConfiguration {
 };
 extern char versionSettings[];
 
-extern struct config_t {
+struct config_t {
   
   char versionSettings[10];
   int AGCMode             = 1;     
@@ -1176,8 +1178,15 @@ extern struct config_t {
   int currentNoiseFloor[NUMBER_OF_BANDS];             // JJP 7/17/23
   int compressorFlag;                                 // JJP 8/28/23
 
-} EEPROMData;                                 //  Total:       438 bytes
+};                                 //  Total:       438 bytes
 
+extern struct config_t EEPROMData;
+extern config_t config;
+
+// JSON file configuration related variables:
+extern const char *filename;
+extern void loadConfiguration(const char *filename, config_t &config);
+extern void saveConfiguration(const char *filename, const config_t &config);
 
 typedef struct SR_Descriptor
 {

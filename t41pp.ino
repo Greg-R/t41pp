@@ -492,6 +492,10 @@ V046d June 27, 2023  Jack Purdum (W8TEE) and includes changes by Greg:
 #ifndef BEENHERE
 #include "SDT.h"
 #endif
+
+const char *filename = "/config.txt";  // <- SD library uses 8.3 filenames
+config_t config;
+
 /*                                  Presented here so you can see how the members allign
 struct maps {
   char mapNames[50];
