@@ -20,7 +20,7 @@ FLASHMEM void loadConfiguration(const char *filename, config_t &EEPROMData) {
   // Don't forget to change the capacity to match your requirements.
   // Use https://arduinojson.org/v6/assistant to compute the capacity.
   // StaticJsonDocument<512> doc;
-  DynamicJsonDocument doc(2048);   // This uses the heap.
+  DynamicJsonDocument doc(4096);   // This uses the heap.
   //  Need to also create JSON arrays.
   
   // Deserialize the JSON document
@@ -35,8 +35,8 @@ FLASHMEM void loadConfiguration(const char *filename, config_t &EEPROMData) {
   // How to copy numbers:
 //  EEPROMData.versionSettings = doc["versionSettings"];
   strlcpy(EEPROMData.versionSettings, doc["versionSettings"] | "t41pp.0", 10);
-  EEPROMData.AGCMode = doc["EEPROMData.AGCMode"];
-  EEPROMData.AGCMode = doc["EEPROMData.AGCMode"];
+  EEPROMData.AGCMode = doc["AGCMode"];
+  EEPROMData.audioVolume = doc["audioVolume"];
   EEPROMData.rfGainAllBands = doc["rfGainAllBands"];
   EEPROMData.spectrumNoiseFloor = doc["spectrumNoiseFloor"];
   EEPROMData.tuneIndex = doc["tuneIndex"];
@@ -112,10 +112,10 @@ EEPROMData.currentNoiseFloor[0] = doc["currentNoiseFloor"][0];
   file.close();
   //  At this point, the data exists only in the EEPROMData struct.
   //  Now copy the struct data into the Global variables which are used by the radio.
-  EEPROMRead();
+  //EEPROMRead();
   //Serial.printf("myCall after EEPROMRead() = %s\n", myCall);
   //Serial.printf("EEPROMData.AGCMode after EEPROMRead() = %d\n", EEPROMData.AGCMode);
-Serial.printf("EEPROMData.AGCMode after EEPROMRead() = %d\n", EEPROMData.AGCMode);
+//Serial.printf("EEPROMData.AGCMode after EEPROMRead() = %d\n", EEPROMData.AGCMode);
 
 
 }
@@ -136,14 +136,14 @@ FLASHMEM void saveConfiguration(const char *filename, const config_t &EEPROMData
   // Don't forget to change the capacity to match your requirements.
   // Use https://arduinojson.org/assistant to compute the capacity.
   //StaticJsonDocument<256> doc;  // This uses the stack.
-  DynamicJsonDocument doc(2048);   // This uses the heap.
+  DynamicJsonDocument doc(4096);   // This uses the heap.
 
   // Set the values in the document
   Serial.printf("EEPROMData.versionSettings = %s\n", EEPROMData.versionSettings);
   doc["versionSettings"] = EEPROMData.versionSettings;
   doc["myCall"] = EEPROMData.myCall;
-  doc["EEPROMData.AGCMode"] = EEPROMData.AGCMode;
-  doc["EEPROMData.AGCMode"] = EEPROMData.AGCMode;
+  doc["AGCMode"] = EEPROMData.AGCMode;
+  doc["audioVolume"] = EEPROMData.audioVolume;
   doc["rfGainAllBands"] = EEPROMData.rfGainAllBands;
   doc["spectrumNoiseFloor"] = EEPROMData.spectrumNoiseFloor;
   doc["tuneIndex"] = EEPROMData.tuneIndex;

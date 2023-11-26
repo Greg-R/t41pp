@@ -128,8 +128,7 @@ FASTRUN  // Place in tightly-coupled memory
     y1_new_plot = EEPROMData.spectrumNoiseFloor - y1_new - EEPROMData.currentNoiseFloor[EEPROMData.currentBand];
     y_old_plot = EEPROMData.spectrumNoiseFloor - y_old - EEPROMData.currentNoiseFloor[EEPROMData.currentBand];
     y_old2_plot = EEPROMData.spectrumNoiseFloor - y_old2 - EEPROMData.currentNoiseFloor[EEPROMData.currentBand];
-Serial.printf("currentNoiseFloor = %d\n", EEPROMData.currentNoiseFloor[EEPROMData.currentBand]);
-Serial.printf("spectrumNoiseFloor = %d\n", EEPROMData.spectrumNoiseFloor);
+
     // Prevent spectrum from going below the bottom of the spectrum area.  KF5N
     if (y_new_plot > 247) y_new_plot = 247;
     if (y1_new_plot > 247) y1_new_plot = 247;
