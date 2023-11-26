@@ -34,38 +34,38 @@ void FilterSetSSB() {
     }
     last_filter_pos = filter_pos;
     // =============  AFP 10-27-22
-    switch (bands[currentBand].mode) {
+    switch (bands[EEPROMData.currentBand].mode) {
       case DEMOD_LSB:
         if (switchFilterSideband == 0)  // "0" = normal, "1" means change opposite filter
         {
-          bands[currentBand].FLoCut = bands[currentBand].FLoCut + filter_change * 50 * ENCODER_FACTOR;
-          //fHiCutOld= bands[currentBand].FHiCut;
+          bands[EEPROMData.currentBand].FLoCut = bands[EEPROMData.currentBand].FLoCut + filter_change * 50 * ENCODER_FACTOR;
+          //fHiCutOld= bands[EEPROMData.currentBand].FHiCut;
           FilterBandwidth();
         } else if (switchFilterSideband == 1) {
-          //if (abs(bands[currentBand].FHiCut) < 500) {
-          bands[currentBand].FHiCut = bands[currentBand].FHiCut + filter_change * 50 * ENCODER_FACTOR;
-          fLoCutOld = bands[currentBand].FLoCut;
+          //if (abs(bands[EEPROMData.currentBand].FHiCut) < 500) {
+          bands[EEPROMData.currentBand].FHiCut = bands[EEPROMData.currentBand].FHiCut + filter_change * 50 * ENCODER_FACTOR;
+          fLoCutOld = bands[EEPROMData.currentBand].FLoCut;
         }
         break;
       case DEMOD_USB:
         if (switchFilterSideband == 0) {
-          bands[currentBand].FHiCut = bands[currentBand].FHiCut - filter_change * 50 * ENCODER_FACTOR;
-          //bands[currentBand].FLoCut= fLoCutOld;
+          bands[EEPROMData.currentBand].FHiCut = bands[EEPROMData.currentBand].FHiCut - filter_change * 50 * ENCODER_FACTOR;
+          //bands[EEPROMData.currentBand].FLoCut= fLoCutOld;
           FilterBandwidth();
         } else if (switchFilterSideband == 1) {
-          bands[currentBand].FLoCut = bands[currentBand].FLoCut - filter_change * 50 * ENCODER_FACTOR;
-          // bands[currentBand].FHiCut= fHiCutOld;
+          bands[EEPROMData.currentBand].FLoCut = bands[EEPROMData.currentBand].FLoCut - filter_change * 50 * ENCODER_FACTOR;
+          // bands[EEPROMData.currentBand].FHiCut= fHiCutOld;
         }
         break;
       case DEMOD_AM:
-        bands[currentBand].FHiCut = bands[currentBand].FHiCut - filter_change * 50 * ENCODER_FACTOR;
-        bands[currentBand].FLoCut = -bands[currentBand].FHiCut;
+        bands[EEPROMData.currentBand].FHiCut = bands[EEPROMData.currentBand].FHiCut - filter_change * 50 * ENCODER_FACTOR;
+        bands[EEPROMData.currentBand].FLoCut = -bands[EEPROMData.currentBand].FHiCut;
         FilterBandwidth();
         InitFilterMask();
         break;
       case DEMOD_SAM:  // AFP 11-03-22
-        bands[currentBand].FHiCut = bands[currentBand].FHiCut - filter_change * 50 * ENCODER_FACTOR;
-        bands[currentBand].FLoCut = -bands[currentBand].FHiCut;
+        bands[EEPROMData.currentBand].FHiCut = bands[EEPROMData.currentBand].FHiCut - filter_change * 50 * ENCODER_FACTOR;
+        bands[EEPROMData.currentBand].FLoCut = -bands[EEPROMData.currentBand].FHiCut;
         FilterBandwidth();
         InitFilterMask();
         break;
@@ -97,7 +97,7 @@ void FilterSetSSB() {
 *****/
 void EncoderCenterTune() {
   long tuneChange = 0L;
-  //  long oldFreq    = centerFreq;
+  //  long oldFreq    = EEPROMData.centerFreq;
 
   unsigned char result = tuneEncoder.process();  // Read the encoder
 
@@ -121,15 +121,15 @@ void EncoderCenterTune() {
   }
   //  newFreq = (long)EEPROMData.freqIncrement * tuneChange;
 
-  centerFreq += ((long)EEPROMData.freqIncrement * tuneChange);  // tune the master vfo
+  EEPROMData.centerFreq += ((long)EEPROMData.freqIncrement * tuneChange);  // tune the master vfo
 
 
-  //  if (centerFreq != oldFreq) {           // If the frequency has changed...
+  //  if (EEPROMData.centerFreq != oldFreq) {           // If the frequency has changed...
   //=== AFP 10-19-22
 
-  TxRxFreq = centerFreq + NCOFreq;
+  TxRxFreq = EEPROMData.centerFreq + NCOFreq;
   SetFreq();  //  Change to receiver tuning process.  KF5N July 22, 2023
-  //currentFreqA= centerFreq + NCOFreq;
+  //currentFreqA= EEPROMData.centerFreq + NCOFreq;
   DrawBandWidthIndicatorBar();  // AFP 10-20-22
   //FilterOverlay(); // AFP 10-20-22
   ShowFrequency();
@@ -421,9 +421,9 @@ FASTRUN  // Causes function to be allocated in RAM1 at startup for fastest perfo
   centerTuneFlag = 1;
   // ============  AFP 10-28-22
   if (EEPROMData.activeVFO == VFO_A) {
-    currentFreqA = centerFreq + NCOFreq;  //AFP 10-05-22
+    EEPROMData.currentFreqA = EEPROMData.centerFreq + NCOFreq;  //AFP 10-05-22
   } else {
-    currentFreqB = centerFreq + NCOFreq;  //AFP 10-05-22
+    EEPROMData.currentFreqB = EEPROMData.centerFreq + NCOFreq;  //AFP 10-05-22
   }
   // ===============  Recentering at band edges ==========
   if (EEPROMData.spectrum_zoom != 0) {
@@ -440,7 +440,7 @@ FASTRUN  // Causes function to be allocated in RAM1 at startup for fastest perfo
     }
   }
   fineTuneEncoderMove = 0L;
-  TxRxFreq = centerFreq + NCOFreq;  // KF5N
+  TxRxFreq = EEPROMData.centerFreq + NCOFreq;  // KF5N
 }
 
 

@@ -345,7 +345,7 @@ void AGCLoadValues() {
       break;
   }
   
-  max_gain = powf (10.0, (float32_t)bands[currentBand].AGC_thresh / 20.0);
+  max_gain = powf (10.0, (float32_t)bands[EEPROMData.currentBand].AGC_thresh / 20.0);
   attack_buffsize = (int)ceil(sample_rate * n_tau * tau_attack);
   in_index = attack_buffsize + out_index;
   attack_mult = 1.0 - expf(-1.0 / (sample_rate * tau_attack));
@@ -412,7 +412,7 @@ void AGCPrep()
 }
 
 void AGCThresholdChanged() {
-  max_gain = powf (10.0, (float32_t)bands[currentBand].AGC_thresh / 20.0);
+  max_gain = powf (10.0, (float32_t)bands[EEPROMData.currentBand].AGC_thresh / 20.0);
 }
 /*****
   Purpose: Audio AGC()
@@ -602,7 +602,7 @@ void DecodeIQ() {
 void SetCompressionLevel()
 {
   int val;
-  //currentMicThreshold = knee_dBFS; // AFP 09-22-22  Commented out.  KF5N October 31, 2023
+  //EEPROMData.currentMicThreshold = knee_dBFS; // AFP 09-22-22  Commented out.  KF5N October 31, 2023
 
   tft.setFontScale( (enum RA8875tsize) 1);
 
@@ -611,27 +611,27 @@ void SetCompressionLevel()
   tft.setCursor(SECONDARY_MENU_X  - 48, MENUS_Y + 1);
   tft.print("Compression:");
   tft.setCursor(SECONDARY_MENU_X + 180, MENUS_Y + 1);
-  tft.print(currentMicThreshold);
+  tft.print(EEPROMData.currentMicThreshold);
 
   while (true) {
     if (filterEncoderMove != 0) {
-      currentMicThreshold += ((float) filterEncoderMove);
-      if (currentMicThreshold < -60)
-        currentMicThreshold = -60;
-      else if (currentMicThreshold > 0)                 // 100% max
-        currentMicThreshold = 0;
+      EEPROMData.currentMicThreshold += ((float) filterEncoderMove);
+      if (EEPROMData.currentMicThreshold < -60)
+        EEPROMData.currentMicThreshold = -60;
+      else if (EEPROMData.currentMicThreshold > 0)                 // 100% max
+        EEPROMData.currentMicThreshold = 0;
 
       tft.fillRect(SECONDARY_MENU_X + 180, MENUS_Y, 80, CHAR_HEIGHT, RA8875_MAGENTA);
       tft.setCursor(SECONDARY_MENU_X + 180, MENUS_Y + 1);
-      tft.print(currentMicThreshold);
+      tft.print(EEPROMData.currentMicThreshold);
       filterEncoderMove = 0;
     }
     val = ReadSelectedPushButton();                                  // Read pin that controls all switches
     val = ProcessButtonPress(val);
     MyDelay(150L);
     if (val == MENU_OPTION_SELECT) {                             // Make a choice??
-      // micCompression = currentMicThreshold;
-      EEPROMData.currentMicThreshold = currentMicThreshold;
+      // micCompression = EEPROMData.currentMicThreshold;
+      //EEPROMData.EEPROMData.currentMicThreshold = EEPROMData.currentMicThreshold;
       EEPROMWrite();
       UpdateCompressionField();
       break;
@@ -660,19 +660,19 @@ void SetCompressionRatio()
   tft.setCursor(SECONDARY_MENU_X  - 48, MENUS_Y + 1);
   tft.print("Comp Ratio:");
   tft.setCursor(SECONDARY_MENU_X + 180, MENUS_Y + 1);
-  tft.print(currentMicCompRatio, 1);
+  tft.print(EEPROMData.currentMicCompRatio, 1);
 
   while (true) {
     if (filterEncoderMove != 0) {
-      currentMicCompRatio += ((float) filterEncoderMove * .1);
-      if (currentMicCompRatio > 10)
-        currentMicCompRatio = 10;
-      else if (currentMicCompRatio < 1)                 // 100% max
-        currentMicCompRatio = 1;
+      EEPROMData.currentMicCompRatio += ((float) filterEncoderMove * .1);
+      if (EEPROMData.currentMicCompRatio > 10)
+        EEPROMData.currentMicCompRatio = 10;
+      else if (EEPROMData.currentMicCompRatio < 1)                 // 100% max
+        EEPROMData.currentMicCompRatio = 1;
 
       tft.fillRect(SECONDARY_MENU_X + 180, MENUS_Y, 80, CHAR_HEIGHT, RA8875_MAGENTA);
       tft.setCursor(SECONDARY_MENU_X + 180, MENUS_Y + 1);
-      tft.print(currentMicCompRatio, 1);
+      tft.print(EEPROMData.currentMicCompRatio, 1);
       filterEncoderMove = 0;
     }
 
@@ -681,7 +681,7 @@ void SetCompressionRatio()
     MyDelay(150L);
 
     if (val == MENU_OPTION_SELECT) {                             // Make a choice??
-      EEPROMData.currentMicCompRatio = currentMicCompRatio;
+     // EEPROMData.EEPROMData.currentMicCompRatio = EEPROMData.currentMicCompRatio;
       EEPROMWrite();
 
       break;
@@ -709,19 +709,19 @@ void SetCompressionAttack()
   tft.setCursor(SECONDARY_MENU_X  - 48, MENUS_Y + 1);
   tft.print("Attack Sec:");
   tft.setCursor(SECONDARY_MENU_X + 180, MENUS_Y + 1);
-  tft.print(currentMicAttack, 1);
+  tft.print(EEPROMData.currentMicAttack, 1);
 
   while (true) {
     if (filterEncoderMove != 0) {
-      currentMicAttack += ((float) filterEncoderMove * 0.1);
-      if (currentMicAttack > 10)
-        currentMicAttack = 10;
-      else if (currentMicAttack < .1)                 // 100% max
-        currentMicAttack = .1;
+      EEPROMData.currentMicAttack += ((float) filterEncoderMove * 0.1);
+      if (EEPROMData.currentMicAttack > 10)
+        EEPROMData.currentMicAttack = 10;
+      else if (EEPROMData.currentMicAttack < .1)                 // 100% max
+        EEPROMData.currentMicAttack = .1;
 
       tft.fillRect(SECONDARY_MENU_X + 180, MENUS_Y, 80, CHAR_HEIGHT, RA8875_MAGENTA);
       tft.setCursor(SECONDARY_MENU_X + 180, MENUS_Y + 1);
-      tft.print(currentMicAttack, 1);
+      tft.print(EEPROMData.currentMicAttack, 1);
       filterEncoderMove = 0;
     }
 
@@ -730,7 +730,7 @@ void SetCompressionAttack()
     MyDelay(150L);
 
     if (val == MENU_OPTION_SELECT) {                             // Make a choice??
-      EEPROMData.currentMicAttack = currentMicAttack;
+      //EEPROMData.EEPROMData.currentMicAttack = EEPROMData.currentMicAttack;
       EEPROMWrite();
 
       break;
@@ -759,19 +759,19 @@ void SetCompressionRelease()
   tft.setCursor(SECONDARY_MENU_X  - 48, MENUS_Y + 1);
   tft.print("Decay Sec:");
   tft.setCursor(SECONDARY_MENU_X + 180, MENUS_Y + 1);
-  tft.print(currentMicRelease, 1);
+  tft.print(EEPROMData.currentMicRelease, 1);
 
   while (true) {
     if (filterEncoderMove != 0) {
-      currentMicRelease += ((float) filterEncoderMove * 0.1);
-      if (currentMicRelease > 10)
-        currentMicRelease = 10;
-      else if (currentMicRelease < 0.1)                 // 100% max
-        currentMicRelease = 0.1;
+      EEPROMData.currentMicRelease += ((float) filterEncoderMove * 0.1);
+      if (EEPROMData.currentMicRelease > 10)
+        EEPROMData.currentMicRelease = 10;
+      else if (EEPROMData.currentMicRelease < 0.1)                 // 100% max
+        EEPROMData.currentMicRelease = 0.1;
 
       tft.fillRect(SECONDARY_MENU_X + 180, MENUS_Y, 80, CHAR_HEIGHT, RA8875_MAGENTA);
       tft.setCursor(SECONDARY_MENU_X + 180, MENUS_Y + 1);
-      tft.print(currentMicRelease, 1);
+      tft.print(EEPROMData.currentMicRelease, 1);
       filterEncoderMove = 0;
     }
 
@@ -780,7 +780,7 @@ void SetCompressionRelease()
     MyDelay(150L);
 
     if (val == MENU_OPTION_SELECT) {                             // Make a choice??
-      EEPROMData.currentMicCompRatio = currentMicCompRatio;
+      //EEPROMData.EEPROMData.currentMicCompRatio = EEPROMData.currentMicCompRatio;
       EEPROMWrite();
 
       break;

@@ -16,21 +16,22 @@
    void
 *****/
 int CalibrateOptions(int IQChoice) {
-  int val;
+  int val; 
+  int freqCorrectionFactorOld = 0;
   int32_t increment = 100L;
   tft.fillRect(SECONDARY_MENU_X, MENUS_Y, EACH_MENU_WIDTH + 30, CHAR_HEIGHT, RA8875_BLACK);
   //  float EEPROMData.transmitPowerLevelTemp;  //AFP 05-11-23
   switch (IQChoice) {
 
     case 0:  // Calibrate Frequency  - uses WWV
-      freqCorrectionFactor = GetEncoderValueLive(-200000, 200000, freqCorrectionFactor, increment, (char *)"Freq Cal: ");
-      if (freqCorrectionFactor != freqCorrectionFactorOld) {
-        si5351.init(SI5351_CRYSTAL_LOAD_10PF, Si_5351_crystal, freqCorrectionFactor);
+      EEPROMData.freqCorrectionFactor = GetEncoderValueLive(-200000, 200000, EEPROMData.freqCorrectionFactor, increment, (char *)"Freq Cal: ");
+      if (EEPROMData.freqCorrectionFactor != freqCorrectionFactorOld) {
+        si5351.init(SI5351_CRYSTAL_LOAD_10PF, Si_5351_crystal, EEPROMData.freqCorrectionFactor);
         si5351.drive_strength(SI5351_CLK1, SI5351_DRIVE_8MA);  // KF5N July 10 2023
         si5351.drive_strength(SI5351_CLK2, SI5351_DRIVE_8MA);  // KF5N July 10 2023
         SetFreq();
         MyDelay(10L);
-        freqCorrectionFactorOld = freqCorrectionFactor;
+        freqCorrectionFactorOld = EEPROMData.freqCorrectionFactor;
       }
       val = ReadSelectedPushButton();
       if (val != BOGUS_PIN_READ) {        // Any button press??
@@ -49,7 +50,7 @@ int CalibrateOptions(int IQChoice) {
       if (keyPressedOn == 1 && EEPROMData.xmtMode == CW_MODE) {
         //================  CW Transmit Mode Straight Key ===========
         if (digitalRead(KEYER_DIT_INPUT_TIP) == LOW && EEPROMData.xmtMode == CW_MODE && EEPROMData.keyType == 0) {  //Straight Key
-          powerOutCW[currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * CWPowerCalibrationFactor[currentBand];
+          EEPROMData.powerOutCW[EEPROMData.currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * EEPROMData.CWPowerCalibrationFactor[EEPROMData.currentBand];
           CW_ExciterIQData();
           xrState = TRANSMIT_STATE;
           ShowTransmitReceiveStatus();
@@ -64,14 +65,14 @@ int CalibrateOptions(int IQChoice) {
           modeSelectOutExR.gain(0, 0);
         }
       }
-      CWPowerCalibrationFactor[currentBand] = GetEncoderValueLive(-2.0, 2.0, CWPowerCalibrationFactor[currentBand], 0.001, (char *)"CW PA Cal: ");
-      powerOutCW[currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * CWPowerCalibrationFactor[currentBand];  // AFP 10-21-22
+      EEPROMData.CWPowerCalibrationFactor[EEPROMData.currentBand] = GetEncoderValueLive(-2.0, 2.0, EEPROMData.CWPowerCalibrationFactor[EEPROMData.currentBand], 0.001, (char *)"CW PA Cal: ");
+      EEPROMData.powerOutCW[EEPROMData.currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * EEPROMData.CWPowerCalibrationFactor[EEPROMData.currentBand];  // AFP 10-21-22
       val = ReadSelectedPushButton();
       if (val != BOGUS_PIN_READ) {        // Any button press??
         val = ProcessButtonPress(val);    // Use ladder value to get menu choice
         if (val == MENU_OPTION_SELECT) {  // Yep. Make a choice??
           tft.fillRect(SECONDARY_MENU_X, MENUS_Y, EACH_MENU_WIDTH + 35, CHAR_HEIGHT, RA8875_BLACK);
-          EEPROMData.CWPowerCalibrationFactor[currentBand] = CWPowerCalibrationFactor[currentBand];
+ //         EEPROMData.EEPROMData.CWPowerCalibrationFactor[EEPROMData.currentBand] = EEPROMData.CWPowerCalibrationFactor[EEPROMData.currentBand];
           EEPROMWrite();
           calibrateFlag = 0;
           IQChoice = 5;
@@ -88,8 +89,8 @@ int CalibrateOptions(int IQChoice) {
       IQChoice = 5;
       break;
     case 4:  // SSB PA Cal
-      SSBPowerCalibrationFactor[currentBand] = GetEncoderValueLive(-2.0, 2.0, SSBPowerCalibrationFactor[currentBand], 0.001, (char *)"SSB PA Cal: ");
-      powerOutSSB[currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * SSBPowerCalibrationFactor[currentBand];  // AFP 10-21-22
+      EEPROMData.SSBPowerCalibrationFactor[EEPROMData.currentBand] = GetEncoderValueLive(-2.0, 2.0, EEPROMData.SSBPowerCalibrationFactor[EEPROMData.currentBand], 0.001, (char *)"SSB PA Cal: ");
+      EEPROMData.powerOutSSB[EEPROMData.currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * EEPROMData.SSBPowerCalibrationFactor[EEPROMData.currentBand];  // AFP 10-21-22
       val = ReadSelectedPushButton();
       if (val != BOGUS_PIN_READ) {        // Any button press??
         val = ProcessButtonPress(val);    // Use ladder value to get menu choice
@@ -106,7 +107,7 @@ int CalibrateOptions(int IQChoice) {
     case 5:
       //EraseMenus();
       RedrawDisplayScreen();
-      currentFreq = TxRxFreq = centerFreq + NCOFreq;
+      currentFreq = TxRxFreq = EEPROMData.centerFreq + NCOFreq;
       DrawBandWidthIndicatorBar();  // AFP 10-20-22
       ShowFrequency();
       BandInformation();
@@ -409,12 +410,12 @@ void ProcessEqualizerChoices(int EQType, char *title) {
                      RA8875_GREEN);
 
         if (EQType == 0) {
-          recEQ_Level[columnIndex] = newValue;
-          EEPROMData.equalizerRec[columnIndex] = recEQ_Level[columnIndex];
+          EEPROMData.equalizerRec[columnIndex] = newValue;
+   //       EEPROMData.equalizerRec[columnIndex] = recEQ_Level[columnIndex];
         } else {
           if (EQType == 1) {
-            xmtEQ_Level[columnIndex] = newValue;
-            EEPROMData.equalizerXmt[columnIndex] = xmtEQ_Level[columnIndex];
+            EEPROMData.equalizerXmt[columnIndex] = newValue;
+      //      EEPROMData.equalizerXmt[columnIndex] = EEPROMData.xmtEQ_Level[columnIndex];
           }
         }
 
@@ -515,31 +516,31 @@ int MicGainSet() {
   switch (micGainChoice) {
     case 0:
       int val;
-      currentMicGain = EEPROMData.currentMicGain;  // AFP 09-22-22
+     // EEPROMData.currentMicGain = EEPROMData.EEPROMData.currentMicGain;  // AFP 09-22-22
       tft.setFontScale((enum RA8875tsize)1);
       tft.fillRect(SECONDARY_MENU_X - 50, MENUS_Y, EACH_MENU_WIDTH + 50, CHAR_HEIGHT, RA8875_MAGENTA);
       tft.setTextColor(RA8875_WHITE);
       tft.setCursor(SECONDARY_MENU_X - 48, MENUS_Y + 1);
       tft.print("Mic Gain:");
       tft.setCursor(SECONDARY_MENU_X + 180, MENUS_Y + 1);
-      tft.print(currentMicGain);
+      tft.print(EEPROMData.currentMicGain);
       while (true) {
         if (filterEncoderMove != 0) {
-          currentMicGain += ((float)filterEncoderMove);
-          if (currentMicGain < -40)
-            currentMicGain = -40;
-          else if (currentMicGain > 30)  // 100% max
-            currentMicGain = 30;
+          EEPROMData.currentMicGain += ((float)filterEncoderMove);
+          if (EEPROMData.currentMicGain < -40)
+            EEPROMData.currentMicGain = -40;
+          else if (EEPROMData.currentMicGain > 30)  // 100% max
+            EEPROMData.currentMicGain = 30;
           tft.fillRect(SECONDARY_MENU_X + 180, MENUS_Y, 80, CHAR_HEIGHT, RA8875_MAGENTA);
           tft.setCursor(SECONDARY_MENU_X + 180, MENUS_Y + 1);
-          tft.print(currentMicGain);
+          tft.print(EEPROMData.currentMicGain);
           filterEncoderMove = 0;
         }
         val = ReadSelectedPushButton();  // Read pin that controls all switches
         val = ProcessButtonPress(val);
         //MyDelay(150L);
         if (val == MENU_OPTION_SELECT) {  // Make a choice??
-          EEPROMData.currentMicGain = currentMicGain;
+ //         EEPROMData.EEPROMData.currentMicGain = EEPROMData.currentMicGain;
           EEPROMWrite();
           break;
         }
@@ -566,11 +567,11 @@ int MicOptions()  // AFP 09-22-22 All new
   micChoice = SubmenuSelect(micChoices, 7, micChoice);
   switch (micChoice) {
     case 0:                      // On
-      compressorFlag = 1;        // AFP 09-22-22
+      EEPROMData.compressorFlag = 1;        // AFP 09-22-22
       UpdateCompressionField();  // JJP 8/26/2023
       break;
     case 1:  // Off
-      compressorFlag = 0;
+      EEPROMData.compressorFlag = 0;
       UpdateCompressionField();  // JJP 8/26/2023
       break;
     case 2:
@@ -615,14 +616,14 @@ int RFOptions() {
     case 0:  // AFP 10-21-22
       EEPROMData.transmitPowerLevel = (float)GetEncoderValue(1, 20, EEPROMData.transmitPowerLevel, 1, (char *)"Power: ");
       if (EEPROMData.xmtMode == CW_MODE) {                                                                                                                                      //AFP 10-13-22
-        powerOutCW[currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * CWPowerCalibrationFactor[currentBand];  //  afp 10-21-22
+        EEPROMData.powerOutCW[EEPROMData.currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * EEPROMData.CWPowerCalibrationFactor[EEPROMData.currentBand];  //  afp 10-21-22
 
-        EEPROMData.powerOutCW[currentBand] = powerOutCW[currentBand];  //AFP 10-21-22
+//        EEPROMData.EEPROMData.powerOutCW[EEPROMData.currentBand] = EEPROMData.powerOutCW[EEPROMData.currentBand];  //AFP 10-21-22
         //EEPROMWrite();//AFP 10-21-22
       } else {  //AFP 10-13-22
         if (EEPROMData.xmtMode == SSB_MODE) {
-          powerOutSSB[currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * SSBPowerCalibrationFactor[currentBand];  // afp 10-21-22
-          EEPROMData.powerOutSSB[currentBand] = powerOutSSB[currentBand];                                                                                                //AFP 10-21-22
+          EEPROMData.powerOutSSB[EEPROMData.currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * EEPROMData.SSBPowerCalibrationFactor[EEPROMData.currentBand];  // afp 10-21-22
+ //         EEPROMData.EEPROMData.powerOutSSB[EEPROMData.currentBand] = EEPROMData.powerOutSSB[EEPROMData.currentBand];                                                                                                //AFP 10-21-22
         }
       }
       EEPROMData.transmitPowerLevel = EEPROMData.transmitPowerLevel;  //AFP 10-21-22
@@ -681,11 +682,11 @@ void DoPaddleFlip() {
         if (choice) {                                     // Means right-paddle dit
           EEPROMData.paddleDit = KEYER_DAH_INPUT_RING;
           EEPROMData.paddleDah = KEYER_DIT_INPUT_TIP;
-          paddleFlip = 1;  // KD0RC
+          EEPROMData.paddleFlip = 1;  // KD0RC
         } else {
           EEPROMData.paddleDit = KEYER_DIT_INPUT_TIP;
           EEPROMData.paddleDah = KEYER_DAH_INPUT_RING;
-          paddleFlip = 0;  // KD0RC
+          EEPROMData.paddleFlip = 0;  // KD0RC
         }
         //EEPROMEEPROMData.paddleDit = EEPROMData.paddleDit;
         //EEPROMData.EEPROMData.paddleDah = EEPROMData.paddleDah;
@@ -725,17 +726,17 @@ int VFOSelect() {
   NCOFreq = 0L;
   switch (choice) {
     case VFO_A:  // VFO A
-      centerFreq = TxRxFreq = currentFreqA;
+      EEPROMData.centerFreq = TxRxFreq = EEPROMData.currentFreqA;
       EEPROMData.activeVFO = VFO_A;
-      currentBand = currentBandA;
+      EEPROMData.currentBand = EEPROMData.currentBandA;
       tft.fillRect(FILTER_PARAMETERS_X + 180, FILTER_PARAMETERS_Y, 150, 20, RA8875_BLACK);  // Erase split message
       splitOn = 0;
       break;
 
     case VFO_B:  // VFO B
-      centerFreq = TxRxFreq = currentFreqB;
+      EEPROMData.centerFreq = TxRxFreq = EEPROMData.currentFreqB;
       EEPROMData.activeVFO = VFO_B;
-      currentBand = currentBandB;
+      EEPROMData.currentBand = EEPROMData.currentBandB;
       tft.fillRect(FILTER_PARAMETERS_X + 180, FILTER_PARAMETERS_Y, 150, 20, RA8875_BLACK);  // Erase split message
       splitOn = 0;
       break;
@@ -749,7 +750,7 @@ int VFOSelect() {
       return EEPROMData.activeVFO;
       break;
   }
-  bands[currentBand].freq = TxRxFreq;
+  bands[EEPROMData.currentBand].freq = TxRxFreq;
   SetBand();           // KF5N July 12, 2023
   SetBandRelay(HIGH);  // Required when switching VFOs. KF5N July 12, 2023
   SetFreq();

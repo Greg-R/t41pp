@@ -106,10 +106,10 @@ void ProcessIQData()
     //===========================
 
     /**********************************************************************************  AFP 12-31-20
-        Scale the data buffers by the RFgain value defined in bands[currentBand] structure
+        Scale the data buffers by the RFgain value defined in bands[EEPROMData.currentBand] structure
     **********************************************************************************/
-    arm_scale_f32 (float_buffer_L, bands[currentBand].RFgain, float_buffer_L, BUFFER_SIZE * N_BLOCKS); //AFP 09-23-22
-    arm_scale_f32 (float_buffer_R, bands[currentBand].RFgain, float_buffer_R, BUFFER_SIZE * N_BLOCKS); //AFP 09-23-22
+    arm_scale_f32 (float_buffer_L, bands[EEPROMData.currentBand].RFgain, float_buffer_L, BUFFER_SIZE * N_BLOCKS); //AFP 09-23-22
+    arm_scale_f32 (float_buffer_R, bands[EEPROMData.currentBand].RFgain, float_buffer_R, BUFFER_SIZE * N_BLOCKS); //AFP 09-23-22
 
     /**********************************************************************************  AFP 12-31-20
       Clear Buffers
@@ -138,13 +138,13 @@ void ProcessIQData()
 
     // Manual IQ amplitude correction
     // to be honest: we only correct the amplitude of the I channel ;-)
-    if (bands[currentBand].mode == DEMOD_LSB || bands[currentBand].mode == DEMOD_AM || bands[currentBand].mode == DEMOD_SAM) {
-      arm_scale_f32 (float_buffer_L, -IQAmpCorrectionFactor[currentBand], float_buffer_L, BUFFER_SIZE * N_BLOCKS); //AFP 04-14-22
-      IQPhaseCorrection(float_buffer_L, float_buffer_R, IQPhaseCorrectionFactor[currentBand], BUFFER_SIZE * N_BLOCKS);
+    if (bands[EEPROMData.currentBand].mode == DEMOD_LSB || bands[EEPROMData.currentBand].mode == DEMOD_AM || bands[EEPROMData.currentBand].mode == DEMOD_SAM) {
+      arm_scale_f32 (float_buffer_L, -EEPROMData.IQAmpCorrectionFactor[EEPROMData.currentBand], float_buffer_L, BUFFER_SIZE * N_BLOCKS); //AFP 04-14-22
+      IQPhaseCorrection(float_buffer_L, float_buffer_R, EEPROMData.IQPhaseCorrectionFactor[EEPROMData.currentBand], BUFFER_SIZE * N_BLOCKS);
     } else {
-      if (bands[currentBand].mode == DEMOD_USB || bands[currentBand].mode == DEMOD_AM || bands[currentBand].mode == DEMOD_SAM) {
-        arm_scale_f32 (float_buffer_L, -IQAmpCorrectionFactor[currentBand], float_buffer_L, BUFFER_SIZE * N_BLOCKS); //AFP 04-14-22
-        IQPhaseCorrection(float_buffer_L, float_buffer_R, IQPhaseCorrectionFactor[currentBand], BUFFER_SIZE * N_BLOCKS);
+      if (bands[EEPROMData.currentBand].mode == DEMOD_USB || bands[EEPROMData.currentBand].mode == DEMOD_AM || bands[EEPROMData.currentBand].mode == DEMOD_SAM) {
+        arm_scale_f32 (float_buffer_L, -EEPROMData.IQAmpCorrectionFactor[EEPROMData.currentBand], float_buffer_L, BUFFER_SIZE * N_BLOCKS); //AFP 04-14-22
+        IQPhaseCorrection(float_buffer_L, float_buffer_R, EEPROMData.IQPhaseCorrectionFactor[EEPROMData.currentBand], BUFFER_SIZE * N_BLOCKS);
       }
     }
     // IQ phase correction
@@ -251,10 +251,10 @@ void ProcessIQData()
     // =================  AFP 10-21-22 Level Adjust ===========
     float freqKHzFcut;
     float volScaleFactor;
-    if (bands[currentBand].mode == DEMOD_LSB) {
-      freqKHzFcut = -(float32_t)bands[currentBand].FLoCut * 0.001;
+    if (bands[EEPROMData.currentBand].mode == DEMOD_LSB) {
+      freqKHzFcut = -(float32_t)bands[EEPROMData.currentBand].FLoCut * 0.001;
     } else {
-      freqKHzFcut = (float32_t)bands[currentBand].FHiCut * 0.001;
+      freqKHzFcut = (float32_t)bands[EEPROMData.currentBand].FHiCut * 0.001;
     }
     volScaleFactor = 7.0874 * pow(freqKHzFcut, -1.232);
     arm_scale_f32(float_buffer_L, volScaleFactor, float_buffer_L, FFT_length / 2);
@@ -322,11 +322,11 @@ void ProcessIQData()
         audioSpectBuffer[1024 - k] = (iFFT_buffer[k] * iFFT_buffer[k]);
       }
       for (int k = 0; k < 256; k++) {
-        if (bands[currentBand].mode == 0  || bands[currentBand].mode == DEMOD_AM || bands[currentBand].mode == DEMOD_SAM) {  //AFP 10-26-22
+        if (bands[EEPROMData.currentBand].mode == 0  || bands[EEPROMData.currentBand].mode == DEMOD_AM || bands[EEPROMData.currentBand].mode == DEMOD_SAM) {  //AFP 10-26-22
           //audioYPixel[k] = 20+  map((int)displayScale[EEPROMData.currentScale].dBScale * log10f((audioSpectBuffer[1024 - k] + audioSpectBuffer[1024 - k + 1] + audioSpectBuffer[1024 - k + 2]) / 3), 0, 100, 0, 120);
           audioYPixel[k] = 50 +  map(15 * log10f((audioSpectBuffer[1024 - k] + audioSpectBuffer[1024 - k + 1] + audioSpectBuffer[1024 - k + 2]) / 3), 0, 100, 0, 120);
         }
-        else if (bands[currentBand].mode == 1) {//AFP 10-26-22
+        else if (bands[EEPROMData.currentBand].mode == 1) {//AFP 10-26-22
           //audioYPixel[k] = 20+   map((int)displayScale[EEPROMData.currentScale].dBScale * log10f((audioSpectBuffer[k] + audioSpectBuffer[k + 1] + audioSpectBuffer[k + 2]) / 3), 0, 100, 0, 120);
           audioYPixel[k] = 50 +   map(15 * log10f((audioSpectBuffer[k] + audioSpectBuffer[k + 1] + audioSpectBuffer[k + 2]) / 3), 0, 100, 0, 120);
         }
@@ -382,10 +382,10 @@ void ProcessIQData()
        **********************************************************************************/
     //===================== AFP 10-27-22  =========
 
-    switch (bands[currentBand].mode) {
+    switch (bands[EEPROMData.currentBand].mode) {
       case DEMOD_LSB :
         for (unsigned i = 0; i < FFT_length / 2; i++) {
-          //if (bands[currentBand].mode == DEMOD_USB || bands[currentBand].mode == DEMOD_LSB ) {  // for SSB copy real part in both outputs
+          //if (bands[EEPROMData.currentBand].mode == DEMOD_USB || bands[EEPROMData.currentBand].mode == DEMOD_LSB ) {  // for SSB copy real part in both outputs
           float_buffer_L[i] = iFFT_buffer[FFT_length + (i * 2)];
 
           float_buffer_R[i] = float_buffer_L[i];
@@ -394,7 +394,7 @@ void ProcessIQData()
         break;
       case DEMOD_USB :
         for (unsigned i = 0; i < FFT_length / 2; i++) {
-          // if (bands[currentBand].mode == DEMOD_USB || bands[currentBand].mode == DEMOD_LSB ) {  // for SSB copy real part in both outputs
+          // if (bands[EEPROMData.currentBand].mode == DEMOD_USB || bands[EEPROMData.currentBand].mode == DEMOD_LSB ) {  // for SSB copy real part in both outputs
           float_buffer_L[i] = iFFT_buffer[FFT_length + (i * 2)];
 
           float_buffer_R[i] = float_buffer_L[i];

@@ -95,15 +95,15 @@ void ExciterIQData()
               Additional scaling, if nesessary to compensate for down-stream gain variations
      **********************************************************************************/
 
-    if (bands[currentBand].mode == DEMOD_LSB) { //AFP 12-27-21
-      //arm_scale_f32 (float_buffer_L_EX, -IQXAmpCorrectionFactor[currentBandA], float_buffer_L_EX, 256);
-      arm_scale_f32 (float_buffer_L_EX, + IQXAmpCorrectionFactor[currentBandA], float_buffer_L_EX, 256);     // Flip SSB sideband KF5N, minus sign was original
-      IQPhaseCorrection(float_buffer_L_EX, float_buffer_R_EX, IQXPhaseCorrectionFactor[currentBandA], 256);
+    if (bands[EEPROMData.currentBand].mode == DEMOD_LSB) { //AFP 12-27-21
+      //arm_scale_f32 (float_buffer_L_EX, -EEPROMData.IQXAmpCorrectionFactor[EEPROMData.currentBandA], float_buffer_L_EX, 256);
+      arm_scale_f32 (float_buffer_L_EX, + EEPROMData.IQXAmpCorrectionFactor[EEPROMData.currentBandA], float_buffer_L_EX, 256);     // Flip SSB sideband KF5N, minus sign was original
+      IQPhaseCorrection(float_buffer_L_EX, float_buffer_R_EX, EEPROMData.IQXPhaseCorrectionFactor[EEPROMData.currentBandA], 256);
     }
-    else if (bands[currentBand].mode == DEMOD_USB) { //AFP 12-27-21
-      //arm_scale_f32 (float_buffer_L_EX, + IQXAmpCorrectionFactor[currentBandA], float_buffer_L_EX, 256);     // Flip SSB sideband KF5N, minus sign was original
-      arm_scale_f32 (float_buffer_L_EX, - IQXAmpCorrectionFactor[currentBandA], float_buffer_L_EX, 256);    // Flip SSB sideband KF5N
-      IQPhaseCorrection(float_buffer_L_EX, float_buffer_R_EX, IQXPhaseCorrectionFactor[currentBandA], 256);
+    else if (bands[EEPROMData.currentBand].mode == DEMOD_USB) { //AFP 12-27-21
+      //arm_scale_f32 (float_buffer_L_EX, + EEPROMData.IQXAmpCorrectionFactor[EEPROMData.currentBandA], float_buffer_L_EX, 256);     // Flip SSB sideband KF5N, minus sign was original
+      arm_scale_f32 (float_buffer_L_EX, - EEPROMData.IQXAmpCorrectionFactor[EEPROMData.currentBandA], float_buffer_L_EX, 256);    // Flip SSB sideband KF5N
+      IQPhaseCorrection(float_buffer_L_EX, float_buffer_R_EX, EEPROMData.IQXPhaseCorrectionFactor[EEPROMData.currentBandA], 256);
     }
     arm_scale_f32 (float_buffer_R_EX, 1.00, float_buffer_R_EX, 256);
 
@@ -160,5 +160,5 @@ void SetBandRelay(int state)
   digitalWrite(bandswitchPins[i], LOW); // Set ALL band relays low.  KF5N July 21, 2023
   }
 // Set current band relay "on".  Ignore 12M and 10M.  15M and 17M use the same relay.  KF5N September 27, 2023.
-  if(currentBand < 5) digitalWrite(bandswitchPins[currentBand], state);  
+  if(EEPROMData.currentBand < 5) digitalWrite(bandswitchPins[EEPROMData.currentBand], state);  
 }

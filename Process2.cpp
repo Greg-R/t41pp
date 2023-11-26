@@ -31,9 +31,9 @@ void CalibratePreamble(int setZoom) {
   radioState = CW_TRANSMIT_STRAIGHT_STATE;      // KF5N
   transmitPowerLevelTemp = EEPROMData.transmitPowerLevel;  //AFP 05-11-23
   EEPROMData.transmitPowerLevel = 5;                       //AFP 02-09-23
-  powerOutCW[currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * CWPowerCalibrationFactor[currentBand];
-  modeSelectOutExL.gain(0, powerOutCW[currentBand]);  //AFP 10-21-22
-  modeSelectOutExR.gain(0, powerOutCW[currentBand]);  //AFP 10-21-22
+  EEPROMData.powerOutCW[EEPROMData.currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * EEPROMData.CWPowerCalibrationFactor[EEPROMData.currentBand];
+  modeSelectOutExL.gain(0, EEPROMData.powerOutCW[EEPROMData.currentBand]);  //AFP 10-21-22
+  modeSelectOutExR.gain(0, EEPROMData.powerOutCW[EEPROMData.currentBand]);  //AFP 10-21-22
   userxmtMode = EEPROMData.xmtMode;          // Store the user's mode setting.  KF5N July 22, 2023
   userZoomIndex = EEPROMData.spectrum_zoom;  // Save the zoom index so it can be reset at the conclusion.  KF5N August 12, 2023
   zoomIndex = setZoom - 1;
@@ -72,7 +72,7 @@ void CalibratePreamble(int setZoom) {
   modeSelectOutR.gain(1, 0);
   modeSelectOutExL.gain(0, 1);
   modeSelectOutExR.gain(0, 1);
-  centerFreq = TxRxFreq;
+  EEPROMData.centerFreq = TxRxFreq;
   NCOFreq = 0L;
   xrState = TRANSMIT_STATE;
   digitalWrite(MUTE, HIGH);  //  Mute Audio  (HIGH=Mute)
@@ -99,7 +99,7 @@ void CalibratePrologue() {
   // Clear queues to reduce transient.
   Q_in_L.clear();
   Q_in_R.clear();
-  centerFreq = TxRxFreq;
+  EEPROMData.centerFreq = TxRxFreq;
   NCOFreq = 0L;
   xrState = RECEIVE_STATE;
   calibrateFlag = 0;  // KF5N
@@ -137,8 +137,8 @@ void DoReceiveCalibrate() {
   int task = -1;
   int lastUsedTask = -2;
   CalibratePreamble(0);                                                   // Set zoom to 1X.
-  if (bands[currentBand].mode == DEMOD_LSB) calFreqShift = 24000 - 2000;  //  LSB offset.  KF5N
-  if (bands[currentBand].mode == DEMOD_USB) calFreqShift = 24000 + 2250;  //  USB offset.  KF5N
+  if (bands[EEPROMData.currentBand].mode == DEMOD_LSB) calFreqShift = 24000 - 2000;  //  LSB offset.  KF5N
+  if (bands[EEPROMData.currentBand].mode == DEMOD_USB) calFreqShift = 24000 + 2250;  //  USB offset.  KF5N
   SetFreqCal();
   calTypeFlag = 0;  // RX cal
   // Receive calibration loop
@@ -170,8 +170,8 @@ void DoReceiveCalibrate() {
         break;
       case MENU_OPTION_SELECT:
         tft.fillRect(SECONDARY_MENU_X, MENUS_Y, EACH_MENU_WIDTH + 35, CHAR_HEIGHT, RA8875_BLACK);
-        EEPROMData.IQAmpCorrectionFactor[currentBand] = IQAmpCorrectionFactor[currentBand];
-        EEPROMData.IQPhaseCorrectionFactor[currentBand] = IQPhaseCorrectionFactor[currentBand];
+//        EEPROMData.EEPROMData.IQAmpCorrectionFactor[EEPROMData.currentBand] = EEPROMData.IQAmpCorrectionFactor[EEPROMData.currentBand];
+//        EEPROMData.EEPROMData.IQPhaseCorrectionFactor[EEPROMData.currentBand] = EEPROMData.IQPhaseCorrectionFactor[EEPROMData.currentBand];
         IQChoice = 6;
         break;
       default:
@@ -180,9 +180,9 @@ void DoReceiveCalibrate() {
     if (task != -1) lastUsedTask = task;  //  Save the last used task.
     task = -100;                          // Reset task after it is used.
     if (IQCalType == 0) {  // AFP 2-11-23
-      IQAmpCorrectionFactor[currentBand] = GetEncoderValueLive(-2.0, 2.0, IQAmpCorrectionFactor[currentBand], correctionIncrement, (char *)"IQ Gain");
+      EEPROMData.IQAmpCorrectionFactor[EEPROMData.currentBand] = GetEncoderValueLive(-2.0, 2.0, EEPROMData.IQAmpCorrectionFactor[EEPROMData.currentBand], correctionIncrement, (char *)"IQ Gain");
     } else {
-      IQPhaseCorrectionFactor[currentBand] = GetEncoderValueLive(-2.0, 2.0, IQPhaseCorrectionFactor[currentBand], correctionIncrement, (char *)"IQ Phase");
+      EEPROMData.IQPhaseCorrectionFactor[EEPROMData.currentBand] = GetEncoderValueLive(-2.0, 2.0, EEPROMData.IQPhaseCorrectionFactor[EEPROMData.currentBand], correctionIncrement, (char *)"IQ Phase");
     }
     if (IQChoice == 6) break;  // Exit the while loop.
   }                            // End while loop
@@ -235,8 +235,8 @@ void DoXmitCalibrate() {
         break;
       case (MENU_OPTION_SELECT):  // Save values and exit calibration.
         tft.fillRect(SECONDARY_MENU_X, MENUS_Y, EACH_MENU_WIDTH + 35, CHAR_HEIGHT, RA8875_BLACK);
-        EEPROMData.IQXAmpCorrectionFactor[currentBand] = IQAmpCorrectionFactor[currentBand];
-        EEPROMData.IQXPhaseCorrectionFactor[currentBand] = IQPhaseCorrectionFactor[currentBand];
+//        EEPROMData.EEPROMData.IQXAmpCorrectionFactor[EEPROMData.currentBand] = EEPROMData.IQAmpCorrectionFactor[EEPROMData.currentBand];
+//        EEPROMData.EEPROMData.IQXPhaseCorrectionFactor[EEPROMData.currentBand] = EEPROMData.IQPhaseCorrectionFactor[EEPROMData.currentBand];
         IQChoice = 6;  // AFP 2-11-23
         break;
       default:
@@ -246,9 +246,9 @@ void DoXmitCalibrate() {
     task = -100;                          // Reset task after it is used.
     //  Read encoder and update values.
     if (IQCalType == 0) {
-      IQXAmpCorrectionFactor[currentBand] = GetEncoderValueLive(-2.0, 2.0, IQXAmpCorrectionFactor[currentBand], correctionIncrement, (char *)"IQ Gain X");
+      EEPROMData.IQXAmpCorrectionFactor[EEPROMData.currentBand] = GetEncoderValueLive(-2.0, 2.0, EEPROMData.IQXAmpCorrectionFactor[EEPROMData.currentBand], correctionIncrement, (char *)"IQ Gain X");
     } else {
-      IQXPhaseCorrectionFactor[currentBand] = GetEncoderValueLive(-2.0, 2.0, IQXPhaseCorrectionFactor[currentBand], correctionIncrement, (char *)"IQ Phase X");
+      EEPROMData.IQXPhaseCorrectionFactor[EEPROMData.currentBand] = GetEncoderValueLive(-2.0, 2.0, EEPROMData.IQXPhaseCorrectionFactor[EEPROMData.currentBand], correctionIncrement, (char *)"IQ Phase X");
     }
     if (IQChoice == 6) break;  //  Exit the while loop.
   }                            // end while
@@ -279,7 +279,7 @@ void ProcessIQData2() {
         BUFFER_SIZE*N_BLOCKS = 2024 samples
      **********************************************************************************/
 
-  bandOutputFactor = bandCouplingFactor[currentBand] * CWPowerCalibrationFactor[currentBand] / CWPowerCalibrationFactor[1];  //AFP 2-7-23
+  bandOutputFactor = bandCouplingFactor[EEPROMData.currentBand] * EEPROMData.CWPowerCalibrationFactor[EEPROMData.currentBand] / EEPROMData.CWPowerCalibrationFactor[1];  //AFP 2-7-23
 
   // Generate I and Q for the transmit or receive calibration.  KF5N
   if (IQChoice == 2 || IQChoice == 3) {                                   // KF5N
@@ -287,13 +287,13 @@ void ProcessIQData2() {
     arm_scale_f32(sinBuffer3, bandOutputFactor, float_buffer_R_EX, 256);  // AFP 2-11-23 Sidetone = 3000
   }
 
-  if (bands[currentBand].mode == DEMOD_LSB) {
-    arm_scale_f32(float_buffer_L_EX, -IQXAmpCorrectionFactor[currentBand], float_buffer_L_EX, 256);       //Adjust level of L buffer // AFP 2-11-23
-    IQPhaseCorrection(float_buffer_L_EX, float_buffer_R_EX, IQXPhaseCorrectionFactor[currentBand], 256);  // Adjust phase
+  if (bands[EEPROMData.currentBand].mode == DEMOD_LSB) {
+    arm_scale_f32(float_buffer_L_EX, -EEPROMData.IQXAmpCorrectionFactor[EEPROMData.currentBand], float_buffer_L_EX, 256);       //Adjust level of L buffer // AFP 2-11-23
+    IQPhaseCorrection(float_buffer_L_EX, float_buffer_R_EX, EEPROMData.IQXPhaseCorrectionFactor[EEPROMData.currentBand], 256);  // Adjust phase
   } else {
-    if (bands[currentBand].mode == DEMOD_USB) {
-      arm_scale_f32(float_buffer_L_EX, IQXAmpCorrectionFactor[currentBand], float_buffer_L_EX, 256);  // AFP 2-11-23
-      IQPhaseCorrection(float_buffer_L_EX, float_buffer_R_EX, IQXPhaseCorrectionFactor[currentBand], 256);
+    if (bands[EEPROMData.currentBand].mode == DEMOD_USB) {
+      arm_scale_f32(float_buffer_L_EX, EEPROMData.IQXAmpCorrectionFactor[EEPROMData.currentBand], float_buffer_L_EX, 256);  // AFP 2-11-23
+      IQPhaseCorrection(float_buffer_L_EX, float_buffer_R_EX, EEPROMData.IQXPhaseCorrectionFactor[EEPROMData.currentBand], 256);
     }
   }
   //24KHz effective sample rate here
@@ -341,19 +341,19 @@ void ProcessIQData2() {
     arm_scale_f32(float_buffer_R, rfGainValue, float_buffer_R, BUFFER_SIZE * N_BLOCKS);  //AFP 2-11-23
 
     /**********************************************************************************  AFP 12-31-20
-      Scale the data buffers by the RFgain value defined in bands[currentBand] structure
+      Scale the data buffers by the RFgain value defined in bands[EEPROMData.currentBand] structure
     **********************************************************************************/
-    arm_scale_f32(float_buffer_L, recBandFactor[currentBand], float_buffer_L, BUFFER_SIZE * N_BLOCKS);  //AFP 2-11-23
-    arm_scale_f32(float_buffer_R, recBandFactor[currentBand], float_buffer_R, BUFFER_SIZE * N_BLOCKS);  //AFP 2-11-23
+    arm_scale_f32(float_buffer_L, recBandFactor[EEPROMData.currentBand], float_buffer_L, BUFFER_SIZE * N_BLOCKS);  //AFP 2-11-23
+    arm_scale_f32(float_buffer_R, recBandFactor[EEPROMData.currentBand], float_buffer_R, BUFFER_SIZE * N_BLOCKS);  //AFP 2-11-23
 
     // Manual IQ amplitude correction
-    if (bands[currentBand].mode == DEMOD_LSB) {
-      arm_scale_f32(float_buffer_L, -IQAmpCorrectionFactor[currentBand], float_buffer_L, BUFFER_SIZE * N_BLOCKS);  //AFP 04-14-22
-      IQPhaseCorrection(float_buffer_L, float_buffer_R, IQPhaseCorrectionFactor[currentBand], BUFFER_SIZE * N_BLOCKS);
+    if (bands[EEPROMData.currentBand].mode == DEMOD_LSB) {
+      arm_scale_f32(float_buffer_L, -EEPROMData.IQAmpCorrectionFactor[EEPROMData.currentBand], float_buffer_L, BUFFER_SIZE * N_BLOCKS);  //AFP 04-14-22
+      IQPhaseCorrection(float_buffer_L, float_buffer_R, EEPROMData.IQPhaseCorrectionFactor[EEPROMData.currentBand], BUFFER_SIZE * N_BLOCKS);
     } else {
-      if (bands[currentBand].mode == DEMOD_USB) {
-        arm_scale_f32(float_buffer_L, -IQAmpCorrectionFactor[currentBand], float_buffer_L, BUFFER_SIZE * N_BLOCKS);  //AFP 04-14-22 KF5N changed sign
-        IQPhaseCorrection(float_buffer_L, float_buffer_R, IQPhaseCorrectionFactor[currentBand], BUFFER_SIZE * N_BLOCKS);
+      if (bands[EEPROMData.currentBand].mode == DEMOD_USB) {
+        arm_scale_f32(float_buffer_L, -EEPROMData.IQAmpCorrectionFactor[EEPROMData.currentBand], float_buffer_L, BUFFER_SIZE * N_BLOCKS);  //AFP 04-14-22 KF5N changed sign
+        IQPhaseCorrection(float_buffer_L, float_buffer_R, EEPROMData.IQPhaseCorrectionFactor[EEPROMData.currentBand], BUFFER_SIZE * N_BLOCKS);
       }
     }
     FreqShift1();  // Why done here? KF5N
@@ -406,19 +406,19 @@ void ShowSpectrum2()  //AFP 2-10-23
   //  Thus there is a target "bin" for the reference signal and another "bin" for the undesired sideband.
   //  The target bin locations are used by the for-loop to sweep a small range in the FFT.  A maximum finding function finds the peak signal strength.
   int cal_bins[2] = {0, 0};
-  if (calTypeFlag == 0 && bands[currentBand].mode == DEMOD_LSB) {
+  if (calTypeFlag == 0 && bands[EEPROMData.currentBand].mode == DEMOD_LSB) {
     cal_bins[0] = 310;
     cal_bins[1] = 460;
   }  // Receive calibration, LSB.  KF5N
-  if (calTypeFlag == 0 && bands[currentBand].mode == DEMOD_USB) {
+  if (calTypeFlag == 0 && bands[EEPROMData.currentBand].mode == DEMOD_USB) {
     cal_bins[0] = 65;
     cal_bins[1] = 192;
   }  // Receive calibration, USB.  KF5N
-  if (calTypeFlag == 1 && bands[currentBand].mode == DEMOD_LSB) {
+  if (calTypeFlag == 1 && bands[EEPROMData.currentBand].mode == DEMOD_LSB) {
     cal_bins[0] = 240;
     cal_bins[1] = 305;
   }  // Transmit calibration, LSB.  KF5N
-  if (calTypeFlag == 1 && bands[currentBand].mode == DEMOD_USB) {
+  if (calTypeFlag == 1 && bands[EEPROMData.currentBand].mode == DEMOD_USB) {
     cal_bins[0] = 209;
     cal_bins[1] = 273;
   }  // Transmit calibration, USB.  KF5N
@@ -478,11 +478,11 @@ float PlotCalSpectrum(int x1, int cal_bins[2], int capture_bins) {
   y_old2 = pixelold[x1 - 1];
 
   // Find the maximums of the desired and undesired signals.
-  if (bands[currentBand].mode == DEMOD_LSB) {
+  if (bands[EEPROMData.currentBand].mode == DEMOD_LSB) {
     arm_max_q15(&pixelnew[(cal_bins[0] - capture_bins)], capture_bins * 2, &refAmplitude, &index_of_max);
     arm_max_q15(&pixelnew[(cal_bins[1] - capture_bins)], capture_bins * 2, &adjAmplitude, &index_of_max);
   }
-  if (bands[currentBand].mode == DEMOD_USB) {
+  if (bands[EEPROMData.currentBand].mode == DEMOD_USB) {
     arm_max_q15(&pixelnew[(cal_bins[0] - capture_bins)], capture_bins * 2, &adjAmplitude, &index_of_max);
     arm_max_q15(&pixelnew[(cal_bins[1] - capture_bins)], capture_bins * 2, &refAmplitude, &index_of_max);
   }
@@ -506,7 +506,7 @@ float PlotCalSpectrum(int x1, int cal_bins[2], int capture_bins) {
   if (calTypeFlag == 0) {  // Receive Cal
     adjdB = ((float)adjAmplitude - (float)refAmplitude) / 1.95;
     tft.writeTo(L2);
-    if (bands[currentBand].mode == DEMOD_LSB) {
+    if (bands[EEPROMData.currentBand].mode == DEMOD_LSB) {
       tft.fillRect(450, SPECTRUM_TOP_Y + 20, 20, h - 6, DARK_RED);     // SPECTRUM_TOP_Y = 100
       tft.fillRect(300, SPECTRUM_TOP_Y + 20, 20, h - 6, RA8875_BLUE);  // h = SPECTRUM_HEIGHT + 3
     } else {                                                           // SPECTRUM_HEIGHT = 150 so h = 153
@@ -516,11 +516,11 @@ float PlotCalSpectrum(int x1, int cal_bins[2], int capture_bins) {
   } else {                                                       //Transmit Cal
     adjdB = ((float)adjAmplitude - (float)refAmplitude) / 1.95;  // Cast to float and calculate the dB level.  KF5N
     tft.writeTo(L2);
-    if (bands[currentBand].mode == DEMOD_LSB) {
+    if (bands[EEPROMData.currentBand].mode == DEMOD_LSB) {
       tft.fillRect(295, SPECTRUM_TOP_Y + 20, 20, h - 6, DARK_RED);  // Adjusted height due to other graphics changes.  KF5N August 3, 2023
       tft.fillRect(230, SPECTRUM_TOP_Y + 20, 20, h - 6, RA8875_BLUE);      
     } else {
-      if (bands[currentBand].mode == DEMOD_USB) {  //mode == DEMOD_LSB
+      if (bands[EEPROMData.currentBand].mode == DEMOD_USB) {  //mode == DEMOD_LSB
         tft.fillRect(199, SPECTRUM_TOP_Y + 20, 20, h - 6, DARK_RED);
         tft.fillRect(263, SPECTRUM_TOP_Y + 20, 20, h - 6, RA8875_BLUE);
       }

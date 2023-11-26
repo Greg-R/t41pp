@@ -97,8 +97,8 @@ void ZoomFFTExe(uint32_t blockSize)  //AFP changed resolution 03-12-21  Only for
     // adjust lowpass filter coefficient, so that
     // "spectrum display smoothness" is the same across the different sample rates
     // and the same across different magnify modes . . .
-    //float32_t LPFcoeff = LPF_spectrum * (AUDIO_SAMPLE_RATE_EXACT / SR[SampleRate].rate);
-    float32_t LPFcoeff = 0.7;                                                           //AFP 03-12-21  reduced averaging time
+    //float32_t EEPROMData.LPFcoeff = LPF_spectrum * (AUDIO_SAMPLE_RATE_EXACT / SR[SampleRate].rate);
+    float32_t LPFcoeff = 0.7;         //AFP 03-12-21  reduced averaging time.  Is this a global or not?
     if (LPFcoeff > 1.0) {
       LPFcoeff = 1.0;
     }
@@ -128,7 +128,7 @@ void ZoomFFTExe(uint32_t blockSize)  //AFP changed resolution 03-12-21  Only for
     }
 
     for (int16_t x = 0; x < SPECTRUM_RES; x++) {
-      pixelnew[x] = displayScale[EEPROMData.currentScale].baseOffset + bands[currentBand].pixel_offset + (int16_t)(displayScale[EEPROMData.currentScale].dBScale * log10f_fast(FFT_spec[x]));
+      pixelnew[x] = displayScale[EEPROMData.currentScale].baseOffset + bands[EEPROMData.currentBand].pixel_offset + (int16_t)(displayScale[EEPROMData.currentScale].dBScale * log10f_fast(FFT_spec[x]));
       if (pixelnew[x] > 220) {
         pixelnew[x] = 220;
       }
@@ -147,7 +147,7 @@ void CalcZoom1Magn()
 {
  if (updateDisplayFlag == 1) {
   float32_t spec_help = 0.0;
-  float32_t LPFcoeff = 0.7;
+  float32_t LPFcoeff = 0.7;  // Is this a global or not?
   if (LPFcoeff > 1.0) {
     LPFcoeff = 1.0;
   }
@@ -177,13 +177,13 @@ void CalcZoom1Magn()
   // apply low pass filter and scale the magnitude values and convert to int for spectrum display
 
   for (int16_t x = 0; x < SPECTRUM_RES; x++) {
-    spec_help = LPFcoeff * FFT_spec[x] + (1.0 - LPFcoeff) * FFT_spec_old[x];
+    spec_help = EEPROMData.LPFcoeff * FFT_spec[x] + (1.0 - EEPROMData.LPFcoeff) * FFT_spec_old[x];
     FFT_spec_old[x] = spec_help;
 
 #ifdef USE_LOG10FAST
-    pixelnew[x] = displayScale[EEPROMData.currentScale].baseOffset + bands[currentBand].pixel_offset + (int16_t) (displayScale[EEPROMData.currentScale].dBScale * log10f_fast(FFT_spec[x]));
+    pixelnew[x] = displayScale[EEPROMData.currentScale].baseOffset + bands[EEPROMData.currentBand].pixel_offset + (int16_t) (displayScale[EEPROMData.currentScale].dBScale * log10f_fast(FFT_spec[x]));
 #else
-    pixelnew[x] = displayScale[EEPROMData.currentScale].baseOffset + bands[currentBand].pixel_offset + (int16_t) (displayScale[EEPROMData.currentScale].dBScale * log10f(spec_help));
+    pixelnew[x] = displayScale[EEPROMData.currentScale].baseOffset + bands[EEPROMData.currentBand].pixel_offset + (int16_t) (displayScale[EEPROMData.currentScale].dBScale * log10f(spec_help));
 #endif
   }
  }

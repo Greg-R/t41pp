@@ -1440,7 +1440,7 @@ int BearingMaps() {
   char ptrMaps[10][50];
   int count;
 
-  if (sdCardPresent == 0) {  // JJP 8/11/23
+  if (EEPROMData.sdCardPresent == 0) {  // JJP 8/11/23
     tft.setCursor(200, 300);
     tft.setTextColor(RA8875_RED, RA8875_BLACK);
     tft.println("No SD card.");
@@ -1484,7 +1484,7 @@ int BearingMaps() {
   homeLat = myMapFiles[selectedMapIndex].lat;
   homeLon = myMapFiles[selectedMapIndex].lon;  // your QTH longitude
 
-  strcpy(mapFileName, (const char *)myMapFiles[selectedMapIndex].mapNames);
+  strcpy(EEPROMData.mapFileName, (const char *)myMapFiles[selectedMapIndex].mapNames);
 
   RedrawDisplayScreen();
   ShowFrequency();

@@ -301,7 +301,7 @@ void SetKeyPowerUp() {
     EEPROMData.paddleDah = KEYER_DAH_INPUT_RING;
     return;
   }
-  if (paddleFlip) {  // Means right-paddle dit
+  if (EEPROMData.paddleFlip) {  // Means right-paddle dit
     EEPROMData.paddleDit = KEYER_DAH_INPUT_RING;
     EEPROMData.paddleDah = KEYER_DIT_INPUT_TIP;
   } else {

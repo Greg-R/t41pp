@@ -46,7 +46,7 @@ void EEPROMRead() {
 
   //DB2OO, 25-AUG-23: don't read the EEPROM before you are sure, that it is in T41-SDT format!!
   //DB2OO, 25-AUG-23: first read only the version string and compare it with the current version. The version string must also be at the beginning of the EEPROMData structure!
-  for (i=0; i<10; i++) { versionSettings[i]= EEPROM.read(EEPROM_BASE_ADDRESS+i); }
+  for (i=0; i<10; i++) { EEPROMData.versionSettings[i]= EEPROM.read(EEPROM_BASE_ADDRESS+i); }
 #ifdef DEBUG 
     //display version in EEPROM in last line of display
     MORSE_STRING_DISPLAY("EEPROMVersion ");
@@ -58,15 +58,15 @@ void EEPROMRead() {
     MyDelay(1000);
 #endif
   //Do we have V049.1 or V049.2 structure in EEPROM?
-  if (strcmp("V049.1", versionSettings) == 0) v049_version=1;
-  if (strcmp("V049.2", versionSettings) == 0) v049_version=2;
+  if (strcmp("V049.1", EEPROMData.versionSettings) == 0) v049_version=1;
+  if (strcmp("V049.2", EEPROMData.versionSettings) == 0) v049_version=2;
 
   if (v049_version > 0) {
      //DB2OO, 29-AUG-23: allow "V049.1" or "V049.2" instead of the Version with size for a migration to the new format
-     strcpy(versionSettings, EEPROMSetVersion());  // set new version format
-    for (i=0; i<10; i++) { EEPROM.write(EEPROM_BASE_ADDRESS+i, versionSettings[i]); }
+     strcpy(EEPROMData.versionSettings, EEPROMSetVersion());  // set new version format
+    for (i=0; i<10; i++) { EEPROM.write(EEPROM_BASE_ADDRESS+i, EEPROMData.versionSettings[i]); }
   }
-  if (strncmp(EEPROMSetVersion(), versionSettings, 10) != 0) {
+  if (strncmp(EEPROMSetVersion(), EEPROMData.versionSettings, 10) != 0) {
     //Different version in EEPROM: set the EEPROM values for THIS version
 #ifdef DEBUG  
     const char *wrong_ver = "EEPROMRead(): different version, calling EEPROMSaveDefaults2()";
@@ -91,7 +91,7 @@ void EEPROMRead() {
   
   EEPROM.get(EEPROM_BASE_ADDRESS, EEPROMData);  // Read as one large chunk
 
-  strncpy(versionSettings, EEPROMData.versionSettings, 10);  // KF5N
+  //strncpy(versionSettings, EEPROMData.versionSettings, 10);  // KF5N
   // EEPROMData.AGCMode = EEPROMData.EEPROMData.AGCMode;  Use the struct!
   //audioVolume = EEPROMData.audioVolume;  // 4 bytes
   //rfGainAllBands = EEPROMData.rfGainAllBands;
@@ -117,25 +117,25 @@ void EEPROMRead() {
   //activeVFO = EEPROMData.activeVFO;          // 2 bytes
   //freqIncrement = EEPROMData.freqIncrement;  // 4 bytes
 
-  currentBand = EEPROMData.currentBand;                        // 4 bytes
-  currentBandA = EEPROMData.currentBandA;                      // 4 bytes
-  currentBandB = EEPROMData.currentBandB;                      // 4 bytes
-  currentFreqA = EEPROMData.lastFrequencies[currentBandA][0];  // JJP 7/17/23
-  currentFreqB = EEPROMData.lastFrequencies[currentBandB][1];  // JJP 7/17/23
-  freqCorrectionFactor = EEPROMData.freqCorrectionFactor;
+  //currentBand = EEPROMData.currentBand;                        // 4 bytes
+  //currentBandA = EEPROMData.currentBandA;                      // 4 bytes
+  //currentBandB = EEPROMData.currentBandB;                      // 4 bytes
+  //currentFreqA = EEPROMData.lastFrequencies[EEPROMData.currentBandA][0];  // JJP 7/17/23
+  //currentFreqB = EEPROMData.lastFrequencies[EEPROMData.currentBandB][1];  // JJP 7/17/23
+  //freqCorrectionFactor = EEPROMData.freqCorrectionFactor;
 
-  for (int i = 0; i < EQUALIZER_CELL_COUNT; i++) {
-    recEQ_Level[i] = EEPROMData.equalizerRec[i];  // 4 bytes each
-  }
-  for (int i = 0; i < EQUALIZER_CELL_COUNT; i++) {
-    xmtEQ_Level[i] = EEPROMData.equalizerXmt[i];
-  }
+ // for (int i = 0; i < EQUALIZER_CELL_COUNT; i++) {
+ //   recEQ_Level[i] = EEPROMData.equalizerRec[i];  // 4 bytes each
+ // }
+ // for (int i = 0; i < EQUALIZER_CELL_COUNT; i++) {
+ //   xmtEQ_Level[i] = EEPROMData.equalizerXmt[i];
+ // }
 
-  currentMicThreshold = EEPROMData.currentMicThreshold;  // AFP 09-22-22
-  currentMicCompRatio = EEPROMData.currentMicCompRatio;
-  currentMicAttack = EEPROMData.currentMicAttack;
-  currentMicRelease = EEPROMData.currentMicRelease;
-  currentMicGain = EEPROMData.currentMicGain;
+  //currentMicThreshold = EEPROMData.currentMicThreshold;  // AFP 09-22-22
+  //currentMicCompRatio = EEPROMData.currentMicCompRatio;
+  //currentMicAttack = EEPROMData.currentMicAttack;
+  //currentMicRelease = EEPROMData.currentMicRelease;
+  //currentMicGain = EEPROMData.currentMicGain;
 
   //  Note: switch values are read and written to EEPROM only
   //switchThreshholds[0] = EEPROMData.switchValues[0];
@@ -157,94 +157,94 @@ void EEPROMRead() {
   //switchThreshholds[16] = EEPROMData.switchValues[16];
   //switchThreshholds[17] = EEPROMData.switchValues[17];
 
-  LPFcoeff = EEPROMData.LPFcoeff;  // 4 bytes
-  NR_PSI = EEPROMData.NR_PSI;      // 4 bytes
-  NR_alpha = EEPROMData.NR_alpha;  // 4 bytes
-  NR_beta = EEPROMData.NR_beta;    // 4 bytes
-  omegaN = EEPROMData.omegaN;      // 4 bytes
-  pll_fmax = EEPROMData.pll_fmax;  // 4 bytes
+  //LPFcoeff = EEPROMData.LPFcoeff;  // 4 bytes
+  //NR_PSI = EEPROMData.NR_PSI;      // 4 bytes
+  //NR_alpha = EEPROMData.NR_alpha;  // 4 bytes
+  //NR_beta = EEPROMData.NR_beta;    // 4 bytes
+  //omegaN = EEPROMData.omegaN;      // 4 bytes
+  //pll_fmax = EEPROMData.pll_fmax;  // 4 bytes
 
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    powerOutCW[i] = EEPROMData.powerOutCW[i];
-  }
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    powerOutSSB[i] = EEPROMData.powerOutSSB[i];
-  }
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    CWPowerCalibrationFactor[i] = EEPROMData.CWPowerCalibrationFactor[i];  // 0.019;
-  }
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    SSBPowerCalibrationFactor[i] = EEPROMData.SSBPowerCalibrationFactor[i];  // 0.008
-  }
+  //for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+  //  powerOutCW[i] = EEPROMData.powerOutCW[i];
+  //}
+  //for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+  //  powerOutSSB[i] = EEPROMData.powerOutSSB[i];
+  //}
+  //for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+  //  CWPowerCalibrationFactor[i] = EEPROMData.CWPowerCalibrationFactor[i];  // 0.019;
+  //}
+  //for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+  //  SSBPowerCalibrationFactor[i] = EEPROMData.SSBPowerCalibrationFactor[i];  // 0.008
+  //}
 
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    IQAmpCorrectionFactor[i] = EEPROMData.IQAmpCorrectionFactor[i];
-  }
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    IQPhaseCorrectionFactor[i] = EEPROMData.IQPhaseCorrectionFactor[i];
-  }
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    IQXAmpCorrectionFactor[i] = EEPROMData.IQXAmpCorrectionFactor[i];
-  }
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    IQXPhaseCorrectionFactor[i] = EEPROMData.IQXPhaseCorrectionFactor[i];
-  }
-  favoriteFrequencies[0] = EEPROMData.favoriteFreqs[0];
-  favoriteFrequencies[1] = EEPROMData.favoriteFreqs[1];
-  favoriteFrequencies[2] = EEPROMData.favoriteFreqs[2];
-  favoriteFrequencies[3] = EEPROMData.favoriteFreqs[3];
-  favoriteFrequencies[4] = EEPROMData.favoriteFreqs[4];
-  favoriteFrequencies[5] = EEPROMData.favoriteFreqs[5];
-  favoriteFrequencies[6] = EEPROMData.favoriteFreqs[6];
-  favoriteFrequencies[7] = EEPROMData.favoriteFreqs[7];
-  favoriteFrequencies[8] = EEPROMData.favoriteFreqs[8];
-  favoriteFrequencies[9] = EEPROMData.favoriteFreqs[9];
-  favoriteFrequencies[10] = EEPROMData.favoriteFreqs[10];
-  favoriteFrequencies[11] = EEPROMData.favoriteFreqs[11];
-  favoriteFrequencies[12] = EEPROMData.favoriteFreqs[12];
+//  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+//    IQAmpCorrectionFactor[i] = EEPROMData.IQAmpCorrectionFactor[i];
+//  }
+//  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+//    IQPhaseCorrectionFactor[i] = EEPROMData.IQPhaseCorrectionFactor[i];
+//  }
+//  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+//    IQXAmpCorrectionFactor[i] = EEPROMData.IQXAmpCorrectionFactor[i];
+//  }
+//  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+//    IQXPhaseCorrectionFactor[i] = EEPROMData.IQXPhaseCorrectionFactor[i];
+//  }
+//  favoriteFrequencies[0] = EEPROMData.favoriteFreqs[0];
+//  favoriteFrequencies[1] = EEPROMData.favoriteFreqs[1];
+//  favoriteFrequencies[2] = EEPROMData.favoriteFreqs[2];
+//  favoriteFrequencies[3] = EEPROMData.favoriteFreqs[3];
+//  favoriteFrequencies[4] = EEPROMData.favoriteFreqs[4];
+//  favoriteFrequencies[5] = EEPROMData.favoriteFreqs[5];
+//  favoriteFrequencies[6] = EEPROMData.favoriteFreqs[6];
+//  favoriteFrequencies[7] = EEPROMData.favoriteFreqs[7];
+//  favoriteFrequencies[8] = EEPROMData.favoriteFreqs[8];
+//  favoriteFrequencies[9] = EEPROMData.favoriteFreqs[9];
+//  favoriteFrequencies[10] = EEPROMData.favoriteFreqs[10];
+//  favoriteFrequencies[11] = EEPROMData.favoriteFreqs[11];
+//  favoriteFrequencies[12] = EEPROMData.favoriteFreqs[12];
 
-  lastFrequencies[0][0] = EEPROMData.lastFrequencies[0][0];
-  lastFrequencies[1][0] = EEPROMData.lastFrequencies[1][0];
-  lastFrequencies[2][0] = EEPROMData.lastFrequencies[2][0];
-  lastFrequencies[3][0] = EEPROMData.lastFrequencies[3][0];
-  lastFrequencies[4][0] = EEPROMData.lastFrequencies[4][0];
-  lastFrequencies[5][0] = EEPROMData.lastFrequencies[5][0];
-  lastFrequencies[6][0] = EEPROMData.lastFrequencies[6][0];
+//  lastFrequencies[0][0] = EEPROMData.lastFrequencies[0][0];
+//  lastFrequencies[1][0] = EEPROMData.lastFrequencies[1][0];
+//  lastFrequencies[2][0] = EEPROMData.lastFrequencies[2][0];
+//  lastFrequencies[3][0] = EEPROMData.lastFrequencies[3][0];
+//  lastFrequencies[4][0] = EEPROMData.lastFrequencies[4][0];
+//  lastFrequencies[5][0] = EEPROMData.lastFrequencies[5][0];
+//  lastFrequencies[6][0] = EEPROMData.lastFrequencies[6][0];
 
-  lastFrequencies[0][1] = EEPROMData.lastFrequencies[0][1];
-  lastFrequencies[1][1] = EEPROMData.lastFrequencies[1][1];
-  lastFrequencies[2][1] = EEPROMData.lastFrequencies[2][1];
-  lastFrequencies[3][1] = EEPROMData.lastFrequencies[3][1];
-  lastFrequencies[4][1] = EEPROMData.lastFrequencies[4][1];
-  lastFrequencies[5][1] = EEPROMData.lastFrequencies[5][1];
-  lastFrequencies[6][1] = EEPROMData.lastFrequencies[6][1];
+//  lastFrequencies[0][1] = EEPROMData.lastFrequencies[0][1];
+//  lastFrequencies[1][1] = EEPROMData.lastFrequencies[1][1];
+//  lastFrequencies[2][1] = EEPROMData.lastFrequencies[2][1];
+//  lastFrequencies[3][1] = EEPROMData.lastFrequencies[3][1];
+//  lastFrequencies[4][1] = EEPROMData.lastFrequencies[4][1];
+//  lastFrequencies[5][1] = EEPROMData.lastFrequencies[5][1];
+//  lastFrequencies[6][1] = EEPROMData.lastFrequencies[6][1];
 
-  centerFreq = EEPROMData.lastFrequencies[currentBand][EEPROMData.activeVFO];  // 4 bytes
-  TxRxFreq = centerFreq;  // Need to assign TxRxFreq here or numerous subtle frequency bugs will happen.  KF5N August 7, 2023
+//  centerFreq = EEPROMData.lastFrequencies[EEPROMData.currentBand][EEPROMData.activeVFO];  // 4 bytes
+//  TxRxFreq = centerFreq;  // Need to assign TxRxFreq here or numerous subtle frequency bugs will happen.  KF5N August 7, 2023
 
   //strncpy(EEPROMData.mapFileName, MAP_FILE_NAME, 50);  KF5N
-  strncpy(mapFileName, EEPROMData.mapFileName, 50);     // KF5N
-  strncpy(myCall, EEPROMData.myCall, 10);               // KF5N
-  strncpy(myTimeZone, EEPROMData.myTimeZone, 10);       // KF5N
-  freqSeparationChar = EEPROMData.separationCharacter;  //   JJP  7/25/23  KF5N
+//  strncpy(mapFileName, EEPROMData.mapFileName, 50);     // KF5N
+//  strncpy(myCall, EEPROMData.myCall, 10);               // KF5N
+//  strncpy(myTimeZone, EEPROMData.myTimeZone, 10);       // KF5N
+ // freqSeparationChar = EEPROMData.separationCharacter;  //   JJP  7/25/23  KF5N
 
-  paddleFlip = EEPROMData.paddleFlip;  //   JJP  7/27/23.  Was setting to symbolic constant PADDLE_FLIP.  KF5N August 8, 2023
-  sdCardPresent = EEPROMData.sdCardPresent = 0;      //   JJP  7/27/23
+  //paddleFlip = EEPROMData.paddleFlip;  //   JJP  7/27/23.  Was setting to symbolic constant PADDLE_FLIP.  KF5N August 8, 2023
+  //sdCardPresent = EEPROMData.sdCardPresent = 0;      //   JJP  7/27/23
 
-  myLat = EEPROMData.myLat;
-  myLong = EEPROMData.myLong;
+  //myLat = EEPROMData.myLat;
+  //myLong = EEPROMData.myLong;
 //  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
 //    currentNoiseFloor[i] = EEPROMData.currentNoiseFloor[i];
 //  }
   //DB2OO, 10-SEP-23: We have V049.1 or V049.2 in EEPROM --> just initialize new/changed EEPROMData structure elements
-  switch (v049_version) {
-    case 1: //V049.1 --> there is no "compressorFlag" yet in the structure --> initalize it, to overwrite junk from EEPROM
-      EEPROMData.compressorFlag = 0;
-      //fall through
-    case 2: //V049.2: compressorFlag is there, but we might have to add other inits (not required yet)
-      break;
-  }
-  compressorFlag = EEPROMData.compressorFlag;             // JJP 8/28/23
+//  switch (v049_version) {
+//    case 1: //V049.1 --> there is no "compressorFlag" yet in the structure --> initalize it, to overwrite junk from EEPROM
+//      EEPROMData.compressorFlag = 0;
+//      //fall through
+ //   case 2: //V049.2: compressorFlag is there, but we might have to add other inits (not required yet)
+ //     break;
+//  }
+  //compressorFlag = EEPROMData.compressorFlag;             // JJP 8/28/23
 }
 
 
@@ -260,7 +260,7 @@ void EEPROMRead() {
 void EEPROMWrite() {
   strncpy(EEPROMData.versionSettings, EEPROMSetVersion(), 9);  // KF5N
 
-  EEPROMData.AGCMode = EEPROMData.AGCMode;
+//  EEPROMData.AGCMode = EEPROMData.AGCMode;
 //  EEPROMData.CWFilterIndex = CWFilterIndex;
 //  EEPROMData.nrOptionSelect = nrOptionSelect;
 //  EEPROMData.rfGainAllBands = rfGainAllBands;
@@ -268,11 +268,11 @@ void EEPROMWrite() {
   //EEPROMData.activeVFO = activeVFO;  // 2 bytes
 
   //EEPROMData.audioVolume = audioVolume;  // 4 bytes
-  EEPROMData.currentBand = currentBand;  // 4 bytes
-  EEPROMData.currentBandA = currentBandA;
-  EEPROMData.currentBandB = currentBandB;
-  EEPROMData.currentFreqA = currentFreqA;  // JJP 7/17/23
-  EEPROMData.currentFreqB = currentFreqB;  // JJP 7/17/23
+  //EEPROMData.currentBand = currentBand;  // 4 bytes
+  //EEPROMData.currentBandA = currentBandA;
+  //EEPROMData.currentBandB = currentBandB;
+  //EEPROMData.currentFreqA = currentFreqA;  // JJP 7/17/23
+  //EEPROMData.currentFreqB = currentFreqB;  // JJP 7/17/23
   //EEPROMData.decoderFlag = decoderFlag;
 
 //  These lines are corrupting the equalizer settings stored in the EEPROM.  KF5N November 13, 2023.
@@ -283,11 +283,11 @@ void EEPROMWrite() {
 
   //EEPROMData.freqIncrement = freqIncrement;              // 4 bytes
   //EEPROMData.keyType = keyType;                          // straight key = 0, keyer = 1
-  EEPROMData.currentMicThreshold = currentMicThreshold;  // 4 bytes      // AFP 09-22-22
-  EEPROMData.currentMicCompRatio = currentMicCompRatio;
-  EEPROMData.currentMicAttack = currentMicAttack;
-  EEPROMData.currentMicRelease = currentMicRelease;
-  EEPROMData.currentMicGain = currentMicGain;
+  //EEPROMData.currentMicThreshold = currentMicThreshold;  // 4 bytes      // AFP 09-22-22
+  //EEPROMData.currentMicCompRatio = currentMicCompRatio;
+  //EEPROMData.currentMicAttack = currentMicAttack;
+  //EEPROMData.currentMicRelease = currentMicRelease;
+//  EEPROMData.currentMicGain = currentMicGain;
 
   //EEPROMData.paddleDit = paddleDit;
   //EEPROMData.paddleDah = paddleDah;
@@ -306,49 +306,49 @@ void EEPROMWrite() {
   //EEPROMData.sidetoneVolume = sidetoneVolume;                  // 4 bytes
   //EEPROMData.cwTransmitDelay = cwTransmitDelay;                // 4 bytes
 
-  EEPROMData.LPFcoeff = LPFcoeff;  // 4 bytes
-  EEPROMData.NR_PSI = NR_PSI;      // 4 bytes
-  EEPROMData.NR_alpha = NR_alpha;  // 4 bytes
-  EEPROMData.NR_beta = NR_beta;    // 4 bytes
-  EEPROMData.omegaN = omegaN;      // 4 bytes
-  EEPROMData.pll_fmax = pll_fmax;  // 4 bytes
+  //EEPROMData.LPFcoeff = LPFcoeff;  // 4 bytes
+  //EEPROMData.NR_PSI = NR_PSI;      // 4 bytes
+  //EEPROMData.NR_alpha = NR_alpha;  // 4 bytes
+  //EEPROMData.NR_beta = NR_beta;    // 4 bytes
+  //EEPROMData.omegaN = omegaN;      // 4 bytes
+  //EEPROMData.pll_fmax = pll_fmax;  // 4 bytes
 
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    EEPROMData.CWPowerCalibrationFactor[i] = CWPowerCalibrationFactor[i];    // 0.019;   //AFP 10-29-22
-    EEPROMData.SSBPowerCalibrationFactor[i] = SSBPowerCalibrationFactor[i];  // 0.008;   //AFP 10-29-22
-    EEPROMData.powerOutCW[i] = powerOutCW[i];                                // 4 bytes //AFP 10-21-22
-    EEPROMData.powerOutSSB[i] = powerOutSSB[i];                              // 4 bytes AFP 10-21-22
-    EEPROMData.IQAmpCorrectionFactor[i] = IQAmpCorrectionFactor[i];
-    EEPROMData.IQPhaseCorrectionFactor[i] = IQPhaseCorrectionFactor[i];
-    EEPROMData.IQXAmpCorrectionFactor[i] = IQXAmpCorrectionFactor[i];
-    EEPROMData.IQXPhaseCorrectionFactor[i] = IQXPhaseCorrectionFactor[i];
-  }
+ // for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+   // EEPROMData.CWPowerCalibrationFactor[i] = CWPowerCalibrationFactor[i];    // 0.019;   //AFP 10-29-22
+   // EEPROMData.SSBPowerCalibrationFactor[i] = SSBPowerCalibrationFactor[i];  // 0.008;   //AFP 10-29-22
+   // EEPROMData.powerOutCW[i] = powerOutCW[i];                                // 4 bytes //AFP 10-21-22
+   // EEPROMData.powerOutSSB[i] = powerOutSSB[i];                              // 4 bytes AFP 10-21-22
+   // EEPROMData.IQAmpCorrectionFactor[i] = IQAmpCorrectionFactor[i];
+   // EEPROMData.IQPhaseCorrectionFactor[i] = IQPhaseCorrectionFactor[i];
+   // EEPROMData.IQXAmpCorrectionFactor[i] = IQXAmpCorrectionFactor[i];
+   // EEPROMData.IQXPhaseCorrectionFactor[i] = IQXPhaseCorrectionFactor[i];
+ // }
   //  Note:favoriteFreqs are written as they are saved.
 
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    EEPROMData.lastFrequencies[i][0] = lastFrequencies[i][0];
-    EEPROMData.lastFrequencies[i][1] = lastFrequencies[i][1];
-  }
+ // for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+ //   EEPROMData.lastFrequencies[i][0] = lastFrequencies[i][0];
+ //   EEPROMData.lastFrequencies[i][1] = lastFrequencies[i][1];
+ // }
 
-  EEPROMData.lastFrequencies[currentBand][EEPROMData.activeVFO] = currentFreq;  // 4 bytes
-  EEPROMData.lastFrequencies[currentBandA][VFO_A] = currentFreqA;    // 4 bytes
-  EEPROMData.lastFrequencies[currentBandB][VFO_B] = currentFreqB;    // 4 bytes
-  EEPROMData.freqCorrectionFactor = freqCorrectionFactor;
+  EEPROMData.lastFrequencies[EEPROMData.currentBand][EEPROMData.activeVFO] = currentFreq;  // 4 bytes
+  //EEPROMData.lastFrequencies[EEPROMData.currentBandA][VFO_A] = currentFreqA;    // 4 bytes
+  //EEPROMData.lastFrequencies[EEPROMData.currentBandB][VFO_B] = currentFreqB;    // 4 bytes
+  //EEPROMData.freqCorrectionFactor = freqCorrectionFactor;
 
-  strncpy(EEPROMData.mapFileName, mapFileName, 49);  // 1 smaller to allow for null
-  strncpy(EEPROMData.myCall, myCall, 9);
-  strncpy(EEPROMData.myTimeZone, myTimeZone, 9);
-  EEPROMData.separationCharacter = (int)freqSeparationChar;
+//  strncpy(EEPROMData.mapFileName, mapFileName, 49);  // 1 smaller to allow for null
+//  strncpy(EEPROMData.myCall, myCall, 9);
+//  strncpy(EEPROMData.myTimeZone, myTimeZone, 9);
+  //EEPROMData.separationCharacter = (int)freqSeparationChar;
 
-  EEPROMData.paddleFlip = paddleFlip;
-  EEPROMData.sdCardPresent = sdCardPresent;
+  //EEPROMData.paddleFlip = paddleFlip;
+//  EEPROMData.sdCardPresent = sdCardPresent;
 
-  EEPROMData.myLat = myLat;
-  EEPROMData.myLong = myLong;
+//  EEPROMData.myLat = myLat;
+//  EEPROMData.myLong = myLong;
 //  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
 //    EEPROMData.currentNoiseFloor[i] = currentNoiseFloor[i];
 //  }
-  EEPROMData.compressorFlag = compressorFlag;                        // JJP 8/28/23
+//  EEPROMData.compressorFlag = compressorFlag;                        // JJP 8/28/23
 
   EEPROM.put(EEPROM_BASE_ADDRESS, EEPROMData);
   // CopyEEPROMToSD();                                               // JJP 7/26/23
@@ -681,9 +681,9 @@ void SetFavoriteFrequency() {
       syncEEPROM = 0;  // SD EEPROM different that memory EEPROM
       //UpdateEEPROMSyncIndicator(0);       //  JJP 7/25/23
       if (EEPROMData.activeVFO == VFO_A) {
-        currentFreqA = TxRxFreq;
+        EEPROMData.currentFreqA = TxRxFreq;
       } else {
-        currentFreqB = TxRxFreq;
+        EEPROMData.currentFreqB = TxRxFreq;
       }
       //      EEPROMWrite();
       SetFreq();
@@ -734,56 +734,56 @@ void GetFavoriteFrequency() {
     val = ProcessButtonPress(val);
     MyDelay(150L);
 
-    centerFreq = EEPROMData.favoriteFreqs[index];  // current frequency  AFP 09-27-22
-    if (centerFreq >= bands[BAND_80M].fBandLow && centerFreq <= bands[BAND_80M].fBandHigh) {
+    //centerFreq = EEPROMData.favoriteFreqs[index];  // current frequency  AFP 09-27-22
+    if (EEPROMData.centerFreq >= bands[BAND_80M].fBandLow && EEPROMData.centerFreq <= bands[BAND_80M].fBandHigh) {
       currentBand2 = BAND_80M;
-    } else if (centerFreq >= bands[BAND_80M].fBandHigh && centerFreq <= 7000000L) {  // covers 5MHz WWV AFP 11-03-22
+    } else if (EEPROMData.centerFreq >= bands[BAND_80M].fBandHigh && EEPROMData.centerFreq <= 7000000L) {  // covers 5MHz WWV AFP 11-03-22
       currentBand2 = BAND_80M;
-    } else if (centerFreq >= bands[BAND_40M].fBandLow && centerFreq <= bands[BAND_40M].fBandHigh) {
+    } else if (EEPROMData.centerFreq >= bands[BAND_40M].fBandLow && EEPROMData.centerFreq <= bands[BAND_40M].fBandHigh) {
       currentBand2 = BAND_40M;
-    } else if (centerFreq >= bands[BAND_40M].fBandHigh && centerFreq <= 14000000L) {  // covers 10MHz WWV AFP 11-03-22
+    } else if (EEPROMData.centerFreq >= bands[BAND_40M].fBandHigh && EEPROMData.centerFreq <= 14000000L) {  // covers 10MHz WWV AFP 11-03-22
       currentBand2 = BAND_40M;
-    } else if (centerFreq >= bands[BAND_20M].fBandLow && centerFreq <= bands[BAND_20M].fBandHigh) {
+    } else if (EEPROMData.centerFreq >= bands[BAND_20M].fBandLow && EEPROMData.centerFreq <= bands[BAND_20M].fBandHigh) {
       currentBand2 = BAND_20M;
-    } else if (centerFreq >= 14000000L && centerFreq <= 18000000L) {  // covers 15MHz WWV AFP 11-03-22
+    } else if (EEPROMData.centerFreq >= 14000000L && EEPROMData.centerFreq <= 18000000L) {  // covers 15MHz WWV AFP 11-03-22
       currentBand2 = BAND_20M;
-    } else if (centerFreq >= bands[BAND_17M].fBandLow && centerFreq <= bands[BAND_17M].fBandHigh) {
+    } else if (EEPROMData.centerFreq >= bands[BAND_17M].fBandLow && EEPROMData.centerFreq <= bands[BAND_17M].fBandHigh) {
       currentBand2 = BAND_17M;
-    } else if (centerFreq >= bands[BAND_15M].fBandLow && centerFreq <= bands[BAND_15M].fBandHigh) {
+    } else if (EEPROMData.centerFreq >= bands[BAND_15M].fBandLow && EEPROMData.centerFreq <= bands[BAND_15M].fBandHigh) {
       currentBand2 = BAND_15M;
-    } else if (centerFreq >= bands[BAND_12M].fBandLow && centerFreq <= bands[BAND_12M].fBandHigh) {
+    } else if (EEPROMData.centerFreq >= bands[BAND_12M].fBandLow && EEPROMData.centerFreq <= bands[BAND_12M].fBandHigh) {
       currentBand2 = BAND_12M;
-    } else if (centerFreq >= bands[BAND_10M].fBandLow && centerFreq <= bands[BAND_10M].fBandHigh) {
+    } else if (EEPROMData.centerFreq >= bands[BAND_10M].fBandLow && EEPROMData.centerFreq <= bands[BAND_10M].fBandHigh) {
       currentBand2 = BAND_10M;
     }
-    currentBand = currentBand2;
+    EEPROMData.currentBand = currentBand2;
 
 
     if (val == MENU_OPTION_SELECT) {  // Make a choice??
       switch (EEPROMData.activeVFO) {
         case VFO_A:
-          if (currentBandA == NUMBER_OF_BANDS) {  // Incremented too far?
-            currentBandA = 0;                     // Yep. Roll to list front.
+          if (EEPROMData.currentBandA == NUMBER_OF_BANDS) {  // Incremented too far?
+            EEPROMData.currentBandA = 0;                     // Yep. Roll to list front.
           }
-          currentBandA = currentBand2;
-          TxRxFreq = centerFreq + NCOFreq;
-          lastFrequencies[currentBand][VFO_A] = TxRxFreq;
+          EEPROMData.currentBandA = currentBand2;
+          TxRxFreq = EEPROMData.centerFreq + NCOFreq;
+          EEPROMData.lastFrequencies[EEPROMData.currentBand][VFO_A] = TxRxFreq;
           break;
 
         case VFO_B:
-          if (currentBandB == NUMBER_OF_BANDS) {  // Incremented too far?
-            currentBandB = 0;                     // Yep. Roll to list front.
+          if (EEPROMData.currentBandB == NUMBER_OF_BANDS) {  // Incremented too far?
+            EEPROMData.currentBandB = 0;                     // Yep. Roll to list front.
           }                                       // Same for VFO B
-          currentBandB = currentBand2;
-          TxRxFreq = centerFreq + NCOFreq;
-          lastFrequencies[currentBand][VFO_B] = TxRxFreq;
+          EEPROMData.currentBandB = currentBand2;
+          TxRxFreq = EEPROMData.centerFreq + NCOFreq;
+          EEPROMData.lastFrequencies[EEPROMData.currentBand][VFO_B] = TxRxFreq;
           break;
       }
     }
     if (val == MENU_OPTION_SELECT) {
 
       EraseSpectrumDisplayContainer();
-      currentMode = bands[currentBand].mode;
+      currentMode = bands[EEPROMData.currentBand].mode;
       DrawSpectrumDisplayContainer();
       DrawFrequencyBarValue();
       SetBand();
@@ -796,7 +796,7 @@ void GetFavoriteFrequency() {
       BandInformation();
       NCOFreq = 0L;
       DrawBandWidthIndicatorBar();  // AFP 10-20-22
-      digitalWrite(bandswitchPins[currentBand], LOW);
+      digitalWrite(bandswitchPins[EEPROMData.currentBand], LOW);
       SetFreq();
       ShowSpectrumdBScale();
       ShowSpectrum();
@@ -826,23 +826,23 @@ void CopyEEPROM() {
   //activeVFO = EEPROMData.activeVFO;  // 2 bytes
 
   //audioVolume = EEPROMData.audioVolume;    // 4 bytes
-  currentBand = EEPROMData.currentBand;    // 4 bytes
-  currentBandA = EEPROMData.currentBandA;  // 4 bytes
-  currentBandB = EEPROMData.currentBandB;  // 4 bytes
+  //currentBand = EEPROMData.currentBand;    // 4 bytes
+  //currentBandA = EEPROMData.currentBandA;  // 4 bytes
+  //currentBandB = EEPROMData.currentBandB;  // 4 bytes
   //decoderFlag = EEPROMData.decoderFlag;
 
-  for (int i = 0; i < EQUALIZER_CELL_COUNT; i++) {
-    recEQ_Level[i] = EEPROMData.equalizerRec[i];  // 4 bytes each
-    xmtEQ_Level[i] = EEPROMData.equalizerXmt[i];
-  }
+ // for (int i = 0; i < EQUALIZER_CELL_COUNT; i++) {
+ //   recEQ_Level[i] = EEPROMData.equalizerRec[i];  // 4 bytes each
+ //   xmtEQ_Level[i] = EEPROMData.equalizerXmt[i];
+ // }
 
   //freqIncrement = EEPROMData.freqIncrement;              // 4 bytes
   //keyType = EEPROMData.keyType;                          // straight key = 0, keyer = 1
-  currentMicThreshold = EEPROMData.currentMicThreshold;  // 4 bytes      // AFP 09-22-22
-  currentMicCompRatio = EEPROMData.currentMicCompRatio;
-  currentMicAttack = EEPROMData.currentMicAttack;
-  currentMicRelease = EEPROMData.currentMicRelease;
-  currentMicGain = EEPROMData.currentMicGain;
+  //currentMicThreshold = EEPROMData.currentMicThreshold;  // 4 bytes      // AFP 09-22-22
+  //currentMicCompRatio = EEPROMData.currentMicCompRatio;
+  //currentMicAttack = EEPROMData.currentMicAttack;
+  //currentMicRelease = EEPROMData.currentMicRelease;
+  //currentMicGain = EEPROMData.currentMicGain;
 
   //paddleDit = EEPROMData.paddleDit;
   //paddleDah = EEPROMData.paddleDah;
@@ -863,24 +863,24 @@ void CopyEEPROM() {
   //sidetoneVolume = EEPROMData.sidetoneVolume;                  // 4 bytes
   //cwTransmitDelay = EEPROMData.cwTransmitDelay;                // 4 bytes
 
-  freqCorrectionFactor = EEPROMData.freqCorrectionFactor;
+  //freqCorrectionFactor = EEPROMData.freqCorrectionFactor;
 
-  LPFcoeff = EEPROMData.LPFcoeff;  // 4 bytes
-  NR_PSI = EEPROMData.NR_PSI;      // 4 bytes
-  NR_alpha = EEPROMData.NR_alpha;  // 4 bytes
-  NR_beta = EEPROMData.NR_beta;    // 4 bytes
-  omegaN = EEPROMData.omegaN;      // 4 bytes
-  pll_fmax = EEPROMData.pll_fmax;  // 4 bytes
+  //LPFcoeff = EEPROMData.LPFcoeff;  // 4 bytes
+  //NR_PSI = EEPROMData.NR_PSI;      // 4 bytes
+  //NR_alpha = EEPROMData.NR_alpha;  // 4 bytes
+  //NR_beta = EEPROMData.NR_beta;    // 4 bytes
+  //omegaN = EEPROMData.omegaN;      // 4 bytes
+  //pll_fmax = EEPROMData.pll_fmax;  // 4 bytes
 
   for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    CWPowerCalibrationFactor[i] = EEPROMData.CWPowerCalibrationFactor[i];    // 0.019;   //AFP 10-29-22
-    SSBPowerCalibrationFactor[i] = EEPROMData.SSBPowerCalibrationFactor[i];  // 0.008;   //AFP 10-29-22
-    powerOutCW[i] = EEPROMData.powerOutCW[i];                                // 4 bytes  //AFP 10-28-22
-    powerOutSSB[i] = EEPROMData.powerOutSSB[i];                              // 4 bytes AFP 10-28-22
-    IQAmpCorrectionFactor[i] = EEPROMData.IQAmpCorrectionFactor[i];
-    IQPhaseCorrectionFactor[i] = EEPROMData.IQPhaseCorrectionFactor[i];
-    IQXAmpCorrectionFactor[i] = EEPROMData.IQXAmpCorrectionFactor[i];      //AFP 2-21-23
-    IQXPhaseCorrectionFactor[i] = EEPROMData.IQXPhaseCorrectionFactor[i];  //AFP 2-21-23
+  //  CWPowerCalibrationFactor[i] = EEPROMData.CWPowerCalibrationFactor[i];    // 0.019;   //AFP 10-29-22
+  //  SSBPowerCalibrationFactor[i] = EEPROMData.SSBPowerCalibrationFactor[i];  // 0.008;   //AFP 10-29-22
+    //powerOutCW[i] = EEPROMData.powerOutCW[i];                                // 4 bytes  //AFP 10-28-22
+    //powerOutSSB[i] = EEPROMData.powerOutSSB[i];                              // 4 bytes AFP 10-28-22
+    //IQAmpCorrectionFactor[i] = EEPROMData.IQAmpCorrectionFactor[i];
+    //IQPhaseCorrectionFactor[i] = EEPROMData.IQPhaseCorrectionFactor[i];
+    //IQXAmpCorrectionFactor[i] = EEPROMData.IQXAmpCorrectionFactor[i];      //AFP 2-21-23
+    //IQXPhaseCorrectionFactor[i] = EEPROMData.IQXPhaseCorrectionFactor[i];  //AFP 2-21-23
   }
 
   if (EEPROMData.lastFrequencies[0][1] < 3560000L || EEPROMData.lastFrequencies[0][0] > 3985000L) {  // Already set?
@@ -901,31 +901,31 @@ void CopyEEPROM() {
     EEPROMData.lastFrequencies[6][1] = 28060000L;  // 10
   } else {
     for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-      lastFrequencies[i][0] = EEPROMData.lastFrequencies[i][0];
-      lastFrequencies[i][1] = EEPROMData.lastFrequencies[i][1];
+      EEPROMData.lastFrequencies[i][0] = EEPROMData.lastFrequencies[i][0];
+      EEPROMData.lastFrequencies[i][1] = EEPROMData.lastFrequencies[i][1];
     }
   }
 
   //  long favoriteFreqs[MAX_FAVORITES];               // 40 bytes
-  centerFreq = EEPROMData.lastFrequencies[currentBandA][activeVFO];  // 4 bytes
-  currentFreqA = EEPROMData.lastFrequencies[currentBandA][VFO_A];    // 4 bytes
-  currentFreqB = EEPROMData.lastFrequencies[currentBandB][VFO_B];    // 4 bytes
+  //centerFreq = EEPROMData.lastFrequencies[EEPROMData.currentBandA][activeVFO];  // 4 bytes
+  //currentFreqA = EEPROMData.lastFrequencies[EEPROMData.currentBandA][VFO_A];    // 4 bytes
+  //currentFreqB = EEPROMData.lastFrequencies[EEPROMData.currentBandB][VFO_B];    // 4 bytes
 
-  strncpy(mapFileName, EEPROMData.mapFileName, 50);
-  strncpy(myCall, EEPROMData.myCall, 10);
-  strncpy(myTimeZone, EEPROMData.myTimeZone, 10);
-  freqSeparationChar = (char)EEPROMData.separationCharacter;  //   JJP  7/25/23
+//  strncpy(mapFileName, EEPROMData.mapFileName, 50);
+//  strncpy(myCall, EEPROMData.myCall, 10);
+//  strncpy(myTimeZone, EEPROMData.myTimeZone, 10);
+  //freqSeparationChar = (char)EEPROMData.separationCharacter;  //   JJP  7/25/23
 
-  paddleFlip = EEPROMData.paddleFlip;
-  sdCardPresent = EEPROMData.sdCardPresent;
+  //paddleFlip = EEPROMData.paddleFlip;
+  //sdCardPresent = EEPROMData.sdCardPresent;
 
-  myLat = EEPROMData.myLat;
-  myLong = EEPROMData.myLong;
+//  myLat = EEPROMData.myLat;
+//  myLong = EEPROMData.myLong;
 
 //  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
 //    currentNoiseFloor[i] = EEPROMData.currentNoiseFloor[i];
 //  }
-  compressorFlag = EEPROMData.compressorFlag;                     // JJP 8/28/23
+  //compressorFlag = EEPROMData.compressorFlag;                     // JJP 8/28/23
 }
 
 /*****
@@ -1133,7 +1133,7 @@ void EEPROMSaveDefaults2() {
   strncpy(EEPROMData.myTimeZone, MY_TIMEZONE, 10);
   EEPROMData.separationCharacter = (char)FREQ_SEP_CHARACTER;  //   JJP  7/25/23
 
-  EEPROMData.paddleFlip = paddleFlip;
+  //EEPROMData.paddleFlip = paddleFlip;
   EEPROMData.sdCardPresent = 0;  //   JJP  7/18/23
 
   EEPROMData.myLat = MY_LAT;
@@ -1977,27 +1977,27 @@ int CopyEEPROMToSD() {
   file.println(buffer);
 
   strcpy(buffer, "EEPROMData.currentBand = ");
-  itoa(currentBand, temp, DEC);
+  itoa(EEPROMData.currentBand, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.currentBandA = ");
-  itoa(currentBandA, temp, DEC);
+  itoa(EEPROMData.currentBandA, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.currentBandB = ");
-  itoa(currentBandB, temp, DEC);
+  itoa(EEPROMData.currentBandB, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.currentFreqA = ");  // long data type
-  ltoa(currentFreqA, temp, DEC);
+  ltoa(EEPROMData.currentFreqA, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.currentFreqB = ");  // long data type
-  ltoa(currentFreqB, temp, DEC);
+  ltoa(EEPROMData.currentFreqB, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.freqCorrectionFactor = ");  // long data type
-  ltoa(freqCorrectionFactor, temp, DEC);
+  ltoa(EEPROMData.freqCorrectionFactor, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
 
@@ -2006,7 +2006,7 @@ int CopyEEPROMToSD() {
     strcpy(buffer, "EEPROMData.equalizerRec[");  // long data type
     strcat(buffer, digits);
     strcat(buffer, "] = ");
-    itoa(recEQ_Level[i], temp, DEC);
+    itoa(EEPROMData.equalizerRec[i], temp, DEC);
     strcat(buffer, temp);
     file.println(buffer);
   }
@@ -2015,28 +2015,28 @@ int CopyEEPROMToSD() {
     strcpy(buffer, "EEPROMData.equalizerXmt[");  // long data type
     strcat(buffer, digits);
     strcat(buffer, "] = ");
-    itoa(xmtEQ_Level[i], temp, DEC);
+    itoa(EEPROMData.equalizerXmt[i], temp, DEC);
     strcat(buffer, temp);
     file.println(buffer);
   }
   strcpy(buffer, "EEPROMData.currentMicThreshold = ");
-  itoa(currentMicThreshold, temp, DEC);
+  itoa(EEPROMData.currentMicThreshold, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.currentMicCompRatio = ");  // float data type
-  dtostrf(currentMicCompRatio, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
+  dtostrf(EEPROMData.currentMicCompRatio, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.currentMicAttack = ");  // float data type
-  dtostrf(currentMicAttack, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
+  dtostrf(EEPROMData.currentMicAttack, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.currentMicRelease = ");  // float data type
-  dtostrf(currentMicRelease, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
+  dtostrf(EEPROMData.currentMicRelease, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.currentMicGain = ");
-  itoa(currentMicGain, temp, DEC);
+  itoa(EEPROMData.currentMicGain, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
 
@@ -2051,27 +2051,27 @@ int CopyEEPROMToSD() {
   }
 
   strcpy(buffer, "EEPROMData.LPFcoeff = ");  // float data type
-  dtostrf(LPFcoeff, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
+  dtostrf(EEPROMData.LPFcoeff, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
   strcat(buffer, temp);
   file.println(buffer);
-  strcpy(buffer, "EPROMData.NR_PSI = ");  // float data type
-  dtostrf(NR_PSI, 6, 1, temp);            // Field of up to 6 digits with 1 decimal place
+  strcpy(buffer, "EEPROMData.NR_PSI = ");  // float data type
+  dtostrf(EEPROMData.NR_PSI, 6, 1, temp);            // Field of up to 6 digits with 1 decimal place
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.NR_alpha = ");  // float data type
-  dtostrf(NR_alpha, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
+  dtostrf(EEPROMData.NR_alpha, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.NR_beta = ");  // float data type
-  dtostrf(NR_beta, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
+  dtostrf(EEPROMData.NR_beta, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.omegaN = ");  // float data type
-  dtostrf(omegaN, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
+  dtostrf(EEPROMData.omegaN, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.pll_fmax = ");  // float data type
-  dtostrf(pll_fmax, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
+  dtostrf(EEPROMData.pll_fmax, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
   strcat(buffer, temp);
   file.println(buffer);
 
@@ -2208,12 +2208,12 @@ int CopyEEPROMToSD() {
   strcat(buffer, digits);
   file.println(buffer);
 
-  itoa(paddleFlip, digits, DEC);  // Paddle flip
+  itoa(EEPROMData.paddleFlip, digits, DEC);  // Paddle flip
   strcpy(buffer, "EEPROMData.paddleFlip = ");
   strcat(buffer, digits);
   file.println(buffer);
 
-  itoa(sdCardPresent, temp, DEC);  // SD card
+  itoa(EEPROMData.sdCardPresent, temp, DEC);  // SD card
   strcpy(buffer, "EEPROMData.sdCardPresent = ");
   strcat(buffer, temp);
   file.println(buffer);

@@ -758,7 +758,7 @@ extern float32_t coeffs192K_10K_LPF_FIR[];
 
 extern float32_t coeffs48K_8K_LPF_FIR[];
 extern const uint32_t N_B_EX;
-extern float32_t recEQ_Level[];
+//extern float32_t recEQ_Level[];
 extern float32_t recEQ_LevelScale[];
 
 extern float32_t EQ_Band1Coeffs[];
@@ -891,7 +891,7 @@ extern arm_biquad_cascade_df2T_instance_f32 S12_Xmt ;
 extern arm_biquad_cascade_df2T_instance_f32 S13_Xmt ;
 extern arm_biquad_cascade_df2T_instance_f32 S14_Xmt ;
 
-extern float32_t xmtEQ_Level[];
+//extern float32_t xmtEQ_Level[];
 
 extern float32_t xmt_EQ1_float_buffer_L [];
 extern float32_t xmt_EQ2_float_buffer_L [];
@@ -1096,7 +1096,7 @@ struct secondaryMenuConfiguration {
   byte whichType;                         // 0 = no options, 1 = list, 2 = encoder value
   int numberOfOptions;                     // Number of submenu topions
 };
-extern char versionSettings[];
+//extern char versionSettings[];
 
 struct config_t {
   
@@ -1121,7 +1121,7 @@ struct config_t {
   int keyType             = STRAIGHT_KEY_OR_PADDLES;  // straight key = 0, keyer = 1  JJP 7-3-23
   int currentWPM          = DEFAULT_KEYER_WPM;        // 4 bytes default = 15 JJP 7-3-23
   float32_t sidetoneVolume = 20.0;                     // 4 bytes
-  long cwTransmitDelay    = 2000;                      // 4 bytes
+  uint32_t cwTransmitDelay    = 2000;                      // 4 bytes
 
   int activeVFO           = 0;                        // 2 bytes
   int freqIncrement       = 5;                        // 4 bytes
@@ -1151,19 +1151,19 @@ struct config_t {
 
   float LPFcoeff             = 0.0;                   // 4 bytes
   float NR_PSI               = 0.0;                   // 4 bytes
-  float NR_alpha             = 0.0;                   // 4 bytes
-  float NR_beta              = 0.0;                   // 4 bytes
+  float NR_alpha             = 0.95;                   // 4 bytes
+  float NR_beta              = 0.85;                   // 4 bytes
   float omegaN               = 0.0;                   // 4 bytes
   float pll_fmax             = 4000.0;                // 4 bytes
 
-  float powerOutCW[NUMBER_OF_BANDS];
-  float powerOutSSB[NUMBER_OF_BANDS];
-  float CWPowerCalibrationFactor[NUMBER_OF_BANDS];    // 0.019;
-  float SSBPowerCalibrationFactor[NUMBER_OF_BANDS];   // 0.008
-  float IQAmpCorrectionFactor[NUMBER_OF_BANDS];
-  float IQPhaseCorrectionFactor[NUMBER_OF_BANDS];
-  float IQXAmpCorrectionFactor[NUMBER_OF_BANDS];
-  float IQXPhaseCorrectionFactor[NUMBER_OF_BANDS];
+  float powerOutCW[NUMBER_OF_BANDS] = { 0.017, 0.02, 0.025, 0.03, 0.03, 0.039, 0.02 };
+  float powerOutSSB[NUMBER_OF_BANDS] = { 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03 };
+  float CWPowerCalibrationFactor[NUMBER_OF_BANDS] = { 0.019, 0.0190, .0190, .0190, .0190, .0190, .019 };    // 0.019;
+  float SSBPowerCalibrationFactor[NUMBER_OF_BANDS]= { 0.008, 0.008, 0.008, 0.008, 0.008, 0.008, 0.008 };   // 0.008
+  float IQAmpCorrectionFactor[NUMBER_OF_BANDS] = { 1, 1, 1, 1, 1, 1, 1 };
+  float IQPhaseCorrectionFactor[NUMBER_OF_BANDS] = { 0, 0, 0, 0, 0, 0, 0 };
+  float IQXAmpCorrectionFactor[NUMBER_OF_BANDS] = { 1, 1, 1, 1, 1, 1, 1 };
+  float IQXPhaseCorrectionFactor[NUMBER_OF_BANDS] = { 0, 0, 0, 0, 0, 0, 0 };
   long favoriteFreqs[13];
   long lastFrequencies[NUMBER_OF_BANDS][2];
 
@@ -1294,9 +1294,9 @@ extern char keyboardBuffer[];
 extern const char *labels[];
 extern char letterTable[];
 extern char *morseCodeTree;
-extern char mapFileName[];
-extern char myCall[];
-extern char myTimeZone[];
+//extern char mapFileName[];
+//extern char myCall[];
+//extern char myTimeZone[];
 extern char numberTable[];
 extern char punctuationTable[];
 extern char theversion[];
@@ -1472,9 +1472,9 @@ extern int calibrateFlag;
 extern int chipSelect;
 extern int countryIndex;
 //extern int CWFilterIndex;
-extern int currentBand;
-extern int currentBandA;
-extern int currentBandB;
+//extern int currentBand;
+//extern int currentBandA;
+//extern int currentBandB;
 //extern int currentNoiseFloor[];
 extern int dahLength;
 extern int dcfCount;
@@ -1497,7 +1497,7 @@ extern int filterLoPositionMarkerOld; // AFP 03-27-22 Layers
 extern int filterHiPositionMarkerOld;// AFP 03-27-22 Layers
 
 extern int freqIncrement;
-extern int freqSeparationChar;
+//extern int freqSeparationChar;
 extern int FLoCutOld;
 extern int FHiCutOld;
 extern int (*functionPtr[])();
@@ -1549,7 +1549,7 @@ extern int pos_y_smeter;
 extern int resetTuningFlag;  // Experimental flag for ResetTuning() due to possible timing issues.  KF5N July 31, 2023
 //extern int EEPROMData.rfGainAllBands;
 
-extern int sdCardPresent;
+//extern int sdCardPresent;
 extern int secondaryMenuChoiceMade;
 extern int selectedMapIndex;
 extern int smeterLength;
@@ -1626,7 +1626,7 @@ extern uint32_t twinpeaks_counter;
 extern long averageDit;
 extern long averageDah;
 extern long currentFreq;
-extern long centerFreq;
+//extern long centerFreq;
 extern unsigned long ditLength;
 extern unsigned long transmitDitLength;   // JJP 8/19/23
 extern long TxRxFreq;             // = centerFreq+NCOFreq  NCOFreq from FreqShift2()
@@ -1634,14 +1634,14 @@ extern long TxRxFreqOld;
 extern long TxRxFreqDE;
 extern long recClockFreq;         //  = TxRxFreq+IFFreq  IFFreq from FreqShift1()=48KHz
 extern long CWRecFreq;            //  = TxRxFreq +/- 700Hz
-extern unsigned long cwTimer;
+extern uint32_t cwTimer;
 extern long signalTime;
 extern unsigned long ditTimerOn;
 extern long DahTimer;
 extern unsigned long cwTransmitDelay;      // ms to keep relay on after last atom read
-extern long currentFreqA;
+//extern long currentFreqA;
 extern long currentFreqAOld2;
-extern long currentFreqB;
+//extern long currentFreqB;
 extern long currentFreqBOld2;
 //extern long currentWPM;
 //extern long frequencyCorrection;
@@ -1682,8 +1682,8 @@ float ApproxAtan2(float y, float x);
 extern float dcfRefLevel;
 extern float DD4WH_RF_gain;
 extern float s_hotT_ROOM;     /*!< The value of s_hotTemp minus room temperature(25¡æ).*/
-extern float myLat;
-extern float myLong;
+//extern float myLat;
+//extern float myLong;
 
 //====== SAM stuff AFP 11-02-22
 extern float32_t a[3 * SAM_PLL_HILBERT_STAGES + 3];
@@ -1701,7 +1701,7 @@ extern float32_t ai_ps, bi_ps, aq_ps, bq_ps;
 extern float32_t pll_fmax ;
 extern int zeta_help ;
 extern float32_t zeta ; // PLL step response: smaller, slower response 1.0 - 0.1
-extern float32_t omegaN ;                      // PLL bandwidth 50.0 - 1000.0
+//extern float32_t omegaN ;                      // PLL bandwidth 50.0 - 1000.0
 
 //pll  AFP 11-03-22
 extern float32_t omega_min;
@@ -1761,7 +1761,7 @@ extern float32_t cosBuffer3[];  //AFP 10-31-2
 extern float32_t cosBuffer4[];  //AFP 2-7-23
 extern float32_t CPU_temperature ;
 extern float32_t cursorIncrementFraction;
-extern float32_t CWPowerCalibrationFactor[]; //AFP 10-21-22
+//extern float32_t CWPowerCalibrationFactor[]; //AFP 10-21-22
 extern float32_t SSBPowerCalibrationFactor[];   //AFP 10-21-22
 extern float32_t d[];
 
@@ -1853,7 +1853,7 @@ extern float32_t last_dc_level;
 extern float32_t /*DMAMEM*/ last_sample_buffer_L[];
 extern float32_t /*DMAMEM*/ last_sample_buffer_R[];
 extern float32_t L_BufferOffset[];
-extern float32_t LPFcoeff;
+//extern float32_t LPFcoeff;
 extern float32_t LMS_errsig1[];
 extern float32_t LMS_NormCoeff_f32[];
 extern float32_t LMS_nr_delay[];
@@ -1877,12 +1877,12 @@ extern float32_t max_gain;
 extern float32_t max_input;
 extern int calTypeFlag;
 extern int calOnFlag;
-extern int currentMicThreshold; // AFP 09-22-22
-extern float currentMicCompRatio;
-extern float currentMicAttack;
-extern float currentMicRelease;
-extern int compressorFlag;
-extern int currentMicGain;
+//extern int currentMicThreshold; // AFP 09-22-22
+//extern float currentMicCompRatio;
+//extern float currentMicAttack;
+//extern float currentMicRelease;
+//extern int compressorFlag;
+//extern int currentMicGain;
 extern float32_t midbass;
 extern float32_t mid;
 extern float32_t midtreble;
@@ -1892,11 +1892,11 @@ extern float32_t noiseThreshhold;
 extern float32_t notches[];
 extern float32_t /*DMAMEM*/ NR_FFT_buffer[];
 extern float32_t NR_sum;
-extern float32_t NR_PSI;
+//extern float32_t NR_PSI;
 extern float32_t NR_KIM_K;
-extern float32_t NR_alpha;
+//extern float32_t NR_alpha;
 extern float32_t NR_onemalpha;
-extern float32_t NR_beta;
+//extern float32_t NR_beta;
 extern float32_t NR_onemtwobeta;
 extern float32_t NR_onembeta;
 extern float32_t NR_G_bin_m_1;
@@ -1939,12 +1939,12 @@ extern float32_t P_dirty;
 extern float32_t P_est;
 extern float32_t P_est_old;
 extern float32_t P_est_mult;
-extern float32_t pll_fmax;
+//extern float32_t pll_fmax;
 extern float32_t phaseLO;
 
 extern float32_t pop_ratio;
-extern float32_t powerOutCW[];          // Sets the drive to PA AFP 10-21-22
-extern float32_t powerOutSSB[];         //AFP 10-21-22
+//extern float32_t powerOutCW[];          // Sets the drive to PA AFP 10-21-22
+//extern float32_t powerOutSSB[];         //AFP 10-21-22
 extern float32_t Q_old;
 extern float32_t Q_sum;
 extern float32_t R_BufferOffset[];

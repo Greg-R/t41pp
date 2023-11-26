@@ -70,9 +70,9 @@ void DoReceiveEQ() //AFP 08-09-22
 *****/
 void DoExciterEQ() //AFP 10-02-22
 {
-  for (int i = 0; i < 14; i++) {
-    xmtEQ_Level[i] = (float)EEPROMData.equalizerXmt[i] / 100.0;
-  }
+ // for (int i = 0; i < 14; i++) {
+ //   EEPROMData.equalizerXmt[i] = (float)EEPROMData.equalizerXmt[i] / 100.0;
+ // }
   arm_biquad_cascade_df2T_f32(&S1_Xmt,  float_buffer_L_EX, xmt_EQ1_float_buffer_L, 256);
   arm_biquad_cascade_df2T_f32(&S2_Xmt,  float_buffer_L_EX, xmt_EQ2_float_buffer_L, 256);
   arm_biquad_cascade_df2T_f32(&S3_Xmt,  float_buffer_L_EX, xmt_EQ3_float_buffer_L, 256);
@@ -88,20 +88,20 @@ void DoExciterEQ() //AFP 10-02-22
   arm_biquad_cascade_df2T_f32(&S13_Xmt, float_buffer_L_EX, xmt_EQ13_float_buffer_L, 256);
   arm_biquad_cascade_df2T_f32(&S14_Xmt, float_buffer_L_EX, xmt_EQ14_float_buffer_L, 256);
 
-  arm_scale_f32(xmt_EQ1_float_buffer_L,  -xmtEQ_Level[0],  xmt_EQ1_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ2_float_buffer_L,   xmtEQ_Level[1],  xmt_EQ2_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ3_float_buffer_L,  -xmtEQ_Level[2],  xmt_EQ3_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ4_float_buffer_L,   xmtEQ_Level[3],  xmt_EQ4_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ5_float_buffer_L,  -xmtEQ_Level[4],  xmt_EQ5_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ6_float_buffer_L,   xmtEQ_Level[5],  xmt_EQ6_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ7_float_buffer_L,  -xmtEQ_Level[6],  xmt_EQ7_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ8_float_buffer_L,   xmtEQ_Level[7],  xmt_EQ8_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ9_float_buffer_L,  -xmtEQ_Level[8],  xmt_EQ9_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ10_float_buffer_L,  xmtEQ_Level[9],  xmt_EQ10_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ11_float_buffer_L, -xmtEQ_Level[10], xmt_EQ11_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ12_float_buffer_L,  xmtEQ_Level[11], xmt_EQ12_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ13_float_buffer_L, -xmtEQ_Level[12], xmt_EQ13_float_buffer_L, 256);
-  arm_scale_f32(xmt_EQ14_float_buffer_L,  xmtEQ_Level[13], xmt_EQ14_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ1_float_buffer_L,  -EEPROMData.equalizerXmt[0],  xmt_EQ1_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ2_float_buffer_L,   EEPROMData.equalizerXmt[1],  xmt_EQ2_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ3_float_buffer_L,  -EEPROMData.equalizerXmt[2],  xmt_EQ3_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ4_float_buffer_L,   EEPROMData.equalizerXmt[3],  xmt_EQ4_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ5_float_buffer_L,  -EEPROMData.equalizerXmt[4],  xmt_EQ5_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ6_float_buffer_L,   EEPROMData.equalizerXmt[5],  xmt_EQ6_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ7_float_buffer_L,  -EEPROMData.equalizerXmt[6],  xmt_EQ7_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ8_float_buffer_L,   EEPROMData.equalizerXmt[7],  xmt_EQ8_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ9_float_buffer_L,  -EEPROMData.equalizerXmt[8],  xmt_EQ9_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ10_float_buffer_L,  EEPROMData.equalizerXmt[9],  xmt_EQ10_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ11_float_buffer_L, -EEPROMData.equalizerXmt[10], xmt_EQ11_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ12_float_buffer_L,  EEPROMData.equalizerXmt[11], xmt_EQ12_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ13_float_buffer_L, -EEPROMData.equalizerXmt[12], xmt_EQ13_float_buffer_L, 256);
+  arm_scale_f32(xmt_EQ14_float_buffer_L,  EEPROMData.equalizerXmt[13], xmt_EQ14_float_buffer_L, 256);
 
   arm_add_f32(xmt_EQ1_float_buffer_L , xmt_EQ2_float_buffer_L, float_buffer_L_EX , 256 ) ;
 
@@ -129,13 +129,13 @@ void FilterBandwidth()
 {
   AudioNoInterrupts();
 
-  CalcCplxFIRCoeffs(FIR_Coef_I, FIR_Coef_Q, m_NumTaps, (float32_t)bands[currentBand].FLoCut, (float32_t)bands[currentBand].FHiCut, (float)SR[SampleRate].rate / DF);
+  CalcCplxFIRCoeffs(FIR_Coef_I, FIR_Coef_Q, m_NumTaps, (float32_t)bands[EEPROMData.currentBand].FLoCut, (float32_t)bands[EEPROMData.currentBand].FHiCut, (float)SR[SampleRate].rate / DF);
   InitFilterMask();
 
   // also adjust IIR AM filter
-  //int filter_BW_highest = bands[currentBand].FHiCut;
-  //if (filter_BW_highest < -bands[currentBand].FLoCut) {
-  // filter_BW_highest = -bands[currentBand].FLoCut;
+  //int filter_BW_highest = bands[EEPROMData.currentBand].FHiCut;
+  //if (filter_BW_highest < -bands[EEPROMData.currentBand].FLoCut) {
+  // filter_BW_highest = -bands[EEPROMData.currentBand].FLoCut;
   // }
   //SetIIRCoeffs((float32_t)filter_BW_highest, 1.3, (float32_t)SR[SampleRate].rate / DF, 0); // 1st stage
 
@@ -199,23 +199,23 @@ void ControlFilterF()
   // low Fcut must never be larger than high Fcut and vice versa
 
   //== AFP 10-27-22
-  switch (bands[currentBand].mode) {
+  switch (bands[EEPROMData.currentBand].mode) {
     case DEMOD_IQ:
-      bands[currentBand].FLoCut = - bands[currentBand].FHiCut;
+      bands[EEPROMData.currentBand].FLoCut = - bands[EEPROMData.currentBand].FHiCut;
       break;
     case DEMOD_LSB:
-      if (bands[currentBand].FHiCut > 0) bands[currentBand].FHiCut = -100;
+      if (bands[EEPROMData.currentBand].FHiCut > 0) bands[EEPROMData.currentBand].FHiCut = -100;
 
       break;
     case DEMOD_USB:
-      if (bands[currentBand].FLoCut < 0) bands[currentBand].FLoCut = 100;  // AFP 10-27-22
+      if (bands[EEPROMData.currentBand].FLoCut < 0) bands[EEPROMData.currentBand].FLoCut = 100;  // AFP 10-27-22
       break;
     case DEMOD_AM:
-      bands[currentBand].FLoCut = - bands[currentBand].FHiCut;
-      //bands[currentBand].FHiCut= 4000;
+      bands[EEPROMData.currentBand].FLoCut = - bands[EEPROMData.currentBand].FHiCut;
+      //bands[EEPROMData.currentBand].FHiCut= 4000;
       break;
     case DEMOD_SAM:               //== AFP 11-04-22
-      bands[currentBand].FLoCut = - bands[currentBand].FHiCut;
+      bands[EEPROMData.currentBand].FLoCut = - bands[EEPROMData.currentBand].FHiCut;
       break;
   }   //== AFP 10-27-22
 }
@@ -231,10 +231,10 @@ void SetDecIntFilters()
   /****************************************************************************************
      Recalculate decimation and interpolation FIR filters
   ****************************************************************************************/
-  int filter_BW_highest = bands[currentBand].FHiCut;
+  int filter_BW_highest = bands[EEPROMData.currentBand].FHiCut;
 
-  if (filter_BW_highest < - bands[currentBand].FLoCut) {
-    filter_BW_highest = - bands[currentBand].FLoCut;
+  if (filter_BW_highest < - bands[EEPROMData.currentBand].FLoCut) {
+    filter_BW_highest = - bands[EEPROMData.currentBand].FLoCut;
   }
   LP_F_help = filter_BW_highest;
 

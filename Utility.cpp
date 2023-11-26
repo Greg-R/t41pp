@@ -225,8 +225,8 @@ void Calculatedbm()
   // taken from the spectrum display FFT
   // taking into account the analog gain before the ADC
   // analog gain is adjusted in steps of 1.5dB
-  // bands[currentBand].RFgain = 0 --> 0dB gain
-  // bands[currentBand].RFgain = 15 --> 22.5dB gain
+  // bands[EEPROMData.currentBand].RFgain = 0 --> 0dB gain
+  // bands[EEPROMData.currentBand].RFgain = 15 --> 22.5dB gain
 
   // spectrum display is generated from 256 samples based on 1024 samples of the FIR FFT . . .
   // could this cause errors in the calculation of the signal strength ?
@@ -256,8 +256,8 @@ void Calculatedbm()
   //  = determine bandwith separately for lower and upper sideband
 
 
-  bw_LSB = bands[currentBand].FLoCut;
-  bw_USB = bands[currentBand].FHiCut;
+  bw_LSB = bands[EEPROMData.currentBand].FLoCut;
+  bw_USB = bands[EEPROMData.currentBand].FHiCut;
   // calculate upper and lower limit for determination of signal strength
   // = filter passband is between the lower bin Lbin and the upper bin Ubin
   Lbin  = (float32_t)posbin + roundf(bw_LSB / bin_bandwidth); // bin on the lower/left side
@@ -283,8 +283,8 @@ void Calculatedbm()
     //#ifdef USE_LOG10FAST
     switch (display_dbm) {
       case DISPLAY_S_METER_DBM:
-        dbm = dbm_calibration + bands[currentBand].gainCorrection + (float32_t)attenuator +
-              slope * log10f_fast(sum_db) + cons - (float32_t)bands[currentBand].RFgain * 1.5;
+        dbm = dbm_calibration + bands[EEPROMData.currentBand].gainCorrection + (float32_t)attenuator +
+              slope * log10f_fast(sum_db) + cons - (float32_t)bands[EEPROMData.currentBand].RFgain * 1.5;
         dbmhz = 0;
         break;
       case DISPLAY_S_METER_DBMHZ:
@@ -580,25 +580,25 @@ void SetupMode(int sideBand)
   {
     switch (sideBand) {
       case DEMOD_LSB :
-        temp = bands[currentBand].FHiCut;
-        bands[currentBand].FHiCut = - bands[currentBand].FLoCut;
-        bands[currentBand].FLoCut = - temp;
+        temp = bands[EEPROMData.currentBand].FHiCut;
+        bands[EEPROMData.currentBand].FHiCut = - bands[EEPROMData.currentBand].FLoCut;
+        bands[EEPROMData.currentBand].FLoCut = - temp;
         break;
 
       case DEMOD_USB :
-        temp = bands[currentBand].FHiCut;
-        bands[currentBand].FHiCut = - bands[currentBand].FLoCut;
-        bands[currentBand].FLoCut = - temp;
+        temp = bands[EEPROMData.currentBand].FHiCut;
+        bands[EEPROMData.currentBand].FHiCut = - bands[EEPROMData.currentBand].FLoCut;
+        bands[EEPROMData.currentBand].FLoCut = - temp;
         break;
       case DEMOD_AM :
-        bands[currentBand].FHiCut =  -bands[currentBand].FLoCut;
+        bands[EEPROMData.currentBand].FHiCut =  -bands[EEPROMData.currentBand].FLoCut;
         break;
     }
   }
   ShowBandwidth();
   // tft.fillRect(pos_x_frequency + 10, pos_y_frequency + 24, 210, 16, RA8875_BLACK);
   //tft.fillRect(OPERATION_STATS_X + 170, FREQUENCY_Y + 30, tft.getFontWidth() * 5, tft.getFontHeight(), RA8875_BLACK);        // Clear top-left menu area
-  old_demod_mode = bands[currentBand].mode; // set old_mode flag for next time, at the moment only used for first time radio is switched on . . .
+  old_demod_mode = bands[EEPROMData.currentBand].mode; // set old_mode flag for next time, at the moment only used for first time radio is switched on . . .
 } // end void setup_mode
 
 
@@ -618,7 +618,7 @@ int Xmit_IQ_Cal() //AFP 09-21-22
 void SetBand()
 {
   old_demod_mode = -99; // used in setup_mode and when changing bands, so that LoCut and HiCut are not changed!
-  SetupMode(bands[currentBand].mode);
+  SetupMode(bands[EEPROMData.currentBand].mode);
   SetFreq();
   ShowFrequency();
   FilterBandwidth();

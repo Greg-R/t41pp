@@ -34,7 +34,7 @@ V049.2 October 16, 2023 Greg Raven (KF5N)
   4. Mic compressor fixes.
   5. CW sidetone adjustment via encoder.
   6. Changed volume control to logarithmic.
-  7. Changed instances of currentBandA to currentBand in CW Excite.
+  7. Changed instances of EEPROMData.currentBandA to EEPROMData.currentBand in CW Excite.
   8. Removed Serial print statement.
   9. Removed Serial print statements from volume control.
  10. Increased audio memory to 450.
@@ -62,7 +62,7 @@ V049.2 October 16, 2023 Greg Raven (KF5N)
 
 V049.1 Aug 21, 2023 Greg Raven (KF5N)
   1. Changed 3 instances of VFO_A to EEPROMData.activeVFO in function ButtonFrequencyEntry().
-  2. Added TxRxFreq = centerFreq to EEPROMRead() to fix frequency related bugs.
+  2. Added TxRxFreq = EEPROMData.centerFreq to EEPROMRead() to fix frequency related bugs.
   3. Added clean-up code to CopySDtoEEPROM() in function EEPROMOptions().
   4. Fixes for calibration graphics.
   5. Changed 2 instances of currentFreqA to currentFreq in ResetTuning() function.
@@ -82,7 +82,7 @@ V049.1 Aug 21, 2023 Greg Raven (KF5N)
 
 V049a Aug 06, 2023, 2023 Jack Purdum (W8TEE)
   1. Corrected paddle flip issue
-  2. Made several changes to set sdCardPresent to the proper value when tested.
+  2. Made several changes to set EEPROMData.sdCardPresent to the proper value when tested.
   3. Changed frequency display to account for new font.
   4. Raised the frequencies by 2 pixels as the new font made then display too low and affect band info
   5. If only 1 map file found, no longer asks you to pick. It selects automatically the one file.
@@ -156,7 +156,7 @@ V047k July 22, 2023 Greg KF5N
    RAM2: variables:342944  free for malloc/new:181344  
    
 V047i July 18, 2023 Jack Purdum (W8TEE)
-  1. Removed SD_CARD_PRESENT and set global sdCardPresent by call to SDPresentCheck() 
+  1. Removed SD_CARD_PRESENT and set global EEPROMData.sdCardPresent by call to SDPresentCheck() 
   FLASH: code:237972, data:134128, headers:8820   free for files:7745544
    RAM1: variables:214496, code:234424, padding:27720   free for local variables:47648
    RAM2: variables:342944  free for malloc/new:181344
@@ -698,7 +698,7 @@ SPISettings settingsA(70000000UL, MSBFIRST, SPI_MODE1);
 
 const uint32_t N_B_EX = 16;
 //================== Receive EQ Variables================= AFP 08-08-22
-float32_t recEQ_Level[14];
+//float32_t recEQ_Level[14];
 float32_t recEQ_LevelScale[14];
 //Setup for EQ filters
 float32_t rec_EQ1_float_buffer_L[256];
@@ -749,7 +749,7 @@ arm_biquad_cascade_df2T_instance_f32 S14_Rec = { IIR_NUMSTAGES, rec_EQ_Band14_st
 
 // ===============================  AFP 10-02-22 ================
 //Setup for Xmit EQ filters
-float32_t DMAMEM xmtEQ_Level[14];
+//float32_t DMAMEM EEPROMData.xmtEQ_Level[14];
 //EQBuffers
 float32_t DMAMEM xmt_EQ1_float_buffer_L[256];
 float32_t DMAMEM xmt_EQ2_float_buffer_L[256];
@@ -1094,12 +1094,12 @@ const char DEGREE_SYMBOL[] = { 0xB0, '\0' };
 //012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678
 //         10        20        30        40        50        60        70        80        90       100       110       120
 
-char mapFileName[50];
-char myCall[10];
-char myTimeZone[10];
+//char EEPROMData.mapFileName[50];
+//char EEPROMData.myCall[10];
+//char EEPROMData.EEPROMData.equalizerRec[10];
 const char *tune_text = "Fast Tune";
 const char *zoomOptions[] = { "1x ", "2x ", "4x ", "8x ", "16x" };
-char versionSettings[10];
+//char versionSettings[10];
 
 byte currentDashJump = DECODER_BUFFER_SIZE;
 byte currentDecoderIndex = 0;
@@ -1109,11 +1109,11 @@ int8_t auto_IQ_correction;
 int filterWidthX;  // The current filter X.
 int filterWidthY;  // The current filter Y.
 float32_t pixel_per_khz = ((1 << EEPROMData.spectrum_zoom) * SPECTRUM_RES * 1000.0 / SR[SampleRate].rate);
-int pos_left = centerLine - (int)(bands[currentBand].FLoCut / 1000.0 * pixel_per_khz);
+int pos_left = centerLine - (int)(bands[EEPROMData.currentBand].FLoCut / 1000.0 * pixel_per_khz);
 int centerLine = (MAX_WATERFALL_WIDTH + SPECTRUM_LEFT_X) / 2;
 int fLoCutOld;
 int fHiCutOld;
-int filterWidth = (int)((bands[currentBand].FHiCut - bands[currentBand].FLoCut) / 1000.0 * pixel_per_khz);
+int filterWidth = (int)((bands[EEPROMData.currentBand].FHiCut - bands[EEPROMData.currentBand].FLoCut) / 1000.0 * pixel_per_khz);
 int h = SPECTRUM_HEIGHT + 3;
 int8_t first_block = 1;
 
@@ -1239,7 +1239,7 @@ volatile long fineTuneEncoderMove = 0L;
 
 //int EEPROMData.currentNoiseFloor[NUMBER_OF_BANDS];
 int endGapFlag = 0;
-int freqSeparationChar;
+//int EEPROMData.freqSeparationChar;
 int selectedMapIndex;
 int topDitIndex;
 int topDitIndexOld;
@@ -1366,9 +1366,9 @@ int calTypeFlag = 0;
 int calOnFlag = 0;
 int chipSelect = BUILTIN_SDCARD;
 int countryIndex = -1;
-int currentBand = BAND_40M;
-int currentBandA = BAND_40M;
-int currentBandB = BAND_40M;
+//int EEPROMData.currentBand = BAND_40M;
+//int currentBandA = BAND_40M;
+//int currentBandB = BAND_40M;
 //int EEPROMData.CWFilterIndex = 5;  //AFP10-18-22
 int dahLength;
 int dcfCount;
@@ -1431,14 +1431,14 @@ int oldnotchF = 10000;
 int out_index = -1;
 //int EEPROMData.paddleDah = KEYER_DAH_INPUT_RING;
 //int EEPROMData.paddleDit = KEYER_DIT_INPUT_TIP;
-int paddleFlip = PADDLE_FLIP;
+//int EEPROMData.paddleFlip = PADDLE_FLIP;
 int pmode = 1;
 int pos_centre_f = 64;
 int pos_x_frequency = 12;
 int pos_y_smeter = (spectrum_y - 12);
 //int EEPROMData.rfGainAllBands = 1;
 
-int sdCardPresent = 0;  // Do they have an micro SD card installed?
+//int EEPROMData.sdCardPresent = 0;  // Do they have an micro SD card installed?
 int secondaryMenuChoiceMade;
 int smeterLength;
 //int EEPROMData.spectrumNoiseFloor = SPECTRUM_NOISE_FLOOR;
@@ -1474,14 +1474,14 @@ unsigned tcr5;
 unsigned tcr2div;
 
 int32_t FFT_shift = 2048;
-long long freqCorrectionFactor = 68000LL;
-long long freqCorrectionFactorOld = 68000LL;
+//long long EEPROMData.freqCorrectionFactor = 68000LL;
+//long long EEPROMData.freqCorrectionFactorOld = 68000LL;
 int32_t IFFreq = SR[SampleRate].rate / 4;  // IF (intermediate) frequency
 int32_t IF_FREQ1 = 0;
 int32_t mainMenuIndex = START_MENU;  // Done so we show menu[0] at startup
 int32_t secondaryMenuIndex = -1;     // -1 means haven't determined secondary menu
 int32_t subMenuMaxOptions;           // holds the number of submenu options
-int32_t subMenuIndex = currentBand;
+int32_t subMenuIndex = EEPROMData.currentBand;
 int32_t O_iiSum19;
 int32_t O_integrateCount19;
 //int32_t EEPROMData.spectrum_zoom = SPECTRUM_ZOOM_2;
@@ -1509,19 +1509,19 @@ long averageDit;
 long averageDah;
 
 long currentFreq;
-long centerFreq = 0L;
+//long EEPROMData.centerFreq = 0L;
 long CWRecFreq;                //  = TxRxFreq +/- 750Hz
-long currentFreqA = 7150000L;  //Initial VFOA center freq
-long currentFreqAOld2 = 0;
-long currentFreqB = 7030000;  //Initial VFOB center freq
-long currentFreqBOld2 = 0;
+//long currentFreqA = 7150000L;  //Initial VFOA center freq
+//long currentFreqAOld2 = 0;
+//long currentFreqB = 7030000;  //Initial VFOB center freq
+//long currentFreqBOld2 = 0;
 //long EEPROMData.currentWPM = 15L;
-long favoriteFrequencies[13];
+//long EEPROMData.favoriteFreqs[13];
 
 //long frequencyCorrection;
 long incrementValues[] = { 10, 50, 100, 250, 1000, 10000, 100000, 1000000 };
 long int n_clear;
-long lastFrequencies[NUMBER_OF_BANDS][2];
+//long EEPROMData.lastFrequencies[NUMBER_OF_BANDS][2];
 long notchPosOld;
 long notchFreq = 1000;
 long notchCenterBin;
@@ -1533,7 +1533,7 @@ long signalEnd;  // Start-end of dit or dah
 long spaceStart;
 long spaceEnd;
 long spaceElapsedTime;
-long TxRxFreq;  // = centerFreq+NCOFreq  NCOFreq from FreqShift2()
+long TxRxFreq;  // = EEPROMData.centerFreq+NCOFreq  NCOFreq from FreqShift2()
 long TxRxFreqOld;
 long TxRxFreqDE;
 uint32_t gapLength;
@@ -1556,8 +1556,8 @@ float help;
 float s_hotT_ROOM; /*!< The value of s_hotTemp minus room temperature(25¡æ).*/
 float lastII = 0;
 float lastQQ = 0;
-float myLat = MY_LAT;
-float myLong = MY_LON;
+//float EEPROMData.myLat = MY_LAT;
+//float EEPROMData.myLong = MY_LON;
 
 float RXbit = 0;
 float bitSampleTimer = 0;
@@ -1592,12 +1592,12 @@ float32_t audiou;
 float32_t audioSpectBuffer[1024];  // This can't be DMAMEM.  It will break the S-Meter.  KF5N October 10, 2023
 float32_t bass = 0.0;
 float32_t farnsworthValue;
-int currentMicThreshold;  // Don't need to define here, will happen with EEPROMRead().  KF5N August 27, 2023
-float currentMicCompRatio = 5.0;
-float currentMicAttack = 0.1;
-float currentMicRelease = 2.0;
-int currentMicGain = -10;
-int compressorFlag = 0;
+//int EEPROMData.currentMicThreshold;  // Don't need to define here, will happen with EEPROMRead().  KF5N August 27, 2023
+//float EEPROMData.currentMicCompRatio = 5.0;
+//float EEPROMData.currentMicAttack = 0.1;
+//float EEPROMData.currentMicRelease = 2.0;
+//int EEPROMData.currentMicGain = -10;
+//int EEPROMData.compressorFlag = 0;
 float32_t midbass = 0.0;
 float32_t mid = 0.0;
 float32_t midtreble = 0.0;
@@ -1677,15 +1677,15 @@ float32_t IIR_biquad_Zoom_FFT_Q_state[IIR_biquad_Zoom_FFT_N_stages * 4];
 float32_t inv_max_input;
 float32_t inv_out_target;
 
-float32_t IQAmpCorrectionFactor[7] = { 1, 1.024, 1, 1, 1, 1, 1 };
-float32_t IQPhaseCorrectionFactor[7] = { 0, 0.007, 0, 0, 0, 0, 0 };
-float32_t IQXAmpCorrectionFactor[7] = { 1, 1.097, 1, 1, 1, 1, 1 };
-float32_t IQXPhaseCorrectionFactor[7] = { 0, 0.193, 0, 0, 0, 0, 0 };
+//float32_t EEPROMData.IQAmpCorrectionFactor[7] = { 1, 1.024, 1, 1, 1, 1, 1 };
+//float32_t EEPROMData.IQPhaseCorrectionFactor[7] = { 0, 0.007, 0, 0, 0, 0, 0 };
+//float32_t EEPROMData.IQXAmpCorrectionFactor[7] = { 1, 1.097, 1, 1, 1, 1, 1 };
+//float32_t EEPROMData.IQXPhaseCorrectionFactor[7] = { 0, 0.193, 0, 0, 0, 0, 0 };
 
-/*float32_t IQAmpCorrectionFactorUSB[7]        = {1,1.057,1,1,1,1,1};
-  float32_t IQPhaseCorrectionFactorUSB[7]      = {0,-0.02,0,0,0,0,0};
-  float32_t IQXAmpCorrectionFactorUSB[7]       = {1,1.097,1,1,1,1,1};
-  float32_t IQXPhaseCorrectionFactor[7]     = {0,0.193,0,0,0,0,0};*/
+/*float32_t EEPROMData.IQAmpCorrectionFactorUSB[7]        = {1,1.057,1,1,1,1,1};
+  float32_t EEPROMData.IQPhaseCorrectionFactorUSB[7]      = {0,-0.02,0,0,0,0,0};
+  float32_t EEPROMData.IQXAmpCorrectionFactorUSB[7]       = {1,1.097,1,1,1,1,1};
+  float32_t EEPROMData.IQXPhaseCorrectionFactor[7]     = {0,0.193,0,0,0,0,0};*/
 
 float32_t IQ_sum = 0.0;
 float32_t K_dirty = 0.868;
@@ -1700,7 +1700,7 @@ float32_t LMS_errsig1[256 + 10];
 float32_t LMS_NormCoeff_f32[MAX_LMS_TAPS + MAX_LMS_DELAY];
 float32_t LMS_nr_delay[512 + MAX_LMS_DELAY];
 float32_t LMS_StateF32[MAX_LMS_TAPS + MAX_LMS_DELAY];
-float32_t LPFcoeff;
+//float32_t EEPROMData.LPFcoeff;
 float32_t LP_Astop = 90.0;
 float32_t LP_Fpass = 3500.0;
 float32_t LP_Fstop = 3600.0;
@@ -1725,13 +1725,13 @@ float32_t noiseThreshhold;
 float32_t notches[10] = { 500.0, 1000.0, 1500.0, 2000.0, 2500.0, 3000.0, 3500.0, 4000.0, 4500.0, 5000.0 };
 float32_t DMAMEM NR_FFT_buffer[512] __attribute__((aligned(4)));
 float32_t NR_sum = 0;
-float32_t NR_PSI = 3.0;
+//float32_t NR_PSI = 3.0;
 float32_t NR_KIM_K = 1.0;
-float32_t NR_alpha = 0.95;
-float32_t NR_onemalpha = (1.0 - NR_alpha);
-float32_t NR_beta = 0.85;
-float32_t NR_onemtwobeta = (1.0 - (2.0 * NR_beta));
-float32_t NR_onembeta = 1.0 - NR_beta;
+//float32_t EEPROMData.NR_alpha = 0.95;
+float32_t NR_onemalpha = (1.0 - EEPROMData.NR_alpha);
+//float32_t EEPROMData.NR_beta = 0.85;
+float32_t NR_onemtwobeta = (1.0 - (2.0 * EEPROMData.NR_beta));
+float32_t NR_onembeta = 1.0 - EEPROMData.NR_beta;
 float32_t NR_G_bin_m_1;
 float32_t NR_G_bin_p_1;
 float32_t NR_T;
@@ -1767,16 +1767,16 @@ float32_t offsetDisplayDB = 10.0;
 // wdsp Warren Pratt, 2016
 //float32_t Sin = 0.0;
 //float32_t Cos = 0.0;
-float32_t pll_fmax = +4000.0;
+//float32_t EEPROMData.pll_fmax = +4000.0;
 int zeta_help = 65;
 float32_t zeta = (float32_t)zeta_help / 100.0;  // PLL step response: smaller, slower response 1.0 - 0.1
-float32_t omegaN = 200.0;                       // PLL bandwidth 50.0 - 1000.0
+//float32_t EEPROMData.omegaN = 200.0;                       // PLL bandwidth 50.0 - 1000.0
 
 //pll  AFP 11-03-22
-float32_t omega_min = TPI * -pll_fmax * 1 / 24000;
-float32_t omega_max = TPI * pll_fmax * 1 / 24000;
-float32_t g1 = 1.0 - exp(-2.0 * omegaN * zeta * 1 / 24000);
-float32_t g2 = -g1 + 2.0 * (1 - exp(-omegaN * zeta * 1 / 24000) * cosf(omegaN * 1 / 24000 * sqrtf(1.0 - zeta * zeta)));
+float32_t omega_min = TPI * -EEPROMData.pll_fmax * 1 / 24000;
+float32_t omega_max = TPI * EEPROMData.pll_fmax * 1 / 24000;
+float32_t g1 = 1.0 - exp(-2.0 * EEPROMData.omegaN * zeta * 1 / 24000);
+float32_t g2 = -g1 + 2.0 * (1 - exp(-EEPROMData.omegaN * zeta * 1 / 24000) * cosf(EEPROMData.omegaN * 1 / 24000 * sqrtf(1.0 - zeta * zeta)));
 float32_t phzerror = 0.0;
 float32_t det = 0.0;
 float32_t fil_out = 0.0;
@@ -1808,10 +1808,10 @@ float32_t P_est_mult = 1.0 / (sqrtf(1.0 - P_est * P_est));
 
 float32_t phaseLO = 0.0;
 float32_t pop_ratio;
-float32_t powerOutSSB[7] = { 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03 };                       // AFP 10-28-22
-float32_t powerOutCW[7] = { 0.017, 0.02, 0.025, 0.03, 0.03, 0.039, 0.02 };                     // AFP 10-28-22
-float32_t CWPowerCalibrationFactor[7] = { 0.019, 0.0190, .0190, .0190, .0190, .0190, .019 };   //AFP 10-29-22
-float32_t SSBPowerCalibrationFactor[7] = { 0.008, 0.008, 0.008, 0.008, 0.008, 0.008, 0.008 };  //AFP 10-29-22       = 0.008;  //AFP 10-21-22
+//float32_t EEPROMData.powerOutSSB[7] = { 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03 };                       // AFP 10-28-22
+//float32_t EEPROMData.powerOutCW[7] = { 0.017, 0.02, 0.025, 0.03, 0.03, 0.039, 0.02 };                     // AFP 10-28-22
+//float32_t EEPROMData.CWPowerCalibrationFactor[7] = { 0.019, 0.0190, .0190, .0190, .0190, .0190, .019 };   //AFP 10-29-22
+//float32_t EEPROMData.SSBPowerCalibrationFactor[7] = { 0.008, 0.008, 0.008, 0.008, 0.008, 0.008, 0.008 };  //AFP 10-29-22       = 0.008;  //AFP 10-21-22
 float32_t Q_old = 0.2;
 float32_t Q_sum;
 float32_t DMAMEM R_BufferOffset[BUFFER_SIZE * N_B];
@@ -1953,11 +1953,11 @@ void Codec_gain() {
   {
     if (timer >= 20)  // 100  // has enough time passed since the last gain decrease?
     {
-      if (bands[currentBand].RFgain != 0)  // yes - is this NOT zero?
+      if (bands[EEPROMData.currentBand].RFgain != 0)  // yes - is this NOT zero?
       {
-        bands[currentBand].RFgain -= 1;  // decrease gain one step, 1.5dB
-        if (bands[currentBand].RFgain < 0) {
-          bands[currentBand].RFgain = 0;
+        bands[EEPROMData.currentBand].RFgain -= 1;  // decrease gain one step, 1.5dB
+        if (bands[EEPROMData.currentBand].RFgain < 0) {
+          bands[EEPROMData.currentBand].RFgain = 0;
         }
         timer = 0;  // reset the adjustment timer
         AudioNoInterrupts();
@@ -1971,10 +1971,10 @@ void Codec_gain() {
   {
     if (timer >= 50)  // 500   // has it been long enough since the last increase?
     {
-      bands[currentBand].RFgain += 1;  // increase gain by one step, 1.5dB
+      bands[EEPROMData.currentBand].RFgain += 1;  // increase gain by one step, 1.5dB
       timer = 0;                       // reset the timer to prevent this from executing too often
-      if (bands[currentBand].RFgain > 15) {
-        bands[currentBand].RFgain = 15;
+      if (bands[EEPROMData.currentBand].RFgain > 15) {
+        bands[EEPROMData.currentBand].RFgain = 15;
       }
       AudioNoInterrupts();
       AudioInterrupts();
@@ -2196,7 +2196,7 @@ void InitializeDataArrays() {
   CLEAR_VAR(LMS_NormCoeff_f32);        //memset(LMS_NormCoeff_f32, 0, 1408);
   CLEAR_VAR(LMS_nr_delay);             //memset(LMS_nr_delay, 0, 2312);
 
-  CalcCplxFIRCoeffs(FIR_Coef_I, FIR_Coef_Q, m_NumTaps, (float32_t)bands[currentBand].FLoCut, (float32_t)bands[currentBand].FHiCut, (float)SR[SampleRate].rate / DF);
+  CalcCplxFIRCoeffs(FIR_Coef_I, FIR_Coef_Q, m_NumTaps, (float32_t)bands[EEPROMData.currentBand].FLoCut, (float32_t)bands[EEPROMData.currentBand].FHiCut, (float)SR[SampleRate].rate / DF);
 
   /****************************************************************************************
      init complex FFTs
@@ -2248,9 +2248,9 @@ void InitializeDataArrays() {
   ****************************************************************************************/
   // also adjust IIR AM filter
   // calculate IIR coeffs
-  LP_F_help = bands[currentBand].FHiCut;
-  if (LP_F_help < -bands[currentBand].FLoCut)
-    LP_F_help = -bands[currentBand].FLoCut;
+  LP_F_help = bands[EEPROMData.currentBand].FHiCut;
+  if (LP_F_help < -bands[EEPROMData.currentBand].FLoCut)
+    LP_F_help = -bands[EEPROMData.currentBand].FLoCut;
   SetIIRCoeffs((float32_t)LP_F_help, 1.3, (float32_t)SR[SampleRate].rate / DF, 0);  // 1st stage
   for (int i = 0; i < 5; i++) {                                                     // fill coefficients into the right file
     biquad_lowpass1_coeffs[i] = coefficient_set[i];
@@ -2509,7 +2509,7 @@ void setup() {
 
   Splash();
 
-  sdCardPresent = InitializeSDCard();  // Is there an SD card that can be initialized?
+  EEPROMData.sdCardPresent = InitializeSDCard();  // Is there an SD card that can be initialized?
 
   // =============== Into EEPROM section =================
   EEPROMStartup();
@@ -2550,9 +2550,9 @@ void setup() {
   NCOFreq = 0L;
   //EEPROMData.activeVFO = EEPROMData.EEPROMData.activeVFO;        // 2 bytes
   //EEPROMData.AGCMode = EEPROMData.EEPROMData.AGCMode;    // 4 bytes
-  currentBand = EEPROMData.currentBand;    // 4 bytes
-  currentBandA = EEPROMData.currentBandA;  // 4 bytes
-  currentBandB = EEPROMData.currentBandB;
+  //EEPROMData.currentBand = EEPROMData.EEPROMData.currentBand;    // 4 bytes
+  //EEPROMData.currentBandA = EEPROMData.EEPROMData.currentBandA;  // 4 bytes
+  //EEPROMData.currentBandB = EEPROMData.EEPROMData.currentBandB;
 
   // ========================  End set up of Parameters from EEPROM data ===============
   NCOFreq = 0;
@@ -2561,7 +2561,7 @@ void setup() {
      start local oscillator Si5351
   ****************************************************************************************/
   si5351.reset();                                                                // KF5N.  Moved Si5351 start-up to setup. JJP  7/14/23
-  si5351.init(SI5351_CRYSTAL_LOAD_10PF, Si_5351_crystal, freqCorrectionFactor);  //JJP  7/14/23
+  si5351.init(SI5351_CRYSTAL_LOAD_10PF, Si_5351_crystal, EEPROMData.freqCorrectionFactor);  //JJP  7/14/23
   si5351.set_ms_source(SI5351_CLK2, SI5351_PLLB);                                //  Allows CLK1 and CLK2 to exceed 100 MHz simultaneously.
   si5351.drive_strength(SI5351_CLK1, SI5351_DRIVE_8MA);                          //AFP 10-13-22
   si5351.drive_strength(SI5351_CLK2, SI5351_DRIVE_8MA);                          //CWP AFP 10-13-22
@@ -2574,11 +2574,11 @@ void setup() {
     EEPROMData.decoderFlag = DECODE_ON;  // Turns decoder on JJP 7/1/23
   }
 
-  TxRxFreq = centerFreq + NCOFreq;
+  TxRxFreq = EEPROMData.centerFreq + NCOFreq;
 
   InitializeDataArrays();
   splitOn = 0;  // Split VFO not active
-  SetupMode(bands[currentBand].mode);
+  SetupMode(bands[EEPROMData.currentBand].mode);
 
   //ditLength = STARTING_DITLENGTH;  // 80 = 1200 / 15 wpm
   //averageDit = ditLength;
@@ -2590,7 +2590,7 @@ void setup() {
     sinBuffer[kf] = sin(theta);
   }
   //EEPROMData.currentWPM = EEPROMData.EEPROMData.currentWPM;  // Not required.  Retrieved by EEPROMRead().  KF5N August 27, 2023
-  SetKeyPowerUp();  // Use EEPROMData.keyType and paddleFlip to configure key GPIs.  KF5N August 27, 2023
+  SetKeyPowerUp();  // Use EEPROMData.keyType and EEPROMData.paddleFlip to configure key GPIs.  KF5N August 27, 2023
   SetDitLength(EEPROMData.currentWPM);
   SetTransmitDitLength(EEPROMData.currentWPM);
   CWFreqShift = 750;
@@ -2621,7 +2621,7 @@ void setup() {
   comp1.setPreGain_dB(-10);  //set the gain of the Left-channel gain processor
   comp2.setPreGain_dB(-10);  //set the gain of the Right-channel gain processor
 
-  sdCardPresent = SDPresentCheck();  // JJP 7/18/23
+  EEPROMData.sdCardPresent = SDPresentCheck();  // JJP 7/18/23
   lastState = 1111;                  // To make sure the receiver will be configured on the first pass through.  KF5N September 3, 2023
   decodeStates = state0;             // Initialize the Morse decoder.
   UpdateDecoderField();              // Adjust graphics for Morse decoder.
@@ -2709,12 +2709,12 @@ FASTRUN void loop()  // Replaced entire loop() with Greg's code  JJP  7/14/23
       Q_in_R.end();
       Q_in_L_Ex.begin();
       Q_in_R_Ex.begin();
-      comp1.setPreGain_dB(currentMicGain);
-      comp2.setPreGain_dB(currentMicGain);
-      if (compressorFlag == 1) {
-        SetupMyCompressors(use_HP_filter, (float)currentMicThreshold, comp_ratio, attack_sec, release_sec);  // Cast currentMicThreshold to float.  KF5N, October 31, 2023
+      comp1.setPreGain_dB(EEPROMData.currentMicGain);
+      comp2.setPreGain_dB(EEPROMData.currentMicGain);
+      if (EEPROMData.compressorFlag == 1) {
+        SetupMyCompressors(use_HP_filter, (float)EEPROMData.currentMicThreshold, comp_ratio, attack_sec, release_sec);  // Cast EEPROMData.currentMicThreshold to float.  KF5N, October 31, 2023
       } else {
-        if (compressorFlag == 0) {
+        if (EEPROMData.compressorFlag == 0) {
           SetupMyCompressors(use_HP_filter, 0.0, comp_ratio, 0.01, 0.01);
         }
       }
@@ -2729,8 +2729,8 @@ FASTRUN void loop()  // Replaced entire loop() with Greg's code  JJP  7/14/23
       modeSelectInExL.gain(0, 1);
       modeSelectOutL.gain(0, 0);
       modeSelectOutR.gain(0, 0);
-      modeSelectOutExL.gain(0, powerOutSSB[currentBand]);  //AFP 10-21-22
-      modeSelectOutExR.gain(0, powerOutSSB[currentBand]);  //AFP 10-21-22
+      modeSelectOutExL.gain(0, EEPROMData.powerOutSSB[EEPROMData.currentBand]);  //AFP 10-21-22
+      modeSelectOutExR.gain(0, EEPROMData.powerOutSSB[EEPROMData.currentBand]);  //AFP 10-21-22
       ShowTransmitReceiveStatus();
 
       while (digitalRead(PTT) == LOW) {
@@ -2774,7 +2774,7 @@ FASTRUN void loop()  // Replaced entire loop() with Greg's code  JJP  7/14/23
       ShowSpectrum();  // if removed CW signal on is 2 mS
       break;
     case CW_TRANSMIT_STRAIGHT_STATE:
-      powerOutCW[currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * CWPowerCalibrationFactor[currentBand];
+      EEPROMData.powerOutCW[EEPROMData.currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * EEPROMData.CWPowerCalibrationFactor[EEPROMData.currentBand];
       CW_ExciterIQData();
       xrState = TRANSMIT_STATE;
       ShowTransmitReceiveStatus();
@@ -2791,8 +2791,8 @@ FASTRUN void loop()  // Replaced entire loop() with Greg's code  JJP  7/14/23
         digitalWrite(RXTX, HIGH);
         if (digitalRead(EEPROMData.paddleDit) == LOW && EEPROMData.keyType == 0) {       // AFP 09-25-22  Turn on CW signal
           cwTimer = millis();                                      //Reset timer
-          modeSelectOutExL.gain(0, powerOutCW[currentBand]);       //AFP 10-21-22
-          modeSelectOutExR.gain(0, powerOutCW[currentBand]);       //AFP 10-21-22
+          modeSelectOutExL.gain(0, EEPROMData.powerOutCW[EEPROMData.currentBand]);       //AFP 10-21-22
+          modeSelectOutExR.gain(0, EEPROMData.powerOutCW[EEPROMData.currentBand]);       //AFP 10-21-22
           digitalWrite(MUTE, LOW);                                 // unmutes audio
           modeSelectOutL.gain(1, volumeLog[(int)EEPROMData.sidetoneVolume]);  // Sidetone  AFP 10-01-22
           //  modeSelectOutR.gain(1, volumeLog[(int)EEPROMData.sidetoneVolume]);           // Right side not used.  KF5N September 1, 2023
@@ -2841,8 +2841,8 @@ FASTRUN void loop()  // Replaced entire loop() with Greg's code  JJP  7/14/23
           ditTimerOn = millis();
           //          while (millis() - ditTimerOn <= ditLength) {
           while (millis() - ditTimerOn <= transmitDitLength) {       // JJP 8/19/23
-            modeSelectOutExL.gain(0, powerOutCW[currentBand]);       //AFP 10-21-22
-            modeSelectOutExR.gain(0, powerOutCW[currentBand]);       //AFP 10-21-22
+            modeSelectOutExL.gain(0, EEPROMData.powerOutCW[EEPROMData.currentBand]);       //AFP 10-21-22
+            modeSelectOutExR.gain(0, EEPROMData.powerOutCW[EEPROMData.currentBand]);       //AFP 10-21-22
             digitalWrite(MUTE, LOW);                                 // unmutes audio
             modeSelectOutL.gain(1, volumeLog[(int)EEPROMData.sidetoneVolume]);  // Sidetone
                                                                      //  modeSelectOutR.gain(1, volumeLog[(int)EEPROMData.sidetoneVolume]);           // Right side not used.  KF5N September 1, 2023
@@ -2865,8 +2865,8 @@ FASTRUN void loop()  // Replaced entire loop() with Greg's code  JJP  7/14/23
             dahTimerOn = millis();
             //            while (millis() - dahTimerOn <= 3UL * ditLength) {
             while (millis() - dahTimerOn <= 3UL * transmitDitLength) {  // JJP 8/19/23
-              modeSelectOutExL.gain(0, powerOutCW[currentBand]);        //AFP 10-21-22
-              modeSelectOutExR.gain(0, powerOutCW[currentBand]);        //AFP 10-21-22
+              modeSelectOutExL.gain(0, EEPROMData.powerOutCW[EEPROMData.currentBand]);        //AFP 10-21-22
+              modeSelectOutExR.gain(0, EEPROMData.powerOutCW[EEPROMData.currentBand]);        //AFP 10-21-22
               digitalWrite(MUTE, LOW);                                  // unmutes audio
               modeSelectOutL.gain(1, volumeLog[(int)EEPROMData.sidetoneVolume]);   // Dah sidetone was using constants.  KD0RC
                                                                         //   modeSelectOutR.gain(1, volumeLog[(int)EEPROMData.sidetoneVolume]);           // Right side not used.  KF5N September 1, 2023
