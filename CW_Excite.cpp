@@ -16,7 +16,7 @@
 *****/
 void KeyTipOn()
 {
-  if (digitalRead(KEYER_DIT_INPUT_TIP) == LOW && xmtMode == CW_MODE ) {
+  if (digitalRead(KEYER_DIT_INPUT_TIP) == LOW && EEPROMData.xmtMode == CW_MODE ) {
     keyPressedOn = 1;
   }
 }
@@ -32,8 +32,8 @@ void KeyTipOn()
 *****/
 void KeyRingOn() //AFP 09-25-22
 {
-  if (keyType == 1) {
-    if (digitalRead(KEYER_DAH_INPUT_RING) == LOW && xmtMode == CW_MODE ) {
+  if (EEPROMData.keyType == 1) {
+    if (digitalRead(KEYER_DAH_INPUT_RING) == LOW && EEPROMData.xmtMode == CW_MODE ) {
       keyPressedOn = 1;
     }
   }

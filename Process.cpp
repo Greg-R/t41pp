@@ -75,7 +75,7 @@ void ProcessIQData()
     /*******************************
             Set RFGain - for all bands
     */
-    rfGainValue = pow(10, (float)rfGainAllBands / 20);
+    rfGainValue = pow(10, (float)EEPROMData.rfGainAllBands / 20);
     arm_scale_f32 (float_buffer_L, rfGainValue, float_buffer_L, BUFFER_SIZE * N_BLOCKS); //AFP 09-27-22
     arm_scale_f32 (float_buffer_R, rfGainValue, float_buffer_R, BUFFER_SIZE * N_BLOCKS); //AFP 09-27-22
     /**********************************************************************************  AFP 12-31-20
@@ -158,7 +158,7 @@ void ProcessIQData()
         Only go there from here, if magnification == 1
      ***********************************************************************************************/
 
-    if (spectrum_zoom == SPECTRUM_ZOOM_1) { // && display_S_meter_or_spectrum_state == 1)
+    if (EEPROMData.spectrum_zoom == SPECTRUM_ZOOM_1) { // && display_S_meter_or_spectrum_state == 1)
       zoom_display = 1;
       CalcZoom1Magn();  //AFP Moved to display function
     }
@@ -182,14 +182,14 @@ void ProcessIQData()
     FreqShift1();
 
     /**********************************************************************************  AFP 12-31-20
-        SPECTRUM_ZOOM_2 and larger here after frequency conversion!
+        EEPROMData.spectrum_zoom_2 and larger here after frequency conversion!
         Spectrum zoom displays a magnified display of the data around the translated receive frequency.
         Processing is done in the ZoomFFTExe(BUFFER_SIZE * N_BLOCKS) function.  For magnifications of 2x to 8X
         Larger magnification are not needed in practice.
 
         Spectrum Zoom uses the shifted spectrum, so the center "hump" around DC is shifted by fs/4
     **********************************************************************************/
-    if (spectrum_zoom != SPECTRUM_ZOOM_1) {
+    if (EEPROMData.spectrum_zoom != SPECTRUM_ZOOM_1) {
       //AFP  Used to process Zoom>1 for display
       ZoomFFTExe(BUFFER_SIZE * N_BLOCKS); // there seems to be a BUG here, because the blocksize has to be adjusted according to magnification,
       // does not work for magnifications > 8
@@ -323,11 +323,11 @@ void ProcessIQData()
       }
       for (int k = 0; k < 256; k++) {
         if (bands[currentBand].mode == 0  || bands[currentBand].mode == DEMOD_AM || bands[currentBand].mode == DEMOD_SAM) {  //AFP 10-26-22
-          //audioYPixel[k] = 20+  map((int)displayScale[currentScale].dBScale * log10f((audioSpectBuffer[1024 - k] + audioSpectBuffer[1024 - k + 1] + audioSpectBuffer[1024 - k + 2]) / 3), 0, 100, 0, 120);
+          //audioYPixel[k] = 20+  map((int)displayScale[EEPROMData.currentScale].dBScale * log10f((audioSpectBuffer[1024 - k] + audioSpectBuffer[1024 - k + 1] + audioSpectBuffer[1024 - k + 2]) / 3), 0, 100, 0, 120);
           audioYPixel[k] = 50 +  map(15 * log10f((audioSpectBuffer[1024 - k] + audioSpectBuffer[1024 - k + 1] + audioSpectBuffer[1024 - k + 2]) / 3), 0, 100, 0, 120);
         }
         else if (bands[currentBand].mode == 1) {//AFP 10-26-22
-          //audioYPixel[k] = 20+   map((int)displayScale[currentScale].dBScale * log10f((audioSpectBuffer[k] + audioSpectBuffer[k + 1] + audioSpectBuffer[k + 2]) / 3), 0, 100, 0, 120);
+          //audioYPixel[k] = 20+   map((int)displayScale[EEPROMData.currentScale].dBScale * log10f((audioSpectBuffer[k] + audioSpectBuffer[k + 1] + audioSpectBuffer[k + 2]) / 3), 0, 100, 0, 120);
           audioYPixel[k] = 50 +   map(15 * log10f((audioSpectBuffer[k] + audioSpectBuffer[k + 1] + audioSpectBuffer[k + 2]) / 3), 0, 100, 0, 120);
         }
         if (audioYPixel[k] < 0)
@@ -494,8 +494,8 @@ void ProcessIQData()
       DoCWReceiveProcessing(); //AFP 09-19-22
 
       // ----------------------  CW Narrow band filters  AFP 10-18-22 -------------------------
-      if (CWFilterIndex != 5) {
-        switch (CWFilterIndex) {
+      if (EEPROMData.CWFilterIndex != 5) {
+        switch (EEPROMData.CWFilterIndex) {
           case 0:  // 0.8 KHz
             arm_biquad_cascade_df2T_f32(&S1_CW_AudioFilter1, float_buffer_L, float_buffer_L_AudioCW, 256);//AFP 10-18-22
             arm_copy_f32(float_buffer_L_AudioCW, float_buffer_L, FFT_length / 2);                         //AFP 10-18-22
@@ -550,8 +550,8 @@ void ProcessIQData()
       arm_scale_f32(float_buffer_L, 0.0, float_buffer_L, BUFFER_SIZE * N_BLOCKS);
       arm_scale_f32(float_buffer_R, 0.0, float_buffer_R, BUFFER_SIZE * N_BLOCKS);
     } else if (mute == 0) {
-      arm_scale_f32(float_buffer_L, DF * VolumeToAmplification(audioVolume), float_buffer_L, BUFFER_SIZE * N_BLOCKS);
-      arm_scale_f32(float_buffer_R, DF * VolumeToAmplification(audioVolume), float_buffer_R, BUFFER_SIZE * N_BLOCKS);
+      arm_scale_f32(float_buffer_L, DF * VolumeToAmplification(EEPROMData.audioVolume), float_buffer_L, BUFFER_SIZE * N_BLOCKS);
+      arm_scale_f32(float_buffer_R, DF * VolumeToAmplification(EEPROMData.audioVolume), float_buffer_R, BUFFER_SIZE * N_BLOCKS);
     }
     /**********************************************************************************  AFP 12-31-20
       CONVERT TO INTEGER AND PLAY AUDIO

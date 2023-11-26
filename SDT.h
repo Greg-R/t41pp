@@ -1007,8 +1007,8 @@ extern long NCOFreq ; // AFP 04-16-22
 
 //extern double stepFineTune;
 //extern double stepFineTune2;
-extern long stepFineTune;
-extern long stepFineTune2;
+//extern long stepFineTune;
+//extern long stepFineTune2;
 extern float32_t NCO_INC ;  // AFP 04-16-22
 extern double OSC_COS;
 extern double  OSC_SIN;
@@ -1107,21 +1107,21 @@ struct config_t {
   int spectrumNoiseFloor  = SPECTRUM_NOISE_FLOOR;     // AFP 09-26-22
   int tuneIndex           = DEFAULTFREQINCREMENT;     // JJP 7-3-23
   long stepFineTune       = FAST_TUNE_INCREMENT;      // JJP 7-3-23
-  int powerLevel          = DEFAULT_POWER_LEVEL;      // JJP 7-3-23
-  int xmtMode             = 0;                        // AFP 09-26-22
+  int transmitPowerLevel  = DEFAULT_POWER_LEVEL;      // JJP 7-3-23
+  int xmtMode             = SSB_MODE;                        // AFP 09-26-22
   int nrOptionSelect      = 0;                        // 1 byte
   int currentScale        = 1;
-  long spectrum_zoom      = 1;
+  long spectrum_zoom      = SPECTRUM_ZOOM_2;
   float spectrum_display_scale  = 20.0;               // 4 bytes
 
   int CWFilterIndex       = 5;                        // Off
-  int paddleDit           = 36;
-  int paddleDah           = 35;
+  int paddleDit           = KEYER_DIT_INPUT_TIP;
+  int paddleDah           = KEYER_DAH_INPUT_RING;
   int decoderFlag         = DECODER_STATE;            // JJP 7-3-23
   int keyType             = STRAIGHT_KEY_OR_PADDLES;  // straight key = 0, keyer = 1  JJP 7-3-23
   int currentWPM          = DEFAULT_KEYER_WPM;        // 4 bytes default = 15 JJP 7-3-23
   float32_t sidetoneVolume = 20.0;                     // 4 bytes
-  long cwTransmitDelay    = 750;                      // 4 bytes
+  long cwTransmitDelay    = 2000;                      // 4 bytes
 
   int activeVFO           = 0;                        // 2 bytes
   int freqIncrement       = 5;                        // 4 bytes
@@ -1142,7 +1142,12 @@ struct config_t {
   float currentMicRelease   = 2.0;
   int currentMicGain        = -10;
 
-  int switchValues[18];
+  int switchValues[18] = { 921, 867, 818,
+                            767, 715, 665,
+                            614, 563, 511,
+                            460, 406, 352,
+                            299, 242, 184,
+                            124, 64, 5 };
 
   float LPFcoeff             = 0.0;                   // 4 bytes
   float NR_PSI               = 0.0;                   // 4 bytes
@@ -1303,7 +1308,7 @@ extern const char *zoomOptions[];
 extern byte currentDashJump;
 extern byte currentDecoderIndex;
 
-extern int8_t AGCMode;
+//extern int8_t EEPROMData.AGCMode;
 extern int8_t auto_IQ_correction;
 extern uint8_t IQ_RecCalFlag; //AFP 04-17-22
 extern int8_t first_block;
@@ -1314,7 +1319,7 @@ extern int8_t mesz_old;
 extern int8_t NB_taps;
 extern int8_t NB_impulse_samples;
 extern int8_t NR_first_block;
-extern int8_t xmtMode;
+//extern int8_t xmtMode;
 
 extern uint8_t agc_action;
 extern uint8_t agc_switch_mode;
@@ -1423,7 +1428,7 @@ extern int16_t y1_new_minus ;
 extern uint16_t adcMaxLevel, dacMaxLevel;
 extern uint16_t base_y;
 extern uint16_t barGraphUpdate;
-extern uint16_t currentScale;
+//extern uint16_t currentScale;
 extern uint16_t notches_BW[];
 extern uint16_t SpectrumDeleteColor;
 extern uint16_t SpectrumDrawColor;
@@ -1457,8 +1462,8 @@ extern int ANR_position;
 extern int ANR_taps;
 extern int attenuator;
 extern int attack_buffsize;
-extern int audioVolume;
-extern int audioVolumeOld;
+//extern int EEPROMData.AGCMode;
+//extern int EEPROMData.AGCModeOld;
 extern int audioYPixel[];
 extern int bandswitchPins[];
 extern int button9State;
@@ -1466,11 +1471,11 @@ extern int buttonRead;
 extern int calibrateFlag;
 extern int chipSelect;
 extern int countryIndex;
-extern int CWFilterIndex;
+//extern int CWFilterIndex;
 extern int currentBand;
 extern int currentBandA;
 extern int currentBandB;
-extern int currentNoiseFloor[];
+//extern int currentNoiseFloor[];
 extern int dahLength;
 extern int dcfCount;
 extern int dcfLevel;
@@ -1524,7 +1529,7 @@ extern int n_R;
 extern int n_tau;
 extern int NBChoice;
 extern int newCursorPosition;
-extern int nrOptionSelect;
+//extern int nrOptionSelect;
 extern int NR_Choice;
 extern int NR_KIM_K_int;
 extern int NR_VAD_delay;
@@ -1534,30 +1539,30 @@ extern int old_demod_mode;
 extern int oldnotchF;
 extern int oldCursorPosition;
 extern int out_index;
-extern int paddleDah;
-extern int paddleDit;
+//extern int paddleDah;
+//extern int paddleDit;
 extern int paddleFlip;
 extern int pmode;
 extern int pos_centre_f;
 extern int pos_x_frequency;
 extern int pos_y_smeter;
 extern int resetTuningFlag;  // Experimental flag for ResetTuning() due to possible timing issues.  KF5N July 31, 2023
-extern int rfGainAllBands;
+//extern int EEPROMData.rfGainAllBands;
 
 extern int sdCardPresent;
 extern int secondaryMenuChoiceMade;
 extern int selectedMapIndex;
 extern int smeterLength;
-extern int spectrumNoiseFloor;
+//extern int spectrumNoiseFloor;
 extern int splitOn;
 extern int stepFineTuneOld;
 extern int switchFilterSideband;    //AFP 1-28-21
-extern int switchThreshholds[];
+//extern int switchThreshholds[];
 extern int syncEEPROM;
 extern int termCursorXpos;
 extern int timerFlag;
-extern float transmitPowerLevel;
-extern int tuneIndex;
+//extern float transmitPowerLevel;
+//extern int tuneIndex;
 extern int x2;                      //AFP
 extern int xrState;
 extern int zeta_help;
@@ -1593,7 +1598,7 @@ extern int32_t O_integrateCount19;
 extern int32_t mainMenuIndex;
 extern int32_t subMenuMaxOptions;
 extern int32_t secondaryMenuIndex;                           // -1 means haven't determined secondary menu
-extern int32_t spectrum_zoom;
+//extern int32_t spectrum_zoom;
 
 extern const uint32_t N_B;
 extern const uint32_t N_DEC_B;
@@ -1638,7 +1643,7 @@ extern long currentFreqA;
 extern long currentFreqAOld2;
 extern long currentFreqB;
 extern long currentFreqBOld2;
-extern long currentWPM;
+//extern long currentWPM;
 //extern long frequencyCorrection;
 extern long incrementValues[];
 extern long lastFrequencies[][2];
@@ -1955,7 +1960,7 @@ extern float32_t sample_meanR;
 extern float32_t sample_meanLNew;
 extern float32_t sample_meanRNew;
 extern float32_t save_volts;
-extern float32_t sidetoneVolume;
+//extern float32_t sidetoneVolume;
 extern const float32_t volumeLog[101];
 extern float32_t slope_constant;
 extern float32_t spectrum_display_scale;          // 30.0
@@ -2225,7 +2230,7 @@ int  SetI2SFreq(int freq);
 void SetIIRCoeffs(float32_t f0, float32_t Q, float32_t sample_rate, uint8_t filter_type);
 void SetKeyType();
 void SetKeyPowerUp();
-void SetSidetoneVolume();  // Abandon this function if encoder-based sidetone volume works.  KF5N August 29, 2023
+//void SetSidetoneVolume();  // Abandon this function if encoder-based sidetone volume works.  KF5N August 29, 2023
 void SetSideToneVolume();  // This function uses encoder to set sidetone volume.  KF5N August 29, 2023
 long SetTransmitDelay();
 void SetTransmitDitLength(int wpm);     // JJP 8/19/23

@@ -31,7 +31,7 @@
 //====================== System specific ===============
 #define CURRENT_FREQ_A            7200000                                   // VFO_A
 #define CURRENT_FREQ_B            7030000                                   // VFO_B
-#define DEFAULTFREQINCREMENT 		  4                                         // Default: (10, 50, 100, 250, 1000, 10000Hz)
+#define DEFAULTFREQINCREMENT		  4                                         // Default: (10, 50, 100, 250, 1000, 10000Hz)
 #define DEFAULT_POWER_LEVEL       10                                        // Startup power level. Probably 20 for most people
 #define FAST_TUNE_INCREMENT    	  1			 		                                // Default from above for fine tune
 #define SPLASH_DELAY              4000L                                     // How long to show Splash screen. Use 1000 for testing, 4000 normally
@@ -44,5 +44,5 @@
 #define RAY_LENGTH                190
 
 // Set multiplication factors for your QSD and QSE boards.
-#define MASTER_CLK_MULT_RX 2
-#define MASTER_CLK_MULT_TX 4
+#define MASTER_CLK_MULT_RX 4
+#define MASTER_CLK_MULT_TX 2

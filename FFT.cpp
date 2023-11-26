@@ -13,18 +13,18 @@
     void
 *****/
 void ZoomFFTPrep()
-{ // take value of spectrum_zoom and initialize IIR lowpass and FIR decimation filters for the right values
+{ // take value of EEPROMData.spectrum_zoom and initialize IIR lowpass and FIR decimation filters for the right values
 
   tft.fillRect(SPECTRUM_LEFT_X , SPECTRUM_TOP_Y + 1, MAX_WATERFALL_WIDTH , SPECTRUM_HEIGHT - 2,  RA8875_BLACK);
-  float32_t Fstop_Zoom = 0.5 * (float32_t) SR[SampleRate].rate / (1 << spectrum_zoom);
+  float32_t Fstop_Zoom = 0.5 * (float32_t) SR[SampleRate].rate / (1 << EEPROMData.spectrum_zoom);
   CalcFIRCoeffs(Fir_Zoom_FFT_Decimate_coeffs, 4, Fstop_Zoom, 60, 0, 0.0, (float32_t)SR[SampleRate].rate);
 
-  if (spectrum_zoom < 7)
+  if (EEPROMData.spectrum_zoom < 7)
   {
-    Fir_Zoom_FFT_Decimate_I.M = (1 << spectrum_zoom);
-    Fir_Zoom_FFT_Decimate_Q.M = (1 << spectrum_zoom);
-    IIR_biquad_Zoom_FFT_I.pCoeffs = mag_coeffs[spectrum_zoom];
-    IIR_biquad_Zoom_FFT_Q.pCoeffs = mag_coeffs[spectrum_zoom];
+    Fir_Zoom_FFT_Decimate_I.M = (1 << EEPROMData.spectrum_zoom);
+    Fir_Zoom_FFT_Decimate_Q.M = (1 << EEPROMData.spectrum_zoom);
+    IIR_biquad_Zoom_FFT_I.pCoeffs = mag_coeffs[EEPROMData.spectrum_zoom];
+    IIR_biquad_Zoom_FFT_Q.pCoeffs = mag_coeffs[EEPROMData.spectrum_zoom];
   } else { // we have to decimate by 128 for all higher magnifications, arm routine does not allow for higher decimations
     Fir_Zoom_FFT_Decimate_I.M = 128;
     Fir_Zoom_FFT_Decimate_Q.M = 128;
@@ -53,12 +53,12 @@ void ZoomFFTExe(uint32_t blockSize)  //AFP changed resolution 03-12-21  Only for
     int sample_no = SPECTRUM_RES;                       // sample_no is 256, in high magnify modes it is smaller!
     // but it must never be > SPECTRUM_RES
 
-    sample_no = BUFFER_SIZE * N_BLOCKS / (1 << spectrum_zoom);
+    sample_no = BUFFER_SIZE * N_BLOCKS / (1 << EEPROMData.spectrum_zoom);
     if (sample_no > SPECTRUM_RES) {
       sample_no = SPECTRUM_RES;
     }
 
-    if (spectrum_zoom != SPECTRUM_ZOOM_1) {                                                       //For magnifications >1
+    if (EEPROMData.spectrum_zoom != SPECTRUM_ZOOM_1) {                                                       //For magnifications >1
       arm_biquad_cascade_df1_f32 (&IIR_biquad_Zoom_FFT_I, float_buffer_L, x_buffer, blockSize);
       arm_biquad_cascade_df1_f32 (&IIR_biquad_Zoom_FFT_Q, float_buffer_R, y_buffer, blockSize);
       // decimation
@@ -81,9 +81,9 @@ void ZoomFFTExe(uint32_t blockSize)  //AFP changed resolution 03-12-21  Only for
     } else {                                                // I have to think about this:
       zoom_display = 0;                                     // when do we want to display a new spectrum?
     }
-    float32_t multiplier = (float32_t)spectrum_zoom;
-    if (spectrum_zoom > SPECTRUM_ZOOM_8) { // && spectrum_zoom < SPECTRUM_ZOOM_1024) {
-      multiplier = (float32_t)(1 << spectrum_zoom);
+    float32_t multiplier = (float32_t)EEPROMData.spectrum_zoom;
+    if (EEPROMData.spectrum_zoom > SPECTRUM_ZOOM_8) { // && EEPROMData.spectrum_zoom < EEPROMData.spectrum_zoom_1024) {
+      multiplier = (float32_t)(1 << EEPROMData.spectrum_zoom);
     }
     for (int idx = 0; idx < SPECTRUM_RES; idx++) {
       buffer_spec_FFT[idx * 2 + 0] =  multiplier * FFT_ring_buffer_x[zoom_sample_ptr] * (0.5 - 0.5 * cos(6.28 * idx / SPECTRUM_RES)); //Hanning Window AFP 03-12-21
@@ -128,7 +128,7 @@ void ZoomFFTExe(uint32_t blockSize)  //AFP changed resolution 03-12-21  Only for
     }
 
     for (int16_t x = 0; x < SPECTRUM_RES; x++) {
-      pixelnew[x] = displayScale[currentScale].baseOffset + bands[currentBand].pixel_offset + (int16_t)(displayScale[currentScale].dBScale * log10f_fast(FFT_spec[x]));
+      pixelnew[x] = displayScale[EEPROMData.currentScale].baseOffset + bands[currentBand].pixel_offset + (int16_t)(displayScale[EEPROMData.currentScale].dBScale * log10f_fast(FFT_spec[x]));
       if (pixelnew[x] > 220) {
         pixelnew[x] = 220;
       }
@@ -181,9 +181,9 @@ void CalcZoom1Magn()
     FFT_spec_old[x] = spec_help;
 
 #ifdef USE_LOG10FAST
-    pixelnew[x] = displayScale[currentScale].baseOffset + bands[currentBand].pixel_offset + (int16_t) (displayScale[currentScale].dBScale * log10f_fast(FFT_spec[x]));
+    pixelnew[x] = displayScale[EEPROMData.currentScale].baseOffset + bands[currentBand].pixel_offset + (int16_t) (displayScale[EEPROMData.currentScale].dBScale * log10f_fast(FFT_spec[x]));
 #else
-    pixelnew[x] = displayScale[currentScale].baseOffset + bands[currentBand].pixel_offset + (int16_t) (displayScale[currentScale].dBScale * log10f(spec_help));
+    pixelnew[x] = displayScale[EEPROMData.currentScale].baseOffset + bands[currentBand].pixel_offset + (int16_t) (displayScale[EEPROMData.currentScale].dBScale * log10f(spec_help));
 #endif
   }
  }

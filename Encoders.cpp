@@ -19,7 +19,7 @@ void FilterSetSSB() {
   if (filter_pos != last_filter_pos) {
     tft.writeTo(L2);  // Clear layer 2.  KF5N July 31, 2023
     tft.clearMemory();
-    if(xmtMode == CW_MODE) BandInformation(); 
+    if(EEPROMData.xmtMode == CW_MODE) BandInformation(); 
     tft.fillRect((MAX_WATERFALL_WIDTH + SPECTRUM_LEFT_X) / 2 - filterWidth, SPECTRUM_TOP_Y + 17, filterWidth, SPECTRUM_HEIGHT - 20, RA8875_BLACK);  // Erase old filter background
     filter_change = (filter_pos - last_filter_pos);
     if (filter_change >= 1) {
@@ -106,7 +106,7 @@ void EncoderCenterTune() {
 
   //centerTuneFlag = 1;  //AFP 10-03-22  Not used in revised tuning scheme.  KF5N July 22, 2023
 
-  if (xmtMode == CW_MODE && decoderFlag == DECODE_ON) {  // No reason to reset if we're not doing decoded CW AFP 09-27-22
+  if (EEPROMData.xmtMode == CW_MODE && EEPROMData.decoderFlag == DECODE_ON) {  // No reason to reset if we're not doing decoded CW AFP 09-27-22
     ResetHistograms();
   }
 
@@ -119,9 +119,9 @@ void EncoderCenterTune() {
       tuneChange = -1L;
       break;
   }
-  //  newFreq = (long)freqIncrement * tuneChange;
+  //  newFreq = (long)EEPROMData.freqIncrement * tuneChange;
 
-  centerFreq += ((long)freqIncrement * tuneChange);  // tune the master vfo
+  centerFreq += ((long)EEPROMData.freqIncrement * tuneChange);  // tune the master vfo
 
 
   //  if (centerFreq != oldFreq) {           // If the frequency has changed...
@@ -167,23 +167,23 @@ void EncoderVolume()  //============================== AFP 10-22-22  Begin new
       adjustVolEncoder = -1;
       break;
   }
-  audioVolume += adjustVolEncoder; 
+  EEPROMData.audioVolume += adjustVolEncoder; 
   // simulate log taper.  As we go higher in volume, the increment increases.
 
-  if (audioVolume < (MIN_AUDIO_VOLUME + 10)) increment = 2;
-  else if (audioVolume < (MIN_AUDIO_VOLUME + 20)) increment = 3;
-  else if (audioVolume < (MIN_AUDIO_VOLUME + 30)) increment = 4;
-  else if (audioVolume < (MIN_AUDIO_VOLUME + 40)) increment = 5;
-  else if (audioVolume < (MIN_AUDIO_VOLUME + 50)) increment = 6;
-  else if (audioVolume < (MIN_AUDIO_VOLUME + 60)) increment = 7;
+  if (EEPROMData.audioVolume < (MIN_AUDIO_VOLUME + 10)) increment = 2;
+  else if (EEPROMData.audioVolume < (MIN_AUDIO_VOLUME + 20)) increment = 3;
+  else if (EEPROMData.audioVolume < (MIN_AUDIO_VOLUME + 30)) increment = 4;
+  else if (EEPROMData.audioVolume < (MIN_AUDIO_VOLUME + 40)) increment = 5;
+  else if (EEPROMData.audioVolume < (MIN_AUDIO_VOLUME + 50)) increment = 6;
+  else if (EEPROMData.audioVolume < (MIN_AUDIO_VOLUME + 60)) increment = 7;
   else increment = 8;
 
 
-  if (audioVolume > MAX_AUDIO_VOLUME) {
-    audioVolume = MAX_AUDIO_VOLUME;
+  if (EEPROMData.audioVolume > MAX_AUDIO_VOLUME) {
+    EEPROMData.audioVolume = MAX_AUDIO_VOLUME;
   } else  {
-    if (audioVolume < MIN_AUDIO_VOLUME) 
-      audioVolume = MIN_AUDIO_VOLUME;
+    if (EEPROMData.audioVolume < MIN_AUDIO_VOLUME) 
+      EEPROMData.audioVolume = MIN_AUDIO_VOLUME;
   }
 
   volumeChangeFlag = true;  // Need this because of unknown timing in display updating.
@@ -301,7 +301,7 @@ int GetEncoderValue(int minValue, int maxValue, int startValue, int increment, c
 *****/
 int SetWPM() {
   int val;
-  long lastWPM = currentWPM;
+  long lastWPM = EEPROMData.currentWPM;
 
   tft.setFontScale((enum RA8875tsize)1);
 
@@ -310,12 +310,12 @@ int SetWPM() {
   tft.setCursor(SECONDARY_MENU_X + 1, MENUS_Y + 1);
   tft.print("current WPM:");
   tft.setCursor(SECONDARY_MENU_X + 200, MENUS_Y + 1);
-  tft.print(currentWPM);
+  tft.print(EEPROMData.currentWPM);
 
   while (true) {
     if (filterEncoderMove != 0) {       // Changed encoder?
-      currentWPM += filterEncoderMove;  // Yep
-      lastWPM = currentWPM;
+      EEPROMData.currentWPM += filterEncoderMove;  // Yep
+      lastWPM = EEPROMData.currentWPM;
       if (lastWPM < 5)    // Set minimum keyer speed to 5 wpm.  KF5N August 20, 2023
         lastWPM = 5;
       else if (lastWPM > MAX_WPM)
@@ -330,8 +330,8 @@ int SetWPM() {
     val = ReadSelectedPushButton();  // Read pin that controls all switches
     val = ProcessButtonPress(val);
     if (val == MENU_OPTION_SELECT) {  // Make a choice??
-      currentWPM = lastWPM;
-      EEPROMData.currentWPM = currentWPM;
+      EEPROMData.currentWPM = lastWPM;
+      //EEPROMData.EEPROMData.currentWPM = EEPROMData.currentWPM;
       UpdateWPMField();
       break;
     }
@@ -339,7 +339,7 @@ int SetWPM() {
   UpdateEEPROMSyncIndicator(syncEEPROM = 0);  // EEPROM and current values not the same
   tft.setTextColor(RA8875_WHITE);
   EraseMenus();
-  return currentWPM;
+  return EEPROMData.currentWPM;
 }
 
 /*****
@@ -354,7 +354,7 @@ int SetWPM() {
 long SetTransmitDelay()  // new function JJP 9/1/22
 {
   int val;
-  long lastDelay = cwTransmitDelay;
+  long lastDelay = EEPROMData.cwTransmitDelay;
   long increment = 250;  // Means a quarter second change per detent
 
   tft.setFontScale((enum RA8875tsize)1);
@@ -364,7 +364,7 @@ long SetTransmitDelay()  // new function JJP 9/1/22
   tft.setCursor(SECONDARY_MENU_X - 149, MENUS_Y + 1);
   tft.print("current delay:");
   tft.setCursor(SECONDARY_MENU_X + 79, MENUS_Y + 1);
-  tft.print(cwTransmitDelay);
+  tft.print(EEPROMData.cwTransmitDelay);
 
   while (true) {
     if (filterEncoderMove != 0) {                  // Changed encoder?
@@ -382,15 +382,15 @@ long SetTransmitDelay()  // new function JJP 9/1/22
     val = ProcessButtonPress(val);
     //MyDelay(150L);  //ALF 09-22-22
     if (val == MENU_OPTION_SELECT) {  // Make a choice??
-      cwTransmitDelay = lastDelay;
-      EEPROMData.cwTransmitDelay = cwTransmitDelay;
+      EEPROMData.cwTransmitDelay = lastDelay;
+      //EEPROMData.EEPROMData.cwTransmitDelay = EEPROMData.cwTransmitDelay;
       EEPROMWrite();
       break;
     }
   }
   tft.setTextColor(RA8875_WHITE);
   EraseMenus();
-  return cwTransmitDelay;
+  return EEPROMData.cwTransmitDelay;
 }
 /*****
   Purpose: Fine tune control.
@@ -417,17 +417,17 @@ FASTRUN  // Causes function to be allocated in RAM1 at startup for fastest perfo
       fineTuneEncoderMove = -1L;
     }
   }
-  NCOFreq += stepFineTune * fineTuneEncoderMove;  //AFP 11-01-22
+  NCOFreq += EEPROMData.stepFineTune * fineTuneEncoderMove;  //AFP 11-01-22
   centerTuneFlag = 1;
   // ============  AFP 10-28-22
-  if (activeVFO == VFO_A) {
+  if (EEPROMData.activeVFO == VFO_A) {
     currentFreqA = centerFreq + NCOFreq;  //AFP 10-05-22
   } else {
     currentFreqB = centerFreq + NCOFreq;  //AFP 10-05-22
   }
   // ===============  Recentering at band edges ==========
-  if (spectrum_zoom != 0) {
-    if (NCOFreq >= (95000 / (1 << spectrum_zoom)) || NCOFreq < (-93000 / (1 << spectrum_zoom))) {  // 47500 with 2x zoom.
+  if (EEPROMData.spectrum_zoom != 0) {
+    if (NCOFreq >= (95000 / (1 << EEPROMData.spectrum_zoom)) || NCOFreq < (-93000 / (1 << EEPROMData.spectrum_zoom))) {  // 47500 with 2x zoom.
       centerTuneFlag = 0;
       resetTuningFlag = 1;
       return;

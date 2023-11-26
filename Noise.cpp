@@ -13,7 +13,7 @@
 *****/
 int NROptions() //AFP 09-19-22 Moved here from Menu Proc Revised
 {
-  switch (nrOptionSelect) {
+  switch (EEPROMData.nrOptionSelect) {
     case 0:                                 // Off
       NR_Index=0;
       break;

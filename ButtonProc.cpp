@@ -69,7 +69,7 @@ void ButtonBandIncrease() {
     currentBand = 0;                     // Yep. Roll to list front.
   }
   NCOFreq = 0L;
-  switch (activeVFO) {
+  switch (EEPROMData.activeVFO) {
     case VFO_A:
       tempIndex = currentBandA;
       if (save_last_frequency == 1) {
@@ -136,7 +136,7 @@ void ButtonBandIncrease() {
   tft.writeTo(L2);
   tft.clearMemory();
   tft.writeTo(L1);
-  if(xmtMode == CW_MODE) BandInformation(); 
+  if(EEPROMData.xmtMode == CW_MODE) BandInformation(); 
   DrawBandWidthIndicatorBar();
   DrawFrequencyBarValue();
   UpdateDecoderField();
@@ -162,7 +162,7 @@ void ButtonBandDecrease() {
     currentBand = NUMBER_OF_BANDS - 1;  // Yep. Roll to list end.
   }
 
-  switch (activeVFO) {
+  switch (EEPROMData.activeVFO) {
     case VFO_A:
       if (save_last_frequency == 1) {
         lastFrequencies[tempIndex][VFO_A] = TxRxFreq;
@@ -235,7 +235,7 @@ void ButtonBandDecrease() {
   tft.writeTo(L2);
   tft.clearMemory();
   tft.writeTo(L1);
-  if(xmtMode == CW_MODE) BandInformation(); 
+  if(EEPROMData.xmtMode == CW_MODE) BandInformation(); 
   DrawBandWidthIndicatorBar();
   DrawFrequencyBarValue();
   UpdateDecoderField();
@@ -259,9 +259,9 @@ void ButtonZoom() {
     zoomIndex = 0;
   }
   if (zoomIndex <= 0)
-    spectrum_zoom = 0;
+    EEPROMData.spectrum_zoom = 0;
   else
-    spectrum_zoom = zoomIndex;
+    EEPROMData.spectrum_zoom = zoomIndex;
   ZoomFFTPrep();
   UpdateZoomField();
   tft.writeTo(L2);  // Clear layer 2.  KF5N July 31, 2023
@@ -313,7 +313,7 @@ void ButtonDemodMode() {
   ControlFilterF();
   tft.writeTo(L2);  // Destroy the bandwidth indicator bar.  KF5N July 30, 2023
   tft.clearMemory();
-  if(xmtMode == CW_MODE) BandInformation(); 
+  if(EEPROMData.xmtMode == CW_MODE) BandInformation(); 
   DrawBandWidthIndicatorBar();  // Restory the bandwidth indicator bar.  KF5N July 30, 2023
   FilterBandwidth();
   DrawSMeterContainer();
@@ -334,10 +334,10 @@ void ButtonDemodMode() {
 *****/
 void ButtonMode()  //====== Changed AFP 10-05-22  =================
 {
-  if (xmtMode == CW_MODE) {  // Toggle the current mode
-    xmtMode = SSB_MODE;
+  if (EEPROMData.xmtMode == CW_MODE) {  // Toggle the current mode
+    EEPROMData.xmtMode = SSB_MODE;
   } else {
-    xmtMode = CW_MODE;
+    EEPROMData.xmtMode = CW_MODE;
   }
   //fLoCutOld = bands[currentBand].FLoCut;
   //fHiCutOld = bands[currentBand].FHiCut;
@@ -363,7 +363,7 @@ void ButtonMode()  //====== Changed AFP 10-05-22  =================
   ShowTransmitReceiveStatus();
   ShowFrequency();
   // Draw or not draw CW filter graphics to audio spectrum area.  KF5N July 30, 2023
-  if(xmtMode == SSB_MODE) {
+  if(EEPROMData.xmtMode == SSB_MODE) {
   tft.writeTo(L2);
   tft.clearMemory();
   } else BandInformation();
@@ -381,9 +381,9 @@ void ButtonMode()  //====== Changed AFP 10-05-22  =================
 *****/
 void ButtonNR()  //AFP 09-19-22 update
 {
-  nrOptionSelect++;
-  if (nrOptionSelect > 3) {
-    nrOptionSelect = 0;
+  EEPROMData.nrOptionSelect++;
+  if (EEPROMData.nrOptionSelect > 3) {
+    EEPROMData.nrOptionSelect = 0;
   }
   NROptions();  //AFP 09-19-22
   UpdateNoiseField();
@@ -414,7 +414,7 @@ void ButtonNotchFilter() {
     int           the current noise floor value
 *****/
 int ButtonSetNoiseFloor() {
-  int floor = currentNoiseFloor[currentBand];   // KF5N
+  int floor = EEPROMData.currentNoiseFloor[currentBand];   // KF5N
   int val;
 
   tft.setFontScale((enum RA8875tsize)1);
@@ -425,7 +425,7 @@ int ButtonSetNoiseFloor() {
   tft.setCursor(SECONDARY_MENU_X - 98, MENUS_Y + 1);
   tft.print("Pixels above axis:");
   tft.setCursor(SECONDARY_MENU_X + 200, MENUS_Y + 1);
-  tft.print(currentNoiseFloor[currentBand]);
+  tft.print(EEPROMData.currentNoiseFloor[currentBand]);
   MyDelay(150L);
 
   while (true) {
@@ -461,8 +461,8 @@ int ButtonSetNoiseFloor() {
           floor = SPECTRUM_BOTTOM - 50;
       }
       */
-      currentNoiseFloor[currentBand]             = floor;
-      EEPROMData.spectrumNoiseFloor              = floor;
+    //  EEPROMData.currentNoiseFloor[currentBand]             = floor;
+//      EEPROMData.spectrumNoiseFloor              = floor;
       EEPROMData.currentNoiseFloor[currentBand]  = floor;
       EEPROMWrite();
       break;
@@ -478,7 +478,7 @@ int ButtonSetNoiseFloor() {
   tft.writeTo(L2);
   DrawFrequencyBarValue();
   tft.writeTo(L1);
-  return spectrumNoiseFloor;
+  return EEPROMData.spectrumNoiseFloor;
 }
 
 /*****
@@ -541,9 +541,9 @@ void ResetZoom(int zoomIndex1) {
     zoomIndex1 = 0;
   }
   if (zoomIndex1 <= 0)
-    spectrum_zoom = 0;
+    EEPROMData.spectrum_zoom = 0;
   else
-    spectrum_zoom = zoomIndex1;
+    EEPROMData.spectrum_zoom = zoomIndex1;
 
   ZoomFFTPrep();
   UpdateZoomField();
@@ -588,7 +588,7 @@ void ButtonFrequencyEntry() {
   int key;
   int numdigits = 0;  // number of digits entered
   int pushButtonSwitchIndex;
-  lastFrequencies[currentBand][activeVFO] = TxRxFreq;
+  lastFrequencies[currentBand][EEPROMData.activeVFO] = TxRxFreq;
   //save_last_frequency = false;                    // prevents crazy frequencies when you change bands/save_last_frequency = true;
   // Arrays for allocating values associated with keys and switches - choose whether USB keypad or analogue switch matrix
   // USB keypad and analogue switch matrix
@@ -783,10 +783,10 @@ void ButtonFrequencyEntry() {
   SetFreq();  // Used here instead of centerTuneFlag.  KF5N July 22, 2023
   //}
   if (save_last_frequency == 1) {
-    lastFrequencies[currentBand][activeVFO] = enteredF;
+    lastFrequencies[currentBand][EEPROMData.activeVFO] = enteredF;
   } else {
     if (save_last_frequency == 0) {
-      lastFrequencies[currentBand][activeVFO] = TxRxFreqOld;
+      lastFrequencies[currentBand][EEPROMData.activeVFO] = TxRxFreqOld;
     }
   }
   tft.fillRect(0, 0, 799, 479, RA8875_BLACK);   // Clear layer 2  JJP 7/23/23
@@ -804,7 +804,7 @@ void ButtonFrequencyEntry() {
   // Draw or not draw CW filter graphics to audio spectrum area.  KF5N July 30, 2023
   tft.writeTo(L2);
   tft.clearMemory();
-  if(xmtMode == CW_MODE) BandInformation(); 
+  if(EEPROMData.xmtMode == CW_MODE) BandInformation(); 
   DrawBandWidthIndicatorBar();
   RedrawDisplayScreen(); // KD0RC
 }

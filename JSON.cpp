@@ -35,13 +35,13 @@ FLASHMEM void loadConfiguration(const char *filename, config_t &EEPROMData) {
   // How to copy numbers:
 //  EEPROMData.versionSettings = doc["versionSettings"];
   strlcpy(EEPROMData.versionSettings, doc["versionSettings"] | "t41pp.0", 10);
-  EEPROMData.AGCMode = doc["AGCMode"];
-  EEPROMData.audioVolume = doc["audioVolume"];
+  EEPROMData.AGCMode = doc["EEPROMData.AGCMode"];
+  EEPROMData.AGCMode = doc["EEPROMData.AGCMode"];
   EEPROMData.rfGainAllBands = doc["rfGainAllBands"];
   EEPROMData.spectrumNoiseFloor = doc["spectrumNoiseFloor"];
   EEPROMData.tuneIndex = doc["tuneIndex"];
   EEPROMData.stepFineTune = doc["stepFineTune"];
-  EEPROMData.powerLevel = doc["powerLevel"];
+  EEPROMData.transmitPowerLevel = doc["powerLevel"];
   EEPROMData.xmtMode = doc["xmtMode"];
   EEPROMData.nrOptionSelect = doc["nrOptionSelect"];
   EEPROMData.currentScale = doc["currentScale"];
@@ -114,8 +114,8 @@ EEPROMData.currentNoiseFloor[0] = doc["currentNoiseFloor"][0];
   //  Now copy the struct data into the Global variables which are used by the radio.
   EEPROMRead();
   //Serial.printf("myCall after EEPROMRead() = %s\n", myCall);
-  //Serial.printf("AGCMode after EEPROMRead() = %d\n", AGCMode);
-Serial.printf("audioVolume after EEPROMRead() = %d\n", audioVolume);
+  //Serial.printf("EEPROMData.AGCMode after EEPROMRead() = %d\n", EEPROMData.AGCMode);
+Serial.printf("EEPROMData.AGCMode after EEPROMRead() = %d\n", EEPROMData.AGCMode);
 
 
 }
@@ -142,13 +142,13 @@ FLASHMEM void saveConfiguration(const char *filename, const config_t &EEPROMData
   Serial.printf("EEPROMData.versionSettings = %s\n", EEPROMData.versionSettings);
   doc["versionSettings"] = EEPROMData.versionSettings;
   doc["myCall"] = EEPROMData.myCall;
-  doc["AGCMode"] = EEPROMData.AGCMode;
-  doc["audioVolume"] = EEPROMData.audioVolume;
+  doc["EEPROMData.AGCMode"] = EEPROMData.AGCMode;
+  doc["EEPROMData.AGCMode"] = EEPROMData.AGCMode;
   doc["rfGainAllBands"] = EEPROMData.rfGainAllBands;
   doc["spectrumNoiseFloor"] = EEPROMData.spectrumNoiseFloor;
   doc["tuneIndex"] = EEPROMData.tuneIndex;
   doc["stepFineTune"] = EEPROMData.stepFineTune;
-  doc["powerLevel"] = EEPROMData.powerLevel;
+  doc["powerLevel"] = EEPROMData.transmitPowerLevel;
   doc["xmtMode"] = EEPROMData.xmtMode;
   doc["nrOptionSelect"] = EEPROMData.nrOptionSelect;
   doc["currentScale"] = EEPROMData.currentScale;

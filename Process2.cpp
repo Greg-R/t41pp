@@ -9,7 +9,7 @@
 int val;
 int corrChange;
 float correctionIncrement;  //AFP 2-7-23
-int userScale, userZoomIndex, userXmtMode;
+int userScale, userZoomIndex, userxmtMode;
 int transmitPowerLevelTemp;
 /*****
   Purpose: Set up prior to IQ calibrations.  New function.  KF5N August 14, 2023
@@ -29,13 +29,13 @@ void CalibratePreamble(int setZoom) {
   correctionIncrement = 0.01;  //AFP 2-7-23
   IQCalType = 0;
   radioState = CW_TRANSMIT_STRAIGHT_STATE;      // KF5N
-  transmitPowerLevelTemp = transmitPowerLevel;  //AFP 05-11-23
-  transmitPowerLevel = 5;                       //AFP 02-09-23
-  powerOutCW[currentBand] = (-.0133 * transmitPowerLevel * transmitPowerLevel + .7884 * transmitPowerLevel + 4.5146) * CWPowerCalibrationFactor[currentBand];
+  transmitPowerLevelTemp = EEPROMData.transmitPowerLevel;  //AFP 05-11-23
+  EEPROMData.transmitPowerLevel = 5;                       //AFP 02-09-23
+  powerOutCW[currentBand] = (-.0133 * EEPROMData.transmitPowerLevel * EEPROMData.transmitPowerLevel + .7884 * EEPROMData.transmitPowerLevel + 4.5146) * CWPowerCalibrationFactor[currentBand];
   modeSelectOutExL.gain(0, powerOutCW[currentBand]);  //AFP 10-21-22
   modeSelectOutExR.gain(0, powerOutCW[currentBand]);  //AFP 10-21-22
-  userXmtMode = xmtMode;          // Store the user's mode setting.  KF5N July 22, 2023
-  userZoomIndex = spectrum_zoom;  // Save the zoom index so it can be reset at the conclusion.  KF5N August 12, 2023
+  userxmtMode = EEPROMData.xmtMode;          // Store the user's mode setting.  KF5N July 22, 2023
+  userZoomIndex = EEPROMData.spectrum_zoom;  // Save the zoom index so it can be reset at the conclusion.  KF5N August 12, 2023
   zoomIndex = setZoom - 1;
   ButtonZoom();
   tft.writeTo(L2);  // Erase the bandwidth bar.  KF5N August 16, 2023
@@ -56,8 +56,8 @@ void CalibratePreamble(int setZoom) {
   tft.print("Incr= ");
   tft.setCursor(400, 110);
   tft.print(correctionIncrement, 3);
-  userScale = currentScale;  //  Remember user preference so it can be reset when done.  KF5N
-  currentScale = 1;          //  Set vertical scale to 10 dB during calibration.  KF5N
+  userScale = EEPROMData.currentScale;  //  Remember user preference so it can be reset when done.  KF5N
+  EEPROMData.currentScale = 1;          //  Set vertical scale to 10 dB during calibration.  KF5N
   updateDisplayFlag = 0;
   digitalWrite(MUTE, LOW);  //turn off mute
   xrState = RECEIVE_STATE;
@@ -104,13 +104,13 @@ void CalibratePrologue() {
   xrState = RECEIVE_STATE;
   calibrateFlag = 0;  // KF5N
   calFreqShift = 0;
-  currentScale = userScale;                     //  Restore vertical scale to user preference.  KF5N
+  EEPROMData.currentScale = userScale;                     //  Restore vertical scale to user preference.  KF5N
   ShowSpectrumdBScale();
-  xmtMode = userXmtMode;   // Restore the user's floor setting.  KF5N July 27, 2023
-  transmitPowerLevel = transmitPowerLevelTemp;  // Restore the user's transmit power level setting.  KF5N August 15, 2023
+  EEPROMData.xmtMode = userxmtMode;   // Restore the user's floor setting.  KF5N July 27, 2023
+  //EEPROMData.transmitPowerLevel = EEPROMData.transmitPowerLevelTemp;  // Restore the user's transmit power level setting.  KF5N August 15, 2023
   EEPROMWrite();                                // Save calibration numbers and configuration.  KF5N August 12, 2023
   zoomIndex = userZoomIndex - 1;
-  ButtonZoom();     // Restore the user's zoom setting.  Note that this function also modifies spectrum_zoom.
+  ButtonZoom();     // Restore the user's zoom setting.  Note that this function also modifies EEPROMData.spectrum_zoom.
   EEPROMWrite();                                // Save calibration numbers and configuration.  KF5N August 12, 2023
   tft.writeTo(L2);  // Clear layer 2.  KF5N July 31, 2023
   tft.clearMemory();
@@ -336,7 +336,7 @@ void ProcessIQData2() {
       Q_in_R.freeBuffer();
     }
 
-    rfGainValue = pow(10, (float)rfGainAllBands / 20);                                   //AFP 2-11-23
+    rfGainValue = pow(10, (float)EEPROMData.rfGainAllBands / 20);                                   //AFP 2-11-23
     arm_scale_f32(float_buffer_L, rfGainValue, float_buffer_L, BUFFER_SIZE * N_BLOCKS);  //AFP 2-11-23
     arm_scale_f32(float_buffer_R, rfGainValue, float_buffer_R, BUFFER_SIZE * N_BLOCKS);  //AFP 2-11-23
 
@@ -358,12 +358,12 @@ void ProcessIQData2() {
     }
     FreqShift1();  // Why done here? KF5N
 
-    if (spectrum_zoom == SPECTRUM_ZOOM_1) {  // && display_S_meter_or_spectrum_state == 1)
+    if (EEPROMData.spectrum_zoom == SPECTRUM_ZOOM_1) {  // && display_S_meter_or_spectrum_state == 1)
       zoom_display = 1;
       CalcZoom1Magn();  //AFP Moved to display function
     }
 
-    if (spectrum_zoom != SPECTRUM_ZOOM_1) {
+    if (EEPROMData.spectrum_zoom != SPECTRUM_ZOOM_1) {
       //AFP  Used to process Zoom>1 for display
       ZoomFFTExe(BUFFER_SIZE * N_BLOCKS);  // there seems to be a BUG here, because the blocksize has to be adjusted according to magnification,
       // does not work for magnifications > 8
@@ -499,8 +499,8 @@ float PlotCalSpectrum(int x1, int cal_bins[2], int capture_bins) {
   if (y1_new < 0) y1_new = 0;
 
   // Erase the old spectrum and draw the new spectrum.
-  tft.drawLine(x1, spectrumNoiseFloor - y_old2, x1, spectrumNoiseFloor - y_old, RA8875_BLACK);   // Erase old...
-  tft.drawLine(x1, spectrumNoiseFloor - y1_new, x1, spectrumNoiseFloor - y_new, RA8875_YELLOW);  // Draw new
+  tft.drawLine(x1, EEPROMData.spectrumNoiseFloor - y_old2, x1, EEPROMData.spectrumNoiseFloor - y_old, RA8875_BLACK);   // Erase old...
+  tft.drawLine(x1, EEPROMData.spectrumNoiseFloor - y1_new, x1, EEPROMData.spectrumNoiseFloor - y_new, RA8875_YELLOW);  // Draw new
   pixelCurrent[x1] = pixelnew[x1];                                                               //  This is the actual "old" spectrum!  This is required due to CW interrupts.  Copied to pixelold by the FFT function.
 
   if (calTypeFlag == 0) {  // Receive Cal

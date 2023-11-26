@@ -88,7 +88,7 @@ void FreqShift2()
     if (NCOFreq > 40000L) {
       NCOFreq = 40000L;
     }
-    // centerFreq += freqIncrement;
+    // centerFreq += EEPROMData.freqIncrement;
     currentFreqA = centerFreq + NCOFreq;
     //SetFreq(); //AFP 10-04-22
     //ShowFrequency();
@@ -97,14 +97,14 @@ void FreqShift2()
   encoderStepOld = fineTuneEncoderMove;
   //currentFreqAOld = TxRxFreq;
   TxRxFreq = centerFreq + NCOFreq;
-  //if (abs(currentFreqAOld - TxRxFreq) < 9 * stepFineTune && currentFreqAOld != TxRxFreq) {  // AFP 10-30-22
+  //if (abs(currentFreqAOld - TxRxFreq) < 9 * EEPROMData.stepFineTune && currentFreqAOld != TxRxFreq) {  // AFP 10-30-22
   //  ShowFrequency();
   //  DrawBandWidthIndicatorBar();
   //}
-  if (xmtMode == SSB_MODE ) {
+  if (EEPROMData.xmtMode == SSB_MODE ) {
     sideToneShift = 0;
   } else {
-    if (xmtMode == CW_MODE ) {
+    if (EEPROMData.xmtMode == CW_MODE ) {
       if (bands[currentBand].mode == 1) {
         sideToneShift = CWFreqShift;  // KF5N experiment
       } else {

@@ -243,10 +243,10 @@ void Calculatedbm()
   // width of a 256 tap FFT bin @ 96ksps = 375Hz
   // we have to take into account the magnify mode
   // --> recalculation of bin_BW
-  bin_bandwidth = bin_bandwidth / (1 << spectrum_zoom); // correct bin bandwidth is determined by the Zoom FFT display setting
+  bin_bandwidth = bin_bandwidth / (1 << EEPROMData.spectrum_zoom); // correct bin bandwidth is determined by the Zoom FFT display setting
 
   // in all magnify cases (2x up to 16x) the posbin is in the centre of the spectrum display
-  if (spectrum_zoom != 0) {
+  if (EEPROMData.spectrum_zoom != 0) {
     posbin = 128; // right in the middle!
   } else {
     posbin = 64;

@@ -172,7 +172,7 @@ void ExecuteButtonPress(int val) {
       break;
 
     case DECODER_TOGGLE:  // 13
-      decoderFlag = !decoderFlag;
+      EEPROMData.decoderFlag = !EEPROMData.decoderFlag;
       UpdateDecoderField();
       break;
 
@@ -251,10 +251,10 @@ void ExecuteButtonPress(int val) {
     void
 *****/
 void ButtonFreqIncrement() {
-  tuneIndex--;
-  if (tuneIndex < 0)
-    tuneIndex = MAX_FREQ_INDEX - 1;
-  freqIncrement = incrementValues[tuneIndex];
+  EEPROMData.tuneIndex--;
+  if (EEPROMData.tuneIndex < 0)
+    EEPROMData.tuneIndex = MAX_FREQ_INDEX - 1;
+  EEPROMData.freqIncrement = incrementValues[EEPROMData.tuneIndex];
   //UpdateEEPROMSyncIndicator(0);   //  JJP 7/25/23
   DisplayIncrementField();
 }

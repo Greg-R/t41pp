@@ -92,30 +92,30 @@ void EEPROMRead() {
   EEPROM.get(EEPROM_BASE_ADDRESS, EEPROMData);  // Read as one large chunk
 
   strncpy(versionSettings, EEPROMData.versionSettings, 10);  // KF5N
-  AGCMode = EEPROMData.AGCMode;
-  audioVolume = EEPROMData.audioVolume;  // 4 bytes
-  rfGainAllBands = EEPROMData.rfGainAllBands;
-  spectrumNoiseFloor = EEPROMData.spectrumNoiseFloor;  // AFP 09-26-22
-  tuneIndex = EEPROMData.tuneIndex;
-  stepFineTune = EEPROMData.stepFineTune;
-  transmitPowerLevel = EEPROMData.powerLevel;
-  xmtMode = EEPROMData.xmtMode;                // AFP 09-26-22
-  nrOptionSelect = EEPROMData.nrOptionSelect;  // 1 byte
-  currentScale = EEPROMData.currentScale;
-  spectrum_zoom = EEPROMData.spectrum_zoom;
-  spectrum_display_scale = EEPROMData.spectrum_display_scale;  // 4 bytes
+  // EEPROMData.AGCMode = EEPROMData.EEPROMData.AGCMode;  Use the struct!
+  //audioVolume = EEPROMData.audioVolume;  // 4 bytes
+  //rfGainAllBands = EEPROMData.rfGainAllBands;
+  //spectrumNoiseFloor = EEPROMData.spectrumNoiseFloor;  // AFP 09-26-22
+  //tuneIndex = EEPROMData.tuneIndex;
+  //stepFineTune = EEPROMData.stepFineTune;
+  //transmitPowerLevel = EEPROMData.powerLevel;  Contradiction here!
+  //xmtMode = EEPROMData.xmtMode;                // AFP 09-26-22
+  //nrOptionSelect = EEPROMData.nrOptionSelect;  // 1 byte
+  //currentScale = EEPROMData.currentScale;
+  //spectrum_zoom = EEPROMData.spectrum_zoom;
+  //spectrum_display_scale = EEPROMData.spectrum_display_scale;  // 4 bytes
 
-  CWFilterIndex = EEPROMData.CWFilterIndex;  // Off
-  paddleDit = EEPROMData.paddleDit;
-  paddleDah = EEPROMData.paddleDah;
-  decoderFlag = EEPROMData.decoderFlag;
-  keyType = EEPROMData.keyType;                  // straight key = 0, keyer = 1
-  currentWPM = EEPROMData.currentWPM;            // 4 bytes
-  sidetoneVolume = EEPROMData.sidetoneVolume;    // 4 bytes
-  cwTransmitDelay = EEPROMData.cwTransmitDelay;  // 4 bytes
+  //CWFilterIndex = EEPROMData.CWFilterIndex;  // Off
+  //paddleDit = EEPROMData.paddleDit;
+  //paddleDah = EEPROMData.paddleDah;
+  //decoderFlag = EEPROMData.decoderFlag;
+  //keyType = EEPROMData.keyType;                  // straight key = 0, keyer = 1
+  //currentWPM = EEPROMData.currentWPM;            // 4 bytes
+  //sidetoneVolume = EEPROMData.sidetoneVolume;    // 4 bytes
+  //cwTransmitDelay = EEPROMData.cwTransmitDelay;  // 4 bytes
 
-  activeVFO = EEPROMData.activeVFO;          // 2 bytes
-  freqIncrement = EEPROMData.freqIncrement;  // 4 bytes
+  //activeVFO = EEPROMData.activeVFO;          // 2 bytes
+  //freqIncrement = EEPROMData.freqIncrement;  // 4 bytes
 
   currentBand = EEPROMData.currentBand;                        // 4 bytes
   currentBandA = EEPROMData.currentBandA;                      // 4 bytes
@@ -138,24 +138,24 @@ void EEPROMRead() {
   currentMicGain = EEPROMData.currentMicGain;
 
   //  Note: switch values are read and written to EEPROM only
-  switchThreshholds[0] = EEPROMData.switchValues[0];
-  switchThreshholds[1] = EEPROMData.switchValues[1];
-  switchThreshholds[2] = EEPROMData.switchValues[2];
-  switchThreshholds[3] = EEPROMData.switchValues[3];
-  switchThreshholds[4] = EEPROMData.switchValues[4];
-  switchThreshholds[5] = EEPROMData.switchValues[5];
-  switchThreshholds[6] = EEPROMData.switchValues[6];
-  switchThreshholds[7] = EEPROMData.switchValues[7];
-  switchThreshholds[8] = EEPROMData.switchValues[8];
-  switchThreshholds[9] = EEPROMData.switchValues[9];
-  switchThreshholds[10] = EEPROMData.switchValues[10];
-  switchThreshholds[11] = EEPROMData.switchValues[11];
-  switchThreshholds[12] = EEPROMData.switchValues[12];
-  switchThreshholds[13] = EEPROMData.switchValues[13];
-  switchThreshholds[14] = EEPROMData.switchValues[14];
-  switchThreshholds[15] = EEPROMData.switchValues[15];
-  switchThreshholds[16] = EEPROMData.switchValues[16];
-  switchThreshholds[17] = EEPROMData.switchValues[17];
+  //switchThreshholds[0] = EEPROMData.switchValues[0];
+  //switchThreshholds[1] = EEPROMData.switchValues[1];
+  //switchThreshholds[2] = EEPROMData.switchValues[2];
+  //switchThreshholds[3] = EEPROMData.switchValues[3];
+  //switchThreshholds[4] = EEPROMData.switchValues[4];
+  //switchThreshholds[5] = EEPROMData.switchValues[5];
+  //switchThreshholds[6] = EEPROMData.switchValues[6];
+ // switchThreshholds[7] = EEPROMData.switchValues[7];
+  //switchThreshholds[8] = EEPROMData.switchValues[8];
+  //switchThreshholds[9] = EEPROMData.switchValues[9];
+  //switchThreshholds[10] = EEPROMData.switchValues[10];
+  //switchThreshholds[11] = EEPROMData.switchValues[11];
+  //switchThreshholds[12] = EEPROMData.switchValues[12];
+  //switchThreshholds[13] = EEPROMData.switchValues[13];
+  //switchThreshholds[14] = EEPROMData.switchValues[14];
+  //switchThreshholds[15] = EEPROMData.switchValues[15];
+  //switchThreshholds[16] = EEPROMData.switchValues[16];
+  //switchThreshholds[17] = EEPROMData.switchValues[17];
 
   LPFcoeff = EEPROMData.LPFcoeff;  // 4 bytes
   NR_PSI = EEPROMData.NR_PSI;      // 4 bytes
@@ -219,7 +219,7 @@ void EEPROMRead() {
   lastFrequencies[5][1] = EEPROMData.lastFrequencies[5][1];
   lastFrequencies[6][1] = EEPROMData.lastFrequencies[6][1];
 
-  centerFreq = EEPROMData.lastFrequencies[currentBand][activeVFO];  // 4 bytes
+  centerFreq = EEPROMData.lastFrequencies[currentBand][EEPROMData.activeVFO];  // 4 bytes
   TxRxFreq = centerFreq;  // Need to assign TxRxFreq here or numerous subtle frequency bugs will happen.  KF5N August 7, 2023
 
   //strncpy(EEPROMData.mapFileName, MAP_FILE_NAME, 50);  KF5N
@@ -233,9 +233,9 @@ void EEPROMRead() {
 
   myLat = EEPROMData.myLat;
   myLong = EEPROMData.myLong;
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    currentNoiseFloor[i] = EEPROMData.currentNoiseFloor[i];
-  }
+//  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+//    currentNoiseFloor[i] = EEPROMData.currentNoiseFloor[i];
+//  }
   //DB2OO, 10-SEP-23: We have V049.1 or V049.2 in EEPROM --> just initialize new/changed EEPROMData structure elements
   switch (v049_version) {
     case 1: //V049.1 --> there is no "compressorFlag" yet in the structure --> initalize it, to overwrite junk from EEPROM
@@ -260,20 +260,20 @@ void EEPROMRead() {
 void EEPROMWrite() {
   strncpy(EEPROMData.versionSettings, EEPROMSetVersion(), 9);  // KF5N
 
-  EEPROMData.AGCMode = AGCMode;
-  EEPROMData.CWFilterIndex = CWFilterIndex;
-  EEPROMData.nrOptionSelect = nrOptionSelect;
-  EEPROMData.rfGainAllBands = rfGainAllBands;
+  EEPROMData.AGCMode = EEPROMData.AGCMode;
+//  EEPROMData.CWFilterIndex = CWFilterIndex;
+//  EEPROMData.nrOptionSelect = nrOptionSelect;
+//  EEPROMData.rfGainAllBands = rfGainAllBands;
 
-  EEPROMData.activeVFO = activeVFO;  // 2 bytes
+  //EEPROMData.activeVFO = activeVFO;  // 2 bytes
 
-  EEPROMData.audioVolume = audioVolume;  // 4 bytes
+  //EEPROMData.audioVolume = audioVolume;  // 4 bytes
   EEPROMData.currentBand = currentBand;  // 4 bytes
   EEPROMData.currentBandA = currentBandA;
   EEPROMData.currentBandB = currentBandB;
   EEPROMData.currentFreqA = currentFreqA;  // JJP 7/17/23
   EEPROMData.currentFreqB = currentFreqB;  // JJP 7/17/23
-  EEPROMData.decoderFlag = decoderFlag;
+  //EEPROMData.decoderFlag = decoderFlag;
 
 //  These lines are corrupting the equalizer settings stored in the EEPROM.  KF5N November 13, 2023.
   //for (int i = 0; i < EQUALIZER_CELL_COUNT; i++) {
@@ -281,30 +281,30 @@ void EEPROMWrite() {
   //  EEPROMData.equalizerXmt[i] = xmtEQ_Level[i];
   //}
 
-  EEPROMData.freqIncrement = freqIncrement;              // 4 bytes
-  EEPROMData.keyType = keyType;                          // straight key = 0, keyer = 1
+  //EEPROMData.freqIncrement = freqIncrement;              // 4 bytes
+  //EEPROMData.keyType = keyType;                          // straight key = 0, keyer = 1
   EEPROMData.currentMicThreshold = currentMicThreshold;  // 4 bytes      // AFP 09-22-22
   EEPROMData.currentMicCompRatio = currentMicCompRatio;
   EEPROMData.currentMicAttack = currentMicAttack;
   EEPROMData.currentMicRelease = currentMicRelease;
   EEPROMData.currentMicGain = currentMicGain;
 
-  EEPROMData.paddleDit = paddleDit;
-  EEPROMData.paddleDah = paddleDah;
-  EEPROMData.spectrumNoiseFloor = spectrumNoiseFloor;  // AFP 09-26-22
+  //EEPROMData.paddleDit = paddleDit;
+  //EEPROMData.paddleDah = paddleDah;
+  //EEPROMData.spectrumNoiseFloor = spectrumNoiseFloor;  // AFP 09-26-22
 
-  EEPROMData.tuneIndex = tuneIndex;
-  EEPROMData.stepFineTune = stepFineTune;
+  //EEPROMData.tuneIndex = tuneIndex;
+  //EEPROMData.stepFineTune = stepFineTune;
 
-  EEPROMData.powerLevel = transmitPowerLevel;
-  EEPROMData.currentWPM = currentWPM;  // 4 bytes
-  EEPROMData.xmtMode = xmtMode;        // AFP 09-26-22
+  //EEPROMData.powerLevel = transmitPowerLevel;
+  //EEPROMData.currentWPM = currentWPM;  // 4 bytes
+  //EEPROMData.xmtMode = xmtMode;        // AFP 09-26-22
 
-  EEPROMData.currentScale = currentScale;
-  EEPROMData.spectrum_zoom = spectrum_zoom;
-  EEPROMData.spectrum_display_scale = spectrum_display_scale;  // 4 bytes
-  EEPROMData.sidetoneVolume = sidetoneVolume;                  // 4 bytes
-  EEPROMData.cwTransmitDelay = cwTransmitDelay;                // 4 bytes
+  //EEPROMData.currentScale = currentScale;
+//  EEPROMData.spectrum_zoom = spectrum_zoom;
+  //EEPROMData.spectrum_display_scale = spectrum_display_scale;  // 4 bytes
+  //EEPROMData.sidetoneVolume = sidetoneVolume;                  // 4 bytes
+  //EEPROMData.cwTransmitDelay = cwTransmitDelay;                // 4 bytes
 
   EEPROMData.LPFcoeff = LPFcoeff;  // 4 bytes
   EEPROMData.NR_PSI = NR_PSI;      // 4 bytes
@@ -330,7 +330,7 @@ void EEPROMWrite() {
     EEPROMData.lastFrequencies[i][1] = lastFrequencies[i][1];
   }
 
-  EEPROMData.lastFrequencies[currentBand][activeVFO] = currentFreq;  // 4 bytes
+  EEPROMData.lastFrequencies[currentBand][EEPROMData.activeVFO] = currentFreq;  // 4 bytes
   EEPROMData.lastFrequencies[currentBandA][VFO_A] = currentFreqA;    // 4 bytes
   EEPROMData.lastFrequencies[currentBandB][VFO_B] = currentFreqB;    // 4 bytes
   EEPROMData.freqCorrectionFactor = freqCorrectionFactor;
@@ -345,9 +345,9 @@ void EEPROMWrite() {
 
   EEPROMData.myLat = myLat;
   EEPROMData.myLong = myLong;
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    EEPROMData.currentNoiseFloor[i] = currentNoiseFloor[i];
-  }
+//  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+//    EEPROMData.currentNoiseFloor[i] = currentNoiseFloor[i];
+//  }
   EEPROMData.compressorFlag = compressorFlag;                        // JJP 8/28/23
 
   EEPROM.put(EEPROM_BASE_ADDRESS, EEPROMData);
@@ -373,7 +373,7 @@ void EEPROMShow()
 
   Serial.print("Version                         = ");
   Serial.println(EEPROMData.versionSettings);
-  Serial.print("AGCMode                         = ");
+  Serial.print("EEPROMData.AGCMode                         = ");
   Serial.println(EEPROMData.AGCMode);
   Serial.print("audioVolume                     = ");
   Serial.println(EEPROMData.audioVolume);
@@ -386,7 +386,7 @@ void EEPROMShow()
   Serial.print("stepFineTne                     = ");
   Serial.println(EEPROMData.stepFineTune);
   Serial.print("powerLevel                      = ");
-  Serial.println(EEPROMData.powerLevel);
+  Serial.println(EEPROMData.transmitPowerLevel);
   Serial.print("xmtMode                         = ");
   Serial.println(EEPROMData.xmtMode);
   Serial.print("nrOptionSelect                  = ");
@@ -604,7 +604,7 @@ void EEPROMShow()
   Serial.println(" ");  // JJP 7-3-23
 
   for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    Serial.print("        currentNoiseFloor[");
+    Serial.print("EEPROMData.currentNoiseFloor[");
     Serial.print(i);
     Serial.print("]    = ");
     Serial.println(EEPROMData.currentNoiseFloor[i]);
@@ -680,7 +680,7 @@ void SetFavoriteFrequency() {
       EEPROMData.favoriteFreqs[index] = TxRxFreq;
       syncEEPROM = 0;  // SD EEPROM different that memory EEPROM
       //UpdateEEPROMSyncIndicator(0);       //  JJP 7/25/23
-      if (activeVFO == VFO_A) {
+      if (EEPROMData.activeVFO == VFO_A) {
         currentFreqA = TxRxFreq;
       } else {
         currentFreqB = TxRxFreq;
@@ -760,7 +760,7 @@ void GetFavoriteFrequency() {
 
 
     if (val == MENU_OPTION_SELECT) {  // Make a choice??
-      switch (activeVFO) {
+      switch (EEPROMData.activeVFO) {
         case VFO_A:
           if (currentBandA == NUMBER_OF_BANDS) {  // Incremented too far?
             currentBandA = 0;                     // Yep. Roll to list front.
@@ -819,49 +819,49 @@ void GetFavoriteFrequency() {
 void CopyEEPROM() {
   //  EEPROM.get(EEPROM_BASE_ADDRESS, EEPROMData);                       // Read as one large chunk
 
-  AGCMode = EEPROMData.AGCMode;                // 1 byte
-  CWFilterIndex = EEPROMData.CWFilterIndex;    // Off
-  nrOptionSelect = EEPROMData.nrOptionSelect;  // 1 byte
+  EEPROMData.AGCMode = EEPROMData.AGCMode;                // 1 byte
+  //CWFilterIndex = EEPROMData.CWFilterIndex;    // Off
+  //nrOptionSelect = EEPROMData.nrOptionSelect;  // 1 byte
 
-  activeVFO = EEPROMData.activeVFO;  // 2 bytes
+  //activeVFO = EEPROMData.activeVFO;  // 2 bytes
 
-  audioVolume = EEPROMData.audioVolume;    // 4 bytes
+  //audioVolume = EEPROMData.audioVolume;    // 4 bytes
   currentBand = EEPROMData.currentBand;    // 4 bytes
   currentBandA = EEPROMData.currentBandA;  // 4 bytes
   currentBandB = EEPROMData.currentBandB;  // 4 bytes
-  decoderFlag = EEPROMData.decoderFlag;
+  //decoderFlag = EEPROMData.decoderFlag;
 
   for (int i = 0; i < EQUALIZER_CELL_COUNT; i++) {
     recEQ_Level[i] = EEPROMData.equalizerRec[i];  // 4 bytes each
     xmtEQ_Level[i] = EEPROMData.equalizerXmt[i];
   }
 
-  freqIncrement = EEPROMData.freqIncrement;              // 4 bytes
-  keyType = EEPROMData.keyType;                          // straight key = 0, keyer = 1
+  //freqIncrement = EEPROMData.freqIncrement;              // 4 bytes
+  //keyType = EEPROMData.keyType;                          // straight key = 0, keyer = 1
   currentMicThreshold = EEPROMData.currentMicThreshold;  // 4 bytes      // AFP 09-22-22
   currentMicCompRatio = EEPROMData.currentMicCompRatio;
   currentMicAttack = EEPROMData.currentMicAttack;
   currentMicRelease = EEPROMData.currentMicRelease;
   currentMicGain = EEPROMData.currentMicGain;
 
-  paddleDit = EEPROMData.paddleDit;
-  paddleDah = EEPROMData.paddleDah;
-  rfGainAllBands = EEPROMData.rfGainAllBands;
-  spectrumNoiseFloor = EEPROMData.spectrumNoiseFloor;  // AFP 09-26-22
+  //paddleDit = EEPROMData.paddleDit;
+  //paddleDah = EEPROMData.paddleDah;
+  //rfGainAllBands = EEPROMData.rfGainAllBands;
+  //spectrumNoiseFloor = EEPROMData.spectrumNoiseFloor;  // AFP 09-26-22
 
   //  Note: switch values are read and written to EEPROM only
 
-  tuneIndex = EEPROMData.tuneIndex;
-  stepFineTune = EEPROMData.stepFineTune;
-  transmitPowerLevel = EEPROMData.powerLevel;
-  currentWPM = EEPROMData.currentWPM;  // 4 bytes
-  xmtMode = EEPROMData.xmtMode;        // AFP 09-26-22
+  //tuneIndex = EEPROMData.tuneIndex;
+  //stepFineTune = EEPROMData.stepFineTune;
+  //transmitPowerLevel = EEPROMData.powerLevel;
+  //currentWPM = EEPROMData.currentWPM;  // 4 bytes
+  //xmtMode = EEPROMData.xmtMode;        // AFP 09-26-22
 
-  currentScale = EEPROMData.currentScale;
-  spectrum_zoom = EEPROMData.spectrum_zoom;
-  spectrum_display_scale = EEPROMData.spectrum_display_scale;  // 4 bytes
-  sidetoneVolume = EEPROMData.sidetoneVolume;                  // 4 bytes
-  cwTransmitDelay = EEPROMData.cwTransmitDelay;                // 4 bytes
+  //currentScale = EEPROMData.currentScale;
+  //spectrum_zoom = EEPROMData.spectrum_zoom;
+  //spectrum_display_scale = EEPROMData.spectrum_display_scale;  // 4 bytes
+  //sidetoneVolume = EEPROMData.sidetoneVolume;                  // 4 bytes
+  //cwTransmitDelay = EEPROMData.cwTransmitDelay;                // 4 bytes
 
   freqCorrectionFactor = EEPROMData.freqCorrectionFactor;
 
@@ -922,9 +922,9 @@ void CopyEEPROM() {
   myLat = EEPROMData.myLat;
   myLong = EEPROMData.myLong;
 
-  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
-    currentNoiseFloor[i] = EEPROMData.currentNoiseFloor[i];
-  }
+//  for (int i = 0; i < NUMBER_OF_BANDS; i++) {
+//    currentNoiseFloor[i] = EEPROMData.currentNoiseFloor[i];
+//  }
   compressorFlag = EEPROMData.compressorFlag;                     // JJP 8/28/23
 }
 
@@ -947,7 +947,7 @@ void EEPROMSaveDefaults2() {
   EEPROMData.spectrumNoiseFloor = SPECTRUM_NOISE_FLOOR;
   EEPROMData.tuneIndex = 5;
   EEPROMData.stepFineTune = 50L;
-  EEPROMData.powerLevel = 10;
+  EEPROMData.transmitPowerLevel = 10;
   EEPROMData.xmtMode = 0;
   EEPROMData.nrOptionSelect = 0;  // 1 byte
   EEPROMData.currentScale = 1;
@@ -1228,7 +1228,7 @@ int CopySDToEEPROM() {
         EEPROMData.stepFineTune = atol(temp);
         break;
       case 7:
-        EEPROMData.powerLevel = atoi(temp);
+        EEPROMData.transmitPowerLevel = atoi(temp);
         break;
       case 8:
         EEPROMData.xmtMode = atoi(temp);
@@ -1887,92 +1887,92 @@ int CopyEEPROMToSD() {
   file.println(buffer);
 
   strcpy(buffer, "EEPROMData.AGCMode = ");
-  itoa(AGCMode, temp, DEC);
+  itoa(EEPROMData.AGCMode, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.audioVolume = ");
-  itoa(audioVolume, temp, DEC);
+  itoa(EEPROMData.audioVolume, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.rfGainAllBands = ");
-  itoa(rfGainAllBands, temp, DEC);
+  itoa(EEPROMData.rfGainAllBands, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.spectrumNoiseFloor = ");
-  itoa(spectrumNoiseFloor, temp, DEC);
+  itoa(EEPROMData.spectrumNoiseFloor, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.tuneIndex = ");
-  itoa(tuneIndex, temp, DEC);
+  itoa(EEPROMData.tuneIndex, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.stepFineTune = ");
-  ltoa(stepFineTune, temp, DEC);
+  ltoa(EEPROMData.stepFineTune, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
-  strcpy(buffer, "EEPROMData.powerLevel = ");
-  itoa(transmitPowerLevel, temp, DEC);
+  strcpy(buffer, "EEPROMData.transmitPowerLevel = ");
+  itoa(EEPROMData.transmitPowerLevel, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.xmtMode = 0");
-  itoa(xmtMode, temp, DEC);
+  itoa(EEPROMData.xmtMode, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.nrOptionSelect = ");  // KF5N
-  itoa(nrOptionSelect, temp, DEC);
+  itoa(EEPROMData.nrOptionSelect, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.currentScale = ");
-  itoa(currentScale, temp, DEC);
+  itoa(EEPROMData.currentScale, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.spectrum_zoom = ");  // long data type  KF5N
-  ltoa(spectrum_zoom, temp, DEC);
+  ltoa(EEPROMData.spectrum_zoom, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.spectrum_display_scale = ");  // float data type
-  dtostrf(spectrum_display_scale, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
+  dtostrf(EEPROMData.spectrum_display_scale, 6, 1, temp);             // Field of up to 6 digits with 1 decimal place
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.CWFilterIndex = ");
-  itoa(CWFilterIndex, temp, DEC);
+  itoa(EEPROMData.CWFilterIndex, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.paddleDit = ");
-  itoa(paddleDit, temp, DEC);
+  itoa(EEPROMData.paddleDit, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.paddleDah = ");
-  itoa(paddleDah, temp, DEC);
+  itoa(EEPROMData.paddleDah, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.decoderFlag = ");
-  itoa(decoderFlag, temp, DEC);
+  itoa(EEPROMData.decoderFlag, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.keyType = ");
-  itoa(keyType, temp, DEC);
+  itoa(EEPROMData.keyType, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.currentWPM = ");
-  itoa(currentWPM, temp, DEC);
+  itoa(EEPROMData.currentWPM, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
 
   strcpy(buffer, "EEPROMData.sidetoneVolume = ");  // float data type
-  dtostrf(sidetoneVolume, 6, 4, temp);             // Field of up to 6 digits with 1 decimal place
+  dtostrf(EEPROMData.sidetoneVolume, 6, 4, temp);             // Field of up to 6 digits with 1 decimal place
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.cwTransmitDelay = ");  // long data type
-  ltoa(cwTransmitDelay, temp, DEC);
+  ltoa(EEPROMData.cwTransmitDelay, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.activeVFO = 0");
-  itoa(activeVFO, temp, DEC);
+  itoa(EEPROMData.activeVFO, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
   strcpy(buffer, "EEPROMData.freqIncrement = ");
-  itoa(freqIncrement, temp, DEC);
+  itoa(EEPROMData.freqIncrement, temp, DEC);
   strcat(buffer, temp);
   file.println(buffer);
 
@@ -2045,7 +2045,7 @@ int CopyEEPROMToSD() {
     strcpy(buffer, "EEPROMData.switchValues[");
     strcat(buffer, digits);
     strcat(buffer, "] = ");
-    itoa(switchThreshholds[i], temp, DEC);
+    itoa(EEPROMData.switchValues[i], temp, DEC);
     strcat(buffer, temp);
     file.println(buffer);
   }
@@ -2357,11 +2357,11 @@ void EEPROMStartup() {
                                                 //                                                                     Check if calibration has not been done and/or switch values are wonky, okay to use defaults
                                                 //                                                                     If the Teensy is unused, these EEPROM values are 0xFF or perhaps cleared to 0.
 
-  if (switchThreshholds[9] < 440 || switchThreshholds[9] > 480) {
+  if (EEPROMData.switchValues[9] < 440 || EEPROMData.switchValues[9] > 480) {
     EEPROMSaveDefaults2();     // At least give them some starting values
-    switchThreshholds[9] = 0;  // This will force the next code block to set the switch values.
+    EEPROMData.switchValues[9] = 0;  // This will force the next code block to set the switch values.
   }
-  if (switchThreshholds[9] < 440 || switchThreshholds[9] > 480) {  // If the Teensy is unused, these EEPROM values are 0xFF or perhaps cleared to 0.
+  if (EEPROMData.switchValues[9] < 440 || EEPROMData.switchValues[9] > 480) {  // If the Teensy is unused, these EEPROM values are 0xFF or perhaps cleared to 0.
     SaveAnalogSwitchValues();                                      // In that case, we need to set the switch values.
   }
   //                                                                     If we get here, the switch values have been set, either previously or by the call to

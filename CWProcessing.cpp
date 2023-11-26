@@ -4,7 +4,7 @@
 
 //=================  AFP10-18-22 ================
 /*****
-  Purpose: Select CW Filter. CWFilterIndex has these values:
+  Purpose: Select CW Filter. EEPROMData.CWFilterIndex has these values:
            0 = 840Hz
            1 = 1kHz
            2 = 1.3kHz
@@ -19,7 +19,7 @@
     void
 *****/
 void SelectCWFilter() {
-  CWFilterIndex = SubmenuSelect(CWFilter, 6, 0);
+  EEPROMData.CWFilterIndex = SubmenuSelect(CWFilter, 6, 0);
   //  RedrawDisplayScreen();  Kills the bandwidth graphics in the audio display window, remove. KF5N July 30, 2023
   // Clear the current CW filter graphics and then restore the bandwidth indicator bar.  KF5N July 30, 2023
   tft.writeTo(L2);
@@ -49,8 +49,8 @@ void DoCWReceiveProcessing() {  // All New AFP 09-19-22
   arm_fir_f32(&FIR_CW_DecodeL, float_buffer_L, float_buffer_L_CW, 256);  // AFP 10-25-22  Park McClellan FIR filter const Group delay
   arm_fir_f32(&FIR_CW_DecodeR, float_buffer_R, float_buffer_R_CW, 256);  // AFP 10-25-22
 
-  //  if (decoderFlag == DECODE_OFF) {                  // AFP 09-27-22
-  if (decoderFlag == DECODE_ON) {  // JJP 7/20/23
+  //  if (EEPROMData.decoderFlag == DECODE_OFF) {                  // AFP 09-27-22
+  if (EEPROMData.decoderFlag == DECODE_ON) {  // JJP 7/20/23
 
     //=== end CW Filter ===
 
@@ -276,12 +276,12 @@ void SetTransmitDitLength(int wpm) {
 void SetKeyType() {
   const char *keyChoice[] = { "Straight Key", "Keyer" };
 
-  keyType = EEPROMData.keyType = SubmenuSelect(keyChoice, 2, 0);
-  // Make sure the paddleDit and paddleDah variables are set correctly for straight key.
+  EEPROMData.keyType = SubmenuSelect(keyChoice, 2, 0);
+  // Make sure the EEPROMData.paddleDit and EEPROMData.paddleDah variables are set correctly for straight key.
   // Paddle flip can reverse these, making the straight key inoperative.  KF5N August 9, 2023
-  if (keyType == 0) {
-    paddleDit = KEYER_DIT_INPUT_TIP;
-    paddleDah = KEYER_DAH_INPUT_RING;
+  if (EEPROMData.keyType == 0) {
+    EEPROMData.paddleDit = KEYER_DIT_INPUT_TIP;
+    EEPROMData.paddleDah = KEYER_DAH_INPUT_RING;
   }
 }
 
@@ -296,17 +296,17 @@ void SetKeyType() {
     void
 *****/
 void SetKeyPowerUp() {
-  if (keyType == 0) {
-    paddleDit = KEYER_DIT_INPUT_TIP;
-    paddleDah = KEYER_DAH_INPUT_RING;
+  if (EEPROMData.keyType == 0) {
+    EEPROMData.paddleDit = KEYER_DIT_INPUT_TIP;
+    EEPROMData.paddleDah = KEYER_DAH_INPUT_RING;
     return;
   }
   if (paddleFlip) {  // Means right-paddle dit
-    paddleDit = KEYER_DAH_INPUT_RING;
-    paddleDah = KEYER_DIT_INPUT_TIP;
+    EEPROMData.paddleDit = KEYER_DAH_INPUT_RING;
+    EEPROMData.paddleDah = KEYER_DIT_INPUT_TIP;
   } else {
-    paddleDit = KEYER_DIT_INPUT_TIP;
-    paddleDah = KEYER_DAH_INPUT_RING;
+    EEPROMData.paddleDit = KEYER_DIT_INPUT_TIP;
+    EEPROMData.paddleDah = KEYER_DAH_INPUT_RING;
   }
 }
 
@@ -330,7 +330,7 @@ void SetSideToneVolume() {
   tft.setCursor(SECONDARY_MENU_X - 48, MENUS_Y + 1);
   tft.print("Sidetone Volume:");
   tft.setCursor(SECONDARY_MENU_X + 220, MENUS_Y + 1);
-  sidetoneDisplay = (int)(sidetoneVolume);
+  sidetoneDisplay = (int)(EEPROMData.sidetoneVolume);
   tft.print(sidetoneDisplay);  // Display in range of 0 to 100.
   modeSelectInR.gain(0, 0);
   modeSelectInL.gain(0, 0);
@@ -344,28 +344,28 @@ void SetSideToneVolume() {
   modeSelectOutR.gain(1, 0.0);  // Sidetone  AFP 10-01-22
 
   while (true) {
-    if (digitalRead(paddleDit) == LOW || digitalRead(paddleDah) == LOW) CW_ExciterIQData();
+    if (digitalRead(EEPROMData.paddleDit) == LOW || digitalRead(EEPROMData.paddleDah) == LOW) CW_ExciterIQData();
 
     if (filterEncoderMove != 0) {
-      //      sidetoneVolume = sidetoneVolume + (float)filterEncoderMove * 0.001;  // sidetoneVolume range is 0.0 to 1.0 in 0.001 steps.  KF5N August 29, 2023
-      sidetoneDisplay = sidetoneDisplay + filterEncoderMove;  // * 0.001;  // sidetoneVolume range is 0.0 to 1.0 in 0.001 steps.  KF5N August 29, 2023
+      //      EEPROMData.sidetoneVolume = EEPROMData.sidetoneVolume + (float)filterEncoderMove * 0.001;  // EEPROMData.sidetoneVolume range is 0.0 to 1.0 in 0.001 steps.  KF5N August 29, 2023
+      sidetoneDisplay = sidetoneDisplay + filterEncoderMove;  // * 0.001;  // EEPROMData.sidetoneVolume range is 0.0 to 1.0 in 0.001 steps.  KF5N August 29, 2023
       if (sidetoneDisplay < 0)
         sidetoneDisplay = 0;
       else if (sidetoneDisplay > 100)  // 100% max
         sidetoneDisplay = 100;
       tft.fillRect(SECONDARY_MENU_X + 200, MENUS_Y, 70, CHAR_HEIGHT, RA8875_MAGENTA);
       tft.setCursor(SECONDARY_MENU_X + 220, MENUS_Y + 1);
-      sidetoneVolume = (float32_t)sidetoneDisplay;
+      EEPROMData.sidetoneVolume = (float32_t)sidetoneDisplay;
       tft.setTextColor(RA8875_WHITE);
       tft.print(sidetoneDisplay);
       filterEncoderMove = 0;
     }
-    modeSelectOutL.gain(1, volumeLog[(int)sidetoneVolume]);  // Sidetone  AFP 10-01-22
-                                                             //    modeSelectOutR.gain(1, volumeLog[(int)sidetoneVolume]);  // Right side not used.  KF5N September 1, 2023
+    modeSelectOutL.gain(1, volumeLog[(int)EEPROMData.sidetoneVolume]);  // Sidetone  AFP 10-01-22
+                                                             //    modeSelectOutR.gain(1, volumeLog[(int)EEPROMData.sidetoneVolume]);  // Right side not used.  KF5N September 1, 2023
     val = ReadSelectedPushButton();                          // Read pin that controls all switches
     val = ProcessButtonPress(val);
     if (val == MENU_OPTION_SELECT) {  // Make a choice??
-      EEPROMData.sidetoneVolume = sidetoneVolume;
+     // EEPROMData.EEPROMData.sidetoneVolume = EEPROMData.sidetoneVolume;
       EEPROMWrite();
       break;
     }
@@ -468,7 +468,7 @@ void ResetHistograms() {
   // Clear graph arrays
   memset(signalHistogram, 0, HISTOGRAM_ELEMENTS * sizeof(uint32_t));
   memset(gapHistogram, 0, HISTOGRAM_ELEMENTS * sizeof(uint32_t));
-  currentWPM = 1200 / ditLength;
+  EEPROMData.currentWPM = 1200 / ditLength;
   UpdateWPMField();
 }
 

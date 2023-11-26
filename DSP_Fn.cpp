@@ -311,7 +311,7 @@ void AGCLoadValues() {
   float32_t sample_rate = (float32_t)SR[SampleRate].rate / DF;
 
   //calculate internal parameters
-  switch (AGCMode)
+  switch (EEPROMData.AGCMode)
   {
     case 0:                                           //agcOFF
       break;
@@ -426,7 +426,7 @@ void AGC()
 
   int k;
   float32_t mult;
-  if (AGCMode == 0)  // AGC OFF
+  if (EEPROMData.AGCMode == 0)  // AGC OFF
   {
     for (unsigned i = 0; i < FFT_length / 2; i++)
     {
