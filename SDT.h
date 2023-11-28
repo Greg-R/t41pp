@@ -741,13 +741,150 @@ extern long notchPosOld;
 extern long filter_pos;
 extern long last_filter_pos;
 
-
 // ============ end new stuff =======
 
 //================== Global Excite Variables =================
 
 #define IIR_ORDER 8
 #define IIR_NUMSTAGES (IIR_ORDER / 2)
+
+
+struct config_t {
+  
+  char versionSettings[10] = VERSION;
+  int AGCMode             = 1;     
+  int audioVolume         = 30;                       // 4 bytes
+  int rfGainAllBands      = 0;
+  int spectrumNoiseFloor  = SPECTRUM_NOISE_FLOOR;     // AFP 09-26-22
+  int tuneIndex           = DEFAULTFREQINCREMENT;     // JJP 7-3-23
+  long stepFineTune       = FAST_TUNE_INCREMENT;      // JJP 7-3-23
+  int transmitPowerLevel  = DEFAULT_POWER_LEVEL;      // JJP 7-3-23
+  int xmtMode             = SSB_MODE;                        // AFP 09-26-22
+  int nrOptionSelect      = 0;                        // 1 byte
+  int currentScale        = 1;
+  long spectrum_zoom      = SPECTRUM_ZOOM_2;
+  float spectrum_display_scale  = 10.0;               // 4 bytes
+
+  int CWFilterIndex       = 5;                        // Off
+  int paddleDit           = KEYER_DIT_INPUT_TIP;
+  int paddleDah           = KEYER_DAH_INPUT_RING;
+  int decoderFlag         = DECODER_STATE;            // JJP 7-3-23
+  int keyType             = STRAIGHT_KEY_OR_PADDLES;  // straight key = 0, keyer = 1  JJP 7-3-23
+  int currentWPM          = DEFAULT_KEYER_WPM;        // 4 bytes default = 15 JJP 7-3-23
+  float32_t sidetoneVolume = 30.0;                     // 4 bytes
+  uint32_t cwTransmitDelay    = 2000;                      // 4 bytes
+
+  int activeVFO           = 0;                        // 2 bytes
+  int freqIncrement       = 5;                        // 4 bytes
+
+  int currentBand         = STARTUP_BAND;             // 4 bytes   JJP 7-3-23
+  int currentBandA        = STARTUP_BAND;             // 4 bytes   JJP 7-3-23
+  int currentBandB        = STARTUP_BAND;             // 4 bytes   JJP 7-3-23
+
+  //DB2OO, 23-AUG-23 7.1MHz for Region 1
+#if defined(ITU_REGION) && ITU_REGION==1
+  int currentFreqA = 7100000;
+#else  
+  int currentFreqA = 7200000;
+#endif
+  int currentFreqB = 7030000;
+  //DB2OO, 23-AUG-23: with TCXO needs to be 0
+#ifdef TCXO_25MHZ  
+  int freqCorrectionFactor = 0; //68000;
+#else
+  //Conventional crystal with freq offset needs a correction factor
+  int freqCorrectionFactor = 68000;
+#endif
+
+  int equalizerRec[EQUALIZER_CELL_COUNT] = {100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100};
+  int equalizerXmt[EQUALIZER_CELL_COUNT] = {0, 0, 100, 100, 100, 100, 100, 100, 100, 100, 100, 0, 0, 0};   // Provide equalizer optimized for SSB voice based on Neville's tests.  KF5N November 2, 2023
+
+  int currentMicThreshold   = -10;                    // 4 bytes       AFP 09-22-22
+  float currentMicCompRatio = 8.0;
+  float currentMicAttack    = 0.1;
+  float currentMicRelease   = 0.1;
+  int currentMicGain        = 20;
+
+  int switchValues[18] = { 924, 870, 817,
+                            769, 713, 669,
+                            616, 565, 513,
+                            459, 407, 356,
+                            298, 242, 183,
+                            131, 67, 10 };
+
+  float LPFcoeff             = 0.0;                   // 4 bytes
+  float NR_PSI               = 0.0;                   // 4 bytes
+  float NR_alpha             = 0.95;                   // 4 bytes
+  float NR_beta              = 0.85;                   // 4 bytes
+  float omegaN               = 0.0;                   // 4 bytes
+  float pll_fmax             = 4000.0;                // 4 bytes
+
+  float powerOutCW[NUMBER_OF_BANDS] = { 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02 };
+  float powerOutSSB[NUMBER_OF_BANDS] = { 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03 };
+  float CWPowerCalibrationFactor[NUMBER_OF_BANDS] = { 0.019, 0.019, .0190, .019, .019, .019, .019 };    // 0.019;
+  float SSBPowerCalibrationFactor[NUMBER_OF_BANDS]= { 0.008, 0.008, 0.008, 0.008, 0.008, 0.008, 0.008 };   // 0.008
+  float IQAmpCorrectionFactor[NUMBER_OF_BANDS] = { 1, 1, 1, 1, 1, 1, 1 };
+  float IQPhaseCorrectionFactor[NUMBER_OF_BANDS] = { 0, 0, 0, 0, 0, 0, 0 };
+  float IQXAmpCorrectionFactor[NUMBER_OF_BANDS] = { 1, 1, 1, 1, 1, 1, 1 };
+  float IQXPhaseCorrectionFactor[NUMBER_OF_BANDS] = { 0, 0, 0, 0, 0, 0, 0 };
+  long favoriteFreqs[13] = {3560000, 3690000, 7030000, 7200000, 14060000, 14200000, 21060000, 21285000, 28060000, 28365000, 5000000, 10000000, 15000000};
+
+    //DB2OO, 23-AUG-23: Region 1 freqs (from https://qrper.com/qrp-calling-frequencies/)
+#if defined(ITU_REGION) && ITU_REGION==1  
+//int lastFrequencies[NUMBER_OF_BANDS][2] = {{3690000, 7090000, 14285000, 18130000, 21285000, 24950000, 28365000}, {3560000, 7030000, 14060000, 18096000, 21060000, 24906000, 28060000}};
+int lastFrequencies[NUMBER_OF_BANDS][2] = {{3690000, 3560000}, {7090000, 7030000}, {14285000, 14060000}, {21285000, 21060000}, {24950000, 24906000}, {18096000, 18130000}, {28365000, 28060000}};
+//  EEPROMData.lastFrequencies[0][0] = 3690000L; //3985000L;   // 80 Phone
+//  EEPROMData.lastFrequencies[1][0] = 7090000L; //7200000L;   // 40
+//  EEPROMData.lastFrequencies[2][0] = 14285000L;  // 50
+//  EEPROMData.lastFrequencies[3][0] = 18130000L;  // 17
+//  EEPROMData.lastFrequencies[4][0] = 21285000L; //21385000L;  // 15
+//  EEPROMData.lastFrequencies[5][0] = 24950000L;  // 12
+//  EEPROMData.lastFrequencies[6][0] = 28365000L; //28385800L;  // 10
+#else
+int lastFrequencies[NUMBER_OF_BANDS][2] = {{3985000, 3560000}, {14285000, 18130000}, {21385000, 24950000}, {28385800, 3560000}, {7030000, 14060000}, {18096000, 21060000}, {24906000, 28060000}};
+//  EEPROMData.lastFrequencies[0][0] = 3985000L;   // 80 Phone
+//  EEPROMData.lastFrequencies[1][0] = 7200000L;   // 40
+//  EEPROMData.lastFrequencies[2][0] = 14285000L;  // 50
+//  EEPROMData.lastFrequencies[3][0] = 18130000L;  // 17
+//  EEPROMData.lastFrequencies[4][0] = 21385000L;  // 15
+//  EEPROMData.lastFrequencies[5][0] = 24950000L;  // 12
+//  EEPROMData.lastFrequencies[6][0] = 28385800L;  // 10
+#endif
+
+//  EEPROMData.lastFrequencies[0][1] = 3560000L;   // 80 CW
+//  EEPROMData.lastFrequencies[1][1] = 7030000L;   // 40
+//  EEPROMData.lastFrequencies[2][1] = 14060000L;  // 20
+//  EEPROMData.lastFrequencies[3][1] = 18096000L;  // 17
+//  EEPROMData.lastFrequencies[4][1] = 21060000L;  // 15
+//  EEPROMData.lastFrequencies[5][1] = 24906000L;  // 12
+//  EEPROMData.lastFrequencies[6][1] = 28060000L;  // 10
+
+
+ // long lastFrequencies[NUMBER_OF_BANDS][2];
+
+  long centerFreq               = 7030000L;              // 4 bytes
+
+  // New user config data                                JJP 7-3-23
+  char mapFileName[50];
+  char myCall[10];
+  char myTimeZone[10];
+  int  separationCharacter      = (int) '.';            // JJP 7/25/23
+
+  int paddleFlip                = PADDLE_FLIP;          // 0 = right paddle = DAH, 1 = DIT
+  int sdCardPresent             = 0;                           //   JJP  7/18/23
+
+  float myLong                  = MY_LON;
+  float myLat                   = MY_LAT;
+  int currentNoiseFloor[NUMBER_OF_BANDS];             // JJP 7/17/23
+  int compressorFlag;                                 // JJP 8/28/23
+
+};                                 //  Total:       438 bytes
+
+extern struct config_t EEPROMData;
+//extern config_t config;
+
+
+
 
 extern arm_biquad_cascade_df2T_instance_f32   s1_Receive ;  //AFP 09-23-22
 extern arm_biquad_cascade_df2T_instance_f32   s1_Receive2 ;  //AFP 11-02-22
@@ -1098,6 +1235,7 @@ struct secondaryMenuConfiguration {
 };
 //extern char versionSettings[];
 
+/*
 struct config_t {
   
   char versionSettings[10];
@@ -1187,6 +1325,8 @@ struct config_t {
 
 extern struct config_t EEPROMData;
 extern config_t config;
+*/
+
 
 // JSON file configuration related variables:
 extern const char *filename;
@@ -1387,7 +1527,7 @@ extern uint8_t zoom_display;
 extern const uint8_t NR_L_frames;
 extern const uint8_t NR_N_frames;
 
-extern int16_t activeVFO;
+//extern int16_t activeVFO;
 extern int16_t currentMode;
 extern int16_t fineEncoderRead;
 

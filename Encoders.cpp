@@ -77,19 +77,14 @@ void FilterSetSSB() {
     FilterBandwidth();
     ShowBandwidth();
     DrawFrequencyBarValue();
-    //    centerTuneFlag = 1; //AFP 10-03-22
-    //SetFreq();               //  AFP 10-04-22
-  //  ShowFrequency();
     UpdateDecoderField();   // Adjust Morse decoder graphics.
   }
-  //notchPosOld = filter_pos;
     tft.writeTo(L1);  // Exit function in layer 1.  KF5N August 3, 2023
-
 }
 
 
 /*****
-  Purpose: EncoderCenterTune
+  Purpose: EncoderCenterTune.  This is "coarse" tuning.
   Parameter list:
     void
   Return value;
@@ -104,8 +99,6 @@ void EncoderCenterTune() {
   if (result == 0)  // Nothing read
     return;
 
-  //centerTuneFlag = 1;  //AFP 10-03-22  Not used in revised tuning scheme.  KF5N July 22, 2023
-
   if (EEPROMData.xmtMode == CW_MODE && EEPROMData.decoderFlag == DECODE_ON) {  // No reason to reset if we're not doing decoded CW AFP 09-27-22
     ResetHistograms();
   }
@@ -119,14 +112,8 @@ void EncoderCenterTune() {
       tuneChange = -1L;
       break;
   }
-  //  newFreq = (long)EEPROMData.freqIncrement * tuneChange;
 
   EEPROMData.centerFreq += ((long)EEPROMData.freqIncrement * tuneChange);  // tune the master vfo
-
-
-  //  if (EEPROMData.centerFreq != oldFreq) {           // If the frequency has changed...
-  //=== AFP 10-19-22
-
   TxRxFreq = EEPROMData.centerFreq + NCOFreq;
   SetFreq();  //  Change to receiver tuning process.  KF5N July 22, 2023
   //currentFreqA= EEPROMData.centerFreq + NCOFreq;
@@ -134,8 +121,6 @@ void EncoderCenterTune() {
   //FilterOverlay(); // AFP 10-20-22
   ShowFrequency();
   BandInformation();
-
-  //  }
 }
 
 

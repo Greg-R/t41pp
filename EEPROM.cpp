@@ -2,6 +2,14 @@
 #include "SDT.h"
 #endif
 
+
+
+
+
+
+
+
+
 //DB2OO, 29-AUG-23: Don't use the overall VERSION for the EEPROM structure version information, but use a combination of an EEPROM_VERSION with the size of the EEPROMData variable.
 // The "EEPROM_VERSION" should only be changed, if the structure config_t EEPROMData has changed!
 // For V049.1 the new version in EEPROM will be "V049_808", for V049.2 it will be "V049_812"
@@ -343,120 +351,120 @@ void GetFavoriteFrequency() {
 *****/
 
 void EEPROMSaveDefaults2() {
-  strcpy(EEPROMData.versionSettings, EEPROMSetVersion());  // Update version
+//  strcpy(EEPROMData.versionSettings, EEPROMSetVersion());  // Update version
 
-  EEPROMData.AGCMode = 1;
-  EEPROMData.audioVolume = 30;  // 4 bytes
-  EEPROMData.rfGainAllBands = 0;
-  EEPROMData.spectrumNoiseFloor = SPECTRUM_NOISE_FLOOR;
-  EEPROMData.tuneIndex = 5;
-  EEPROMData.stepFineTune = 50L;
-  EEPROMData.transmitPowerLevel = 10;
-  EEPROMData.xmtMode = 0;
-  EEPROMData.nrOptionSelect = 0;  // 1 byte
-  EEPROMData.currentScale = 1;
-  EEPROMData.spectrum_zoom = 1;
-  EEPROMData.spectrum_display_scale = 20.0;  // 4 bytes
+//  EEPROMData.AGCMode = 1;
+//  EEPROMData.audioVolume = 30;  // 4 bytes
+//  EEPROMData.rfGainAllBands = 0;
+//  EEPROMData.spectrumNoiseFloor = SPECTRUM_NOISE_FLOOR;
+//  EEPROMData.tuneIndex = 5;
+//  EEPROMData.stepFineTune = 50L;
+//  EEPROMData.transmitPowerLevel = 10;
+//  EEPROMData.xmtMode = 0;
+//  EEPROMData.nrOptionSelect = 0;  // 1 byte
+//  EEPROMData.currentScale = 1;
+//  EEPROMData.spectrum_zoom = 1;
+//  EEPROMData.spectrum_display_scale = 20.0;  // 4 bytes
 
-  EEPROMData.CWFilterIndex = 5;  // Off
-  EEPROMData.paddleDit = 36;
-  EEPROMData.paddleDah = 35;
-  EEPROMData.decoderFlag = 0;
-  EEPROMData.keyType = 0;            // straight key = 0, keyer = 1
-  EEPROMData.currentWPM = 15;        // 4 bytes
-  EEPROMData.sidetoneVolume = 50.0;  // 4 bytes.  Changed to default 50.  KF5N October 7, 2023.
-  EEPROMData.cwTransmitDelay = 750;  // 4 bytes
+//  EEPROMData.CWFilterIndex = 5;  // Off
+//  EEPROMData.paddleDit = 36;
+//  EEPROMData.paddleDah = 35;
+//  EEPROMData.decoderFlag = 0;
+//  EEPROMData.keyType = 0;            // straight key = 0, keyer = 1
+//  EEPROMData.currentWPM = 15;        // 4 bytes
+//  EEPROMData.sidetoneVolume = 50.0;  // 4 bytes.  Changed to default 50.  KF5N October 7, 2023.
+//  EEPROMData.cwTransmitDelay = 750;  // 4 bytes
 
-  EEPROMData.activeVFO = 0;      // 2 bytes, 0 = VFOa
-  EEPROMData.freqIncrement = 5;  // 4 bytes
-  EEPROMData.currentBand = 1;    // 4 bytes
-  EEPROMData.currentBandA = 1;   // 4 bytes
-  EEPROMData.currentBandB = 1;   // 4 bytes
+//  EEPROMData.activeVFO = 0;      // 2 bytes, 0 = VFOa
+//  EEPROMData.freqIncrement = 5;  // 4 bytes
+//  EEPROMData.currentBand = 1;    // 4 bytes
+//  EEPROMData.currentBandA = 1;   // 4 bytes
+//  EEPROMData.currentBandB = 1;   // 4 bytes
   //DB2OO, 23-AUG-23 7.1MHz for Region 1
-#if defined(ITU_REGION) && ITU_REGION==1
-  EEPROMData.currentFreqA = 7100000;
-#else  
-  EEPROMData.currentFreqA = 7200000;
-#endif
-  EEPROMData.currentFreqB = 7030000;
-  //DB2OO, 23-AUG-23: with TCXO needs to be 0
-#ifdef TCXO_25MHZ  
-  EEPROMData.freqCorrectionFactor = 0; //68000;
-#else
+//#if defined(ITU_REGION) && ITU_REGION==1
+//  EEPROMData.currentFreqA = 7100000;
+//#else  
+//  EEPROMData.currentFreqA = 7200000;
+//#endif
+//  EEPROMData.currentFreqB = 7030000;
+//  //DB2OO, 23-AUG-23: with TCXO needs to be 0
+//#ifdef TCXO_25MHZ  
+ // EEPROMData.freqCorrectionFactor = 0; //68000;
+//#else
   //Conventional crystal with freq offset needs a correction factor
-  EEPROMData.freqCorrectionFactor = 68000;
-#endif  
+//  EEPROMData.freqCorrectionFactor = 68000;
+//#endif  
 
-  for (int i = 0; i < EQUALIZER_CELL_COUNT; i++) {
-    EEPROMData.equalizerRec[i] = 100;  // 4 bytes each
-  }
+//  for (int i = 0; i < EQUALIZER_CELL_COUNT; i++) {
+//    EEPROMData.equalizerRec[i] = 100;  // 4 bytes each
+//  }
   // Use transmit equalizer profile in struct initializer list in SDT.h.  KF5N November 2, 2023
 
-  EEPROMData.currentMicThreshold = -10;  // 4 bytes      // AFP 09-22-22
-  EEPROMData.currentMicCompRatio = 8.0;  // Changed to 8.0 from 5.0 based on Neville's tests.  KF5N November 2, 2023
-  EEPROMData.currentMicAttack = 0.1;
-  EEPROMData.currentMicRelease = 0.1;    // Changed to 0.1 from 2.0 based on Neville's tests.  KF5N November 2, 2023
+//  EEPROMData.currentMicThreshold = -10;  // 4 bytes      // AFP 09-22-22
+//  EEPROMData.currentMicCompRatio = 8.0;  // Changed to 8.0 from 5.0 based on Neville's tests.  KF5N November 2, 2023
+//  EEPROMData.currentMicAttack = 0.1;
+//  EEPROMData.currentMicRelease = 0.1;    // Changed to 0.1 from 2.0 based on Neville's tests.  KF5N November 2, 2023
   //DB2OO, 23-AUG-23: MicGain 20
-  EEPROMData.currentMicGain = 20;
+//  EEPROMData.currentMicGain = 20;
 
-  EEPROMData.switchValues[0] = 924;
-  EEPROMData.switchValues[1] = 870;
-  EEPROMData.switchValues[2] = 817;
-  EEPROMData.switchValues[3] = 769;
-  EEPROMData.switchValues[4] = 713;
-  EEPROMData.switchValues[5] = 669;
-  EEPROMData.switchValues[6] = 616;
-  EEPROMData.switchValues[7] = 565;
-  EEPROMData.switchValues[8] = 513;
-  EEPROMData.switchValues[9] = 459;
-  EEPROMData.switchValues[10] = 407;
-  EEPROMData.switchValues[11] = 356;
-  EEPROMData.switchValues[12] = 298;
-  EEPROMData.switchValues[13] = 242;
-  EEPROMData.switchValues[14] = 183;
-  EEPROMData.switchValues[15] = 131;
-  EEPROMData.switchValues[16] = 67;
-  EEPROMData.switchValues[17] = 10;
+//  EEPROMData.switchValues[0] = 924;
+//  EEPROMData.switchValues[1] = 870;
+//  EEPROMData.switchValues[2] = 817;
+//  EEPROMData.switchValues[3] = 769;
+//  EEPROMData.switchValues[4] = 713;
+//  EEPROMData.switchValues[5] = 669;
+//  EEPROMData.switchValues[6] = 616;
+//  EEPROMData.switchValues[7] = 565;
+//  EEPROMData.switchValues[8] = 513;
+//  EEPROMData.switchValues[9] = 459;
+//  EEPROMData.switchValues[10] = 407;
+//  EEPROMData.switchValues[11] = 356;
+//  EEPROMData.switchValues[12] = 298;
+//  EEPROMData.switchValues[13] = 242;
+//  EEPROMData.switchValues[14] = 183;
+//  EEPROMData.switchValues[15] = 131;
+//  EEPROMData.switchValues[16] = 67;
+//  EEPROMData.switchValues[17] = 10;
 
-  EEPROMData.LPFcoeff = 0.0;     // 4 bytes
-  EEPROMData.NR_PSI = 0.0;       // 4 bytes
-  EEPROMData.NR_alpha = 0.0;     // 4 bytes
-  EEPROMData.NR_beta = 0.0;      // 4 bytes
-  EEPROMData.omegaN = 0.0;       // 4 bytes
-  EEPROMData.pll_fmax = 4000.0;  // 4 bytes
+//  EEPROMData.LPFcoeff = 0.0;     // 4 bytes
+//  EEPROMData.NR_PSI = 0.0;       // 4 bytes
+//  EEPROMData.NR_alpha = 0.0;     // 4 bytes
+//  EEPROMData.NR_beta = 0.0;      // 4 bytes
+//  EEPROMData.omegaN = 0.0;       // 4 bytes
+//  EEPROMData.pll_fmax = 4000.0;  // 4 bytes
 
-  EEPROMData.powerOutCW[0] = 0.188;  // 4 bytes  AFP 10-21-22
-  EEPROMData.powerOutCW[1] = 0.21;   // 4 bytes  AFP 10-21-22
-  EEPROMData.powerOutCW[2] = 0.34;   // 4 bytes  AFP 10-21-22
-  EEPROMData.powerOutCW[3] = 0.44;   // 4 bytes  AFP 10-21-22
-  EEPROMData.powerOutCW[4] = 0.31;   // 4 bytes  AFP 10-21-22
-  EEPROMData.powerOutCW[5] = 0.31;   // 4 bytes  AFP 10-21-22
-  EEPROMData.powerOutCW[6] = 0.31;   // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutCW[0] = 0.188;  // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutCW[1] = 0.21;   // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutCW[2] = 0.34;   // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutCW[3] = 0.44;   // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutCW[4] = 0.31;   // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutCW[5] = 0.31;   // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutCW[6] = 0.31;   // 4 bytes  AFP 10-21-22
 
-  EEPROMData.powerOutSSB[0] = 0.188;  // 4 bytes  AFP 10-21-22
-  EEPROMData.powerOutSSB[1] = 0.11;   // 4 bytes  AFP 10-21-22
-  EEPROMData.powerOutSSB[2] = 0.188;  // 4 bytes  AFP 10-21-22
-  EEPROMData.powerOutSSB[3] = 0.21;   // 4 bytes  AFP 10-21-22
-  EEPROMData.powerOutSSB[4] = 0.23;   // 4 bytes  AFP 10-21-22
-  EEPROMData.powerOutSSB[5] = 0.23;   // 4 bytes  AFP 10-21-22
-  EEPROMData.powerOutSSB[6] = 0.24;   // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutSSB[0] = 0.188;  // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutSSB[1] = 0.11;   // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutSSB[2] = 0.188;  // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutSSB[3] = 0.21;   // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutSSB[4] = 0.23;   // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutSSB[5] = 0.23;   // 4 bytes  AFP 10-21-22
+//  EEPROMData.powerOutSSB[6] = 0.24;   // 4 bytes  AFP 10-21-22
 
-  EEPROMData.CWPowerCalibrationFactor[0] = 0.023;  //AFP 10-29-22
-  EEPROMData.CWPowerCalibrationFactor[1] = 0.023;  //AFP 10-29-22
-  EEPROMData.CWPowerCalibrationFactor[2] = 0.038;  //AFP 10-29-22
-  EEPROMData.CWPowerCalibrationFactor[3] = 0.052;  //AFP 10-29-22
-  EEPROMData.CWPowerCalibrationFactor[4] = 0.051;  //AFP 10-29-22
-  EEPROMData.CWPowerCalibrationFactor[5] = 0.028;  //AFP 10-29-22
-  EEPROMData.CWPowerCalibrationFactor[6] = 0.028;  //AFP 10-29-22
+//  EEPROMData.CWPowerCalibrationFactor[0] = 0.023;  //AFP 10-29-22
+//  EEPROMData.CWPowerCalibrationFactor[1] = 0.023;  //AFP 10-29-22
+//  EEPROMData.CWPowerCalibrationFactor[2] = 0.038;  //AFP 10-29-22
+//  EEPROMData.CWPowerCalibrationFactor[3] = 0.052;  //AFP 10-29-22
+//  EEPROMData.CWPowerCalibrationFactor[4] = 0.051;  //AFP 10-29-22
+//  EEPROMData.CWPowerCalibrationFactor[5] = 0.028;  //AFP 10-29-22
+//  EEPROMData.CWPowerCalibrationFactor[6] = 0.028;  //AFP 10-29-22
 
-  EEPROMData.SSBPowerCalibrationFactor[0] = 0.017;  //AFP 10-29-22
-  EEPROMData.SSBPowerCalibrationFactor[1] = 0.019;  //AFP 10-29-22
-  EEPROMData.SSBPowerCalibrationFactor[2] = 0.017;  //AFP 10-29-22
-  EEPROMData.SSBPowerCalibrationFactor[3] = 0.019;  //AFP 10-29-22
-  EEPROMData.SSBPowerCalibrationFactor[4] = 0.021;  //AFP 10-29-22
-  EEPROMData.SSBPowerCalibrationFactor[5] = 0.020;  //AFP 10-29-22
-  EEPROMData.SSBPowerCalibrationFactor[6] = 0.022;  //AFP 10-29-22
-
+//  EEPROMData.SSBPowerCalibrationFactor[0] = 0.017;  //AFP 10-29-22
+//  EEPROMData.SSBPowerCalibrationFactor[1] = 0.019;  //AFP 10-29-22
+//  EEPROMData.SSBPowerCalibrationFactor[2] = 0.017;  //AFP 10-29-22
+//  EEPROMData.SSBPowerCalibrationFactor[3] = 0.019;  //AFP 10-29-22
+//  EEPROMData.SSBPowerCalibrationFactor[4] = 0.021;  //AFP 10-29-22
+//  EEPROMData.SSBPowerCalibrationFactor[5] = 0.020;  //AFP 10-29-22
+//  EEPROMData.SSBPowerCalibrationFactor[6] = 0.022;  //AFP 10-29-22
+/*
   EEPROMData.IQAmpCorrectionFactor[0] = 1.0;
   EEPROMData.IQAmpCorrectionFactor[1] = 1.0;
   EEPROMData.IQAmpCorrectionFactor[2] = 1.0;
@@ -503,6 +511,7 @@ void EEPROMSaveDefaults2() {
   EEPROMData.favoriteFreqs[11] = 10000000L;
   EEPROMData.favoriteFreqs[12] = 15000000L;
 
+
   //DB2OO, 23-AUG-23: Region 1 freqs (from https://qrper.com/qrp-calling-frequencies/)
 #if defined(ITU_REGION) && ITU_REGION==1  
   EEPROMData.lastFrequencies[0][0] = 3690000L; //3985000L;   // 80 Phone
@@ -529,6 +538,7 @@ void EEPROMSaveDefaults2() {
   EEPROMData.lastFrequencies[4][1] = 21060000L;  // 15
   EEPROMData.lastFrequencies[5][1] = 24906000L;  // 12
   EEPROMData.lastFrequencies[6][1] = 28060000L;  // 10
+*/
 
   EEPROMData.centerFreq = 7150000;
 

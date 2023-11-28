@@ -808,6 +808,7 @@ FASTRUN void ShowFrequency() {
     tft.print(freqBuffer);  // Show VFO_A
   }
   tft.setFontDefault();
+  Serial.printf("currentFreqA = %d currentFreqB = %d\n", EEPROMData.currentFreqA, EEPROMData.currentFreqB);
 }
 /*****
   Purpose: Display dBm

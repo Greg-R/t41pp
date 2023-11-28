@@ -1,3 +1,8 @@
+
+
+
+
+
 //====================== User Specific Preferences =============
 
 //#define DEBUG 		                                                        // Uncommented for debugging, comment out for normal use
@@ -46,3 +51,5 @@
 // Set multiplication factors for your QSD and QSE boards.
 #define MASTER_CLK_MULT_RX 4
 #define MASTER_CLK_MULT_TX 2
+
+
