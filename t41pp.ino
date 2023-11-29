@@ -2421,11 +2421,12 @@ void Splash() {
   Return value:
     void
 *****/
+
+
 void setup() {
 
-
-
   Serial.begin(9600);
+
   setSyncProvider(getTeensy3Time);  // get TIME from real time clock with 3V backup battery
   setTime(now());
   Teensy3Clock.set(now());  // set the RTC

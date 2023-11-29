@@ -38,7 +38,7 @@
 #define CURRENT_FREQ_B            7030000                                   // VFO_B
 #define DEFAULTFREQINCREMENT		  4                                         // Default: (10, 50, 100, 250, 1000, 10000Hz)
 #define DEFAULT_POWER_LEVEL       10                                        // Startup power level. Probably 20 for most people
-#define FAST_TUNE_INCREMENT    	  1			 		                                // Default from above for fine tune
+#define FINE_TUNE_STEP        	  50			 		                              // Initial fine tune increment in Hz.
 #define SPLASH_DELAY              4000L                                     // How long to show Splash screen. Use 1000 for testing, 4000 normally
 #define STARTUP_BAND        			1                                         // This is the 40M band. see around line 575 in SDT.h
 

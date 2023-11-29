@@ -116,21 +116,10 @@ EEPROMData.currentNoiseFloor[0] = doc["currentNoiseFloor"][0];
   //Serial.printf("myCall after EEPROMRead() = %s\n", myCall);
   //Serial.printf("EEPROMData.AGCMode after EEPROMRead() = %d\n", EEPROMData.AGCMode);
 //Serial.printf("EEPROMData.AGCMode after EEPROMRead() = %d\n", EEPROMData.AGCMode);
-
-
 }
 
-// Saves the EEPROMDatauration to a file
-FLASHMEM void saveConfiguration(const char *filename, const config_t &EEPROMData) {
-  // Delete existing file, otherwise the EEPROMDatauration is appended to the file
-  SD.remove(filename);
-
-  // Open file for writing
-  File file = SD.open(filename, FILE_WRITE);
-  if (!file) {
-    Serial.println(F("Failed to create file"));
-    return;
-  }
+// Saves the configuration EEPROMData to a file or writes to serial.  toFile == true for file, false for serial.
+FLASHMEM void saveConfiguration(const char *filename, const config_t &EEPROMData, bool toFile) {
 
   // Allocate a temporary JsonDocument
   // Don't forget to change the capacity to match your requirements.
@@ -139,7 +128,6 @@ FLASHMEM void saveConfiguration(const char *filename, const config_t &EEPROMData
   DynamicJsonDocument doc(4096);   // This uses the heap.
 
   // Set the values in the document
-  Serial.printf("EEPROMData.versionSettings = %s\n", EEPROMData.versionSettings);
   doc["versionSettings"] = EEPROMData.versionSettings;
   doc["myCall"] = EEPROMData.myCall;
   doc["AGCMode"] = EEPROMData.AGCMode;
@@ -184,7 +172,6 @@ FLASHMEM void saveConfiguration(const char *filename, const config_t &EEPROMData
   for(int i = 0; i < 7; i++) doc["powerOutCW"][i] = EEPROMData.powerOutCW[i];
   for(int i = 0; i < 7; i++) doc["powerOutSSB"][i] = EEPROMData.powerOutSSB[i];
   for(int i = 0; i < 7; i++) {
-    Serial.printf("CWPowerCalibrationFactor = %f\n", EEPROMData.CWPowerCalibrationFactor[i]);
    doc["CWPowerCalibrationFactor"][i] = EEPROMData.CWPowerCalibrationFactor[i];
   }
   for(int i = 0; i < 7; i++) doc["SSBPowerCalibrationFactor"][i] = EEPROMData.SSBPowerCalibrationFactor[i];
@@ -201,14 +188,25 @@ FLASHMEM void saveConfiguration(const char *filename, const config_t &EEPROMData
   doc["myCall"] = EEPROMData.myCall;
   doc["myTimeZone"] = EEPROMData.myTimeZone;
         
-
+  if(toFile) {
+  // Delete existing file, otherwise EEPROMData is appended to the file
+  SD.remove(filename);
+  // Open file for writing
+  File file = SD.open(filename, FILE_WRITE);
+  if (!file) {
+    Serial.println(F("Failed to create file"));
+    return;
+  }
   // Serialize JSON to file
   if (serializeJsonPretty(doc, file) == 0) {
     Serial.println(F("Failed to write to file"));
   }
-
   // Close the file
   file.close();
+  } else {
+  // Write to the serial port.
+  serializeJsonPretty(doc, Serial);
+  }
 }
 
 // Prints the content of a file to the Serial

@@ -808,7 +808,6 @@ FASTRUN void ShowFrequency() {
     tft.print(freqBuffer);  // Show VFO_A
   }
   tft.setFontDefault();
-  Serial.printf("currentFreqA = %d currentFreqB = %d\n", EEPROMData.currentFreqA, EEPROMData.currentFreqB);
 }
 /*****
   Purpose: Display dBm
@@ -982,7 +981,6 @@ void UpdateInfoWindow() {
   DisplayIncrementField();
   UpdateCompressionField();
   UpdateDecoderField();
-  UpdateEEPROMSyncIndicator(syncEEPROM);
   UpdateNoiseField();
   UpdateNotchField();
   UpdateSDIndicator(EEPROMData.sdCardPresent);
@@ -1062,7 +1060,7 @@ void UpdateAGCField() {
 
 
 /*****
-  Purpose: Updates the increment setting on the display
+  Purpose: Updates the fine tuning increment setting on the display
 
   Parameter list:
     void
@@ -1085,8 +1083,6 @@ void UpdateIncrementField() {
     selectFTIndex = 0;
   }
   EEPROMData.stepFineTune = selectFT[selectFTIndex];
-
-  UpdateEEPROMSyncIndicator(0);
   DisplayIncrementField();
 }
 /*****

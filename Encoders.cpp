@@ -321,7 +321,6 @@ int SetWPM() {
       break;
     }
   }
-  UpdateEEPROMSyncIndicator(syncEEPROM = 0);  // EEPROM and current values not the same
   tft.setTextColor(RA8875_WHITE);
   EraseMenus();
   return EEPROMData.currentWPM;

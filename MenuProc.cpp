@@ -173,7 +173,6 @@ int CWOptions()  // new option for Sidetone and Delay JJP 9/1/22
     default:  // Cancel
       break;
   }
-  UpdateEEPROMSyncIndicator(0);
   return CWChoice;
 }
 
@@ -790,11 +789,10 @@ int EEPROMOptions() {
   switch (defaultOpt) {
     case 0:  // Save current values
       EEPROMWrite();
-      UpdateEEPROMSyncIndicator(1);  //  JJP 7/25/23
       break;
 
     case 1:
-      EEPROMSaveDefaults2();  // Restore defaults
+      EEPROMSaveDefaults();  // Restore defaults
       break;
 
     case 2:
@@ -807,7 +805,7 @@ int EEPROMOptions() {
 
     case 4:
      // CopyEEPROMToSD();  // Save current EEPROM value to SD
-      saveConfiguration(filename, EEPROMData);
+      saveConfiguration(filename, EEPROMData, true);
       break;
 
     case 5:

@@ -178,7 +178,7 @@ void ExecuteButtonPress(int val) {
 
     case MAIN_TUNE_INCREMENT:  // 14
       ButtonFreqIncrement();
-      UpdateEEPROMSyncIndicator(0);
+    //  UpdateEEPROMSyncIndicator(0);
       break;
 
     case RESET_TUNING:  // 15   AFP 10-11-22
@@ -242,7 +242,7 @@ void ExecuteButtonPress(int val) {
 
 
 /*****
-  Purpose: To process a band decrease button push
+  Purpose: To process a tuning increment button push
 
   Parameter list:
     void
@@ -255,7 +255,6 @@ void ButtonFreqIncrement() {
   if (EEPROMData.tuneIndex < 0)
     EEPROMData.tuneIndex = MAX_FREQ_INDEX - 1;
   EEPROMData.freqIncrement = incrementValues[EEPROMData.tuneIndex];
-  //UpdateEEPROMSyncIndicator(0);   //  JJP 7/25/23
   DisplayIncrementField();
 }
 
