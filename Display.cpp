@@ -746,7 +746,7 @@ void FormatFrequency(long freq, char *freqBuffer) {
 }
 
 /*****
-  Purpose: show Main frequency display at top
+  Purpose: Show Main frequency display at top.  This shows currentFreqA and currentFreqB.
 
   Parameter list:
     void
@@ -806,7 +806,7 @@ FASTRUN void ShowFrequency() {
     tft.setCursor(20, FREQUENCY_Y - 17);
     FormatFrequency(EEPROMData.currentFreqA, freqBuffer);
     tft.print(freqBuffer);  // Show VFO_A
-  }
+  }  // end Show VFO_B
   tft.setFontDefault();
 }
 /*****

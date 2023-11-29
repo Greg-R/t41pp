@@ -781,18 +781,18 @@ int VFOSelect() {
     int           the user's choice
 *****/
 int EEPROMOptions() {
-  const char *EEPROMOpts[] = { "Save Current", "Set Defaults", "Get Favorite", "Set Favorite",
-                               "Copy EEPROM-->SD", "Copy SD-->EEPROM", "SD EEPROM Dump", "Cancel" };
+  const char *EEPROMOpts[] = { "Save Current", "Load Defaults", "Get Favorite", "Set Favorite",
+                               "Copy EEPROM->SD", "Copy SD->EEPROM", "SD File->Serial", "Defaults->Serial", "Current->Serial", "Cancel" };
   int defaultOpt = 0;
 
-  defaultOpt = SubmenuSelect(EEPROMOpts, 8, defaultOpt);
+  defaultOpt = SubmenuSelect(EEPROMOpts, 10, defaultOpt);
   switch (defaultOpt) {
-    case 0:  // Save current values
+    case 0:  // Save current EEPROMData struct to EEPROM non-volatile memory.
       EEPROMWrite();
       break;
 
     case 1:
-      EEPROMSaveDefaults();  // Restore defaults
+      EEPROMDataDefaults();  // Restore defaults to EEPROMData struct.
       break;
 
     case 2:
@@ -804,14 +804,11 @@ int EEPROMOptions() {
       break;
 
     case 4:
-     // CopyEEPROMToSD();  // Save current EEPROM value to SD
-      saveConfiguration(filename, EEPROMData, true);
+      saveConfiguration(filename, EEPROMData, true);  // Save current EEPROMData struct to SD
       break;
 
     case 5:
-    //  CopySDToEEPROM();  // Copy from SD to EEPROM
-      loadConfiguration(filename, EEPROMData);
-      //EEPROMRead();      // KF5N
+      loadConfiguration(filename, EEPROMData);  // Copy from SD to struct EEPROMData.
       tft.writeTo(L2);   // This is specifically to clear the bandwidth indicator bar.  KF5N August 7, 2023
       tft.clearMemory();
       tft.writeTo(L1);
@@ -819,7 +816,15 @@ int EEPROMOptions() {
       break;
 
     case 6:
-      SDEEPROMDump(filename);  // Show SD data
+      SDEEPROMDataToSerial(filename);  // Show the EEPROMData struct stored on the SD card.
+      break;
+
+    case 7:
+      EEPROMDataDefaultsToSerial(filename);  // Show the EEPROMData struct defaults.
+      break;
+
+    case 8:
+      saveConfiguration(filename, EEPROMData, false);  // Write current EEPROMData struct to the Serial monitor.
       break;
 
     default:

@@ -849,14 +849,10 @@ extern arm_biquad_cascade_df2T_instance_f32   s1_Receive ;  //AFP 09-23-22
 extern arm_biquad_cascade_df2T_instance_f32   s1_Receive2 ;  //AFP 11-02-22
 extern float32_t HP_DC_Butter_state2[2];                     //AFP 11-04-22
 extern float32_t HP_DC_Butter_state[6];                     //AFP 09-23-22
-
 extern float32_t coeffs192K_10K_LPF_FIR[];
-
 extern float32_t coeffs48K_8K_LPF_FIR[];
 extern const uint32_t N_B_EX;
-//extern float32_t recEQ_Level[];
 extern float32_t recEQ_LevelScale[];
-
 extern float32_t EQ_Band1Coeffs[];
 extern float32_t EQ_Band2Coeffs[];
 extern float32_t EQ_Band3Coeffs[];
@@ -871,7 +867,6 @@ extern float32_t EQ_Band11Coeffs[];
 extern float32_t EQ_Band12Coeffs[];
 extern float32_t EQ_Band13Coeffs[];
 extern float32_t EQ_Band14Coeffs[];
-
 
 //Setup for EQ filters
 extern float32_t rec_EQ_Band1_state[] ;
@@ -1313,7 +1308,6 @@ extern const char *zoomOptions[];
 extern byte currentDashJump;
 extern byte currentDecoderIndex;
 
-//extern int8_t EEPROMData.AGCMode;
 extern int8_t auto_IQ_correction;
 extern uint8_t IQ_RecCalFlag; //AFP 04-17-22
 extern int8_t first_block;
@@ -1467,8 +1461,6 @@ extern int ANR_position;
 extern int ANR_taps;
 extern int attenuator;
 extern int attack_buffsize;
-//extern int EEPROMData.AGCMode;
-//extern int EEPROMData.AGCModeOld;
 extern int audioYPixel[];
 extern int bandswitchPins[];
 extern int button9State;
@@ -1476,11 +1468,6 @@ extern int buttonRead;
 extern int calibrateFlag;
 extern int chipSelect;
 extern int countryIndex;
-//extern int CWFilterIndex;
-//extern int currentBand;
-//extern int currentBandA;
-//extern int currentBandB;
-//extern int currentNoiseFloor[];
 extern int dahLength;
 extern int dcfCount;
 extern int dcfLevel;
@@ -1552,9 +1539,6 @@ extern int pos_centre_f;
 extern int pos_x_frequency;
 extern int pos_y_smeter;
 extern int resetTuningFlag;  // Experimental flag for ResetTuning() due to possible timing issues.  KF5N July 31, 2023
-//extern int EEPROMData.rfGainAllBands;
-
-//extern int sdCardPresent;
 extern int secondaryMenuChoiceMade;
 extern int selectedMapIndex;
 extern int smeterLength;
@@ -2081,8 +2065,6 @@ void Codec_gain();
 uint16_t Color565(uint8_t r, uint8_t g, uint8_t b);
 void ControlFilterF();
 void CopyEEPROM();
-//int  CopyEEPROMToSD();
-//int  CopySDToEEPROM();
 int  CreateMapList(char ptrMaps[10][50], int *count);
 int  CWOptions();
 void CW_DecodeLevelDisplay();
@@ -2120,7 +2102,7 @@ void DrawSpectrumDisplayContainer();
 void DrawAudioSpectContainer();
 int  EEPROMOptions();
 void EEPROMRead();
-void EEPROMSaveDefaults();
+void EEPROMDataDefaults();
 void EEPROMShow();
 void EEPROMStartup();
 void EEPROMStuffFavorites(unsigned long current[]);
@@ -2217,7 +2199,9 @@ int  MicGainSet();
 
 void SaveAnalogSwitchValues();
 int  SDDataCheck();
-void SDEEPROMDump(const char *filename);
+void EEPROMDataDefaultsToSerial(const char *filename);
+void EEPROMDataToSerial(const char *filename);
+void SDEEPROMDataToSerial(const char *filename);
 int  SDEEPROMWriteDefaults();
 void Send(char myChar);
 void SendCode(char code);
@@ -2283,7 +2267,7 @@ int  Unused3();
 void UpdateAGCField();
 void UpdateCompressionField();
 void UpdateDecoderField();
-void UpdateEEPROMSyncIndicator(int);
+//void UpdateEEPROMSyncIndicator(int);
 void UpdateEEPROMVersionNumber();
 void UpdateIncrementField();
 void UpdateNoiseField();

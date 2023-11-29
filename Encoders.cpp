@@ -406,8 +406,10 @@ FASTRUN  // Causes function to be allocated in RAM1 at startup for fastest perfo
   // ============  AFP 10-28-22
   if (EEPROMData.activeVFO == VFO_A) {
     EEPROMData.currentFreqA = EEPROMData.centerFreq + NCOFreq;  //AFP 10-05-22
+    EEPROMData.lastFrequencies[EEPROMData.currentBand][0] = EEPROMData.currentFreqA;
   } else {
     EEPROMData.currentFreqB = EEPROMData.centerFreq + NCOFreq;  //AFP 10-05-22
+    EEPROMData.lastFrequencies[EEPROMData.currentBand][1] = EEPROMData.currentFreqB;
   }
   // ===============  Recentering at band edges ==========
   if (EEPROMData.spectrum_zoom != 0) {

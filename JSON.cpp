@@ -155,6 +155,8 @@ FLASHMEM void saveConfiguration(const char *filename, const config_t &EEPROMData
   doc["currentBand"] = EEPROMData.currentBand;
   doc["currentBandA"] = EEPROMData.currentBandA;
   doc["currentBandB"] = EEPROMData.currentBandB;
+  doc["currentFreqA"] = EEPROMData.currentFreqA;
+  doc["currentFreqB"] = EEPROMData.currentFreqB;
   doc["freqCorrectionFactor"] = EEPROMData.freqCorrectionFactor;
   for(int i = 0; i < 14; i++) doc["equalizerRec"][i] = EEPROMData.equalizerRec[i];
   doc["currentMicThreshold"] = EEPROMData.currentMicThreshold;
@@ -205,7 +207,9 @@ FLASHMEM void saveConfiguration(const char *filename, const config_t &EEPROMData
   file.close();
   } else {
   // Write to the serial port.
+  Serial.println(F("Begin Current EEPROMData"));
   serializeJsonPretty(doc, Serial);
+  Serial.println(F("\nEnd Current EEPROMData"));
   }
 }
 

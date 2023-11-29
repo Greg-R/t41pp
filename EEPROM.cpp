@@ -335,9 +335,9 @@ void GetFavoriteFrequency() {
     void
 *****/
 
-void EEPROMSaveDefaults() {
-config_t* defaultConfig = new config_t;  // Keep a copy of the default configuration.
-EEPROMData = *defaultConfig;
+void EEPROMDataDefaults() {
+config_t* defaultConfig = new config_t;  // Create a copy of the default configuration.
+EEPROMData = *defaultConfig;             // Copy the defaults to EEPROMData struct.
 //  Need to refresh display here.
 }
 
@@ -428,7 +428,7 @@ void UpdateEEPROMVersionNumber() {
   Return value;
     int               0 = SD is untouched, 1 = has data
 *****/
-void SDEEPROMDump(const char *filename) {
+void SDEEPROMDataToSerial(const char *filename) {
   // Open file for reading
   File file = SD.open(filename);
   if (!file) {
@@ -445,6 +445,56 @@ void SDEEPROMDump(const char *filename) {
   // Close the file
   file.close();
 }
+
+
+/*****
+  Purpose: Writes EEPROMData defaults to the Serial monitor.
+
+  Parameter list:
+   const char *filename
+
+  Return value;
+    int               0 = SD is untouched, 1 = has data
+*****/
+void EEPROMDataDefaultsToSerial(const char *filename) {
+  // Open file for reading
+  File file = SD.open(filename);
+  if (!file) {
+    Serial.println(F("Failed to read file"));
+    return;
+  }
+
+  // Extract each characters by one by one
+  while (file.available()) {
+    Serial.print((char)file.read());
+  }
+  Serial.println();
+
+  // Close the file
+  file.close();
+}
+
+
+/*****
+  Purpose: Writes EEPROMData defaults to the Serial monitor.
+
+  Parameter list:
+   const char *filename
+
+  Return value;
+    int               0 = SD is untouched, 1 = has data
+*****/
+void EEPROMDataToSerial(const char *filename) {
+
+
+
+  Serial.println("Current EEPROMData follows:");
+
+  Serial.println("End of current EEPROMData");
+
+
+}
+
 
 /*****
   Purpose: Clears the first 1K of emulated EEPROM to 0xff

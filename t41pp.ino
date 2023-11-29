@@ -2577,7 +2577,8 @@ void setup() {
     EEPROMData.decoderFlag = DECODE_ON;  // Turns decoder on JJP 7/1/23
   }
 
-  TxRxFreq = EEPROMData.centerFreq + NCOFreq;
+  //TxRxFreq = EEPROMData.centerFreq + NCOFreq;
+  TxRxFreq = EEPROMData.lastFrequencies[EEPROMData.currentBand][EEPROMData.activeVFO];
 
   InitializeDataArrays();
   splitOn = 0;  // Split VFO not active
