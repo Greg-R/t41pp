@@ -49,7 +49,7 @@
 #define RAY_LENGTH                190
 
 // Set multiplication factors for your QSD and QSE boards.
-#define MASTER_CLK_MULT_RX 4
-#define MASTER_CLK_MULT_TX 2
+#define MASTER_CLK_MULT_RX 2
+#define MASTER_CLK_MULT_TX 4
 
 
