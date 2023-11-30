@@ -447,10 +447,10 @@ int EqualizerRecOptions() {
 
   switch (EQChoice) {
     case 0:
-      receiveEQFlag = ON;
+      EEPROMData.receiveEQFlag = true;
       break;
     case 1:
-      receiveEQFlag = OFF;
+      EEPROMData.receiveEQFlag = false;
       break;
     case 2:
       for (int iFreq = 0; iFreq < EQUALIZER_CELL_COUNT; iFreq++) {
@@ -482,10 +482,10 @@ int EqualizerXmtOptions() {
 
   switch (EQChoice) {
     case 0:
-      xmitEQFlag = ON;
+      EEPROMData.xmitEQFlag = true;
       break;
     case 1:
-      xmitEQFlag = OFF;
+      EEPROMData.xmitEQFlag = false;
       break;
     case 2:
       ProcessEqualizerChoices(1, (char *)"Transmit Equalizer");

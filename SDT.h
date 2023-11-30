@@ -719,8 +719,8 @@ extern int atomGapLength;
 extern int atomGapLength2;
 extern int charGapLength;
 extern int charGapLength2;
-extern int receiveEQFlag;
-extern int xmitEQFlag;
+//extern int receiveEQFlag;
+//extern int xmitEQFlag;
 extern int centerTuneFlag;
 extern long valRef1;
 extern long valRef2;
@@ -840,6 +840,8 @@ int lastFrequencies[NUMBER_OF_BANDS][2] = {{3985000, 3560000}, {7200000, 7030000
   float myLat                   = MY_LAT;
   int currentNoiseFloor[NUMBER_OF_BANDS] = {0, 0, 0, 0, 0, 0, 0};             // JJP 7/17/23
   int compressorFlag = 0;                                 // JJP 8/28/23
+  bool xmitEQFlag = false;
+  bool receiveEQFlag = false;
 };                                 //  Total:       438 bytes
 
 extern struct config_t EEPROMData;

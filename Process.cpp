@@ -436,7 +436,7 @@ void ProcessIQData()
     // == AFP 10-30-22
 
     //============================  Receive EQ  ========================  AFP 08-08-22
-    if (receiveEQFlag == ON ) {
+    if (EEPROMData.receiveEQFlag == ON ) {
       DoReceiveEQ();
       arm_copy_f32(float_buffer_L, float_buffer_R, FFT_length / 2);
     }

@@ -71,7 +71,7 @@ void ExciterIQData()
     arm_fir_decimate_f32(&FIR_dec2_EX_Q, float_buffer_R_EX, float_buffer_R_EX, 512);
 
     //============================  Transmit EQ  ========================  AFP 10-02-22
-    if (xmitEQFlag == ON ) {
+    if (EEPROMData.xmitEQFlag == ON ) {
       DoExciterEQ();
     }
     //============================ End Receive EQ  AFP 10-02-22

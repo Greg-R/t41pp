@@ -101,7 +101,10 @@ EEPROMData.paddleFlip  = doc["paddleFlip"];
 EEPROMData.sdCardPresent  = doc["sdCardPresent"];
 EEPROMData.myLong  = doc["myLong"];
 EEPROMData.myLat  = doc["myLat"];
-EEPROMData.currentNoiseFloor[0] = doc["currentNoiseFloor"][0];
+for(int i = 0; i < 7; i++) EEPROMData.currentNoiseFloor[i] = doc["currentNoiseFloor"][i];
+EEPROMData.compressorFlag = doc["compressorFlag"];
+EEPROMData.xmitEQFlag = doc["xmitEQFlag"];
+EEPROMData.receiveEQFlag = doc["receiveEQFlag"];
 
   // How to copy strings:
 //  strlcpy(EEPROMData.myCall,                  // <- destination
@@ -189,7 +192,16 @@ FLASHMEM void saveConfiguration(const char *filename, const config_t &EEPROMData
   doc["mapFileName"] = EEPROMData.mapFileName;
   doc["myCall"] = EEPROMData.myCall;
   doc["myTimeZone"] = EEPROMData.myTimeZone;
-        
+  doc["separationCharacter"] = EEPROMData.separationCharacter;
+  doc["paddleFlip"] = EEPROMData.paddleFlip;
+  doc["sdCardPresent"] = EEPROMData.sdCardPresent;
+  doc["myLong"] = EEPROMData.myLong;
+  doc["myLat"] = EEPROMData.myLat;
+  for(int i = 0; i < 7; i++) doc["currentNoiseFloor"][i] = EEPROMData.currentNoiseFloor[i];
+  doc["compressorFlag"] = EEPROMData.compressorFlag;
+  doc["xmitEQFlag"] = EEPROMData.xmitEQFlag;
+  doc["receiveEQFlag"] = EEPROMData.receiveEQFlag;
+
   if(toFile) {
   // Delete existing file, otherwise EEPROMData is appended to the file
   SD.remove(filename);

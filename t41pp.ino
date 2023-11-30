@@ -1263,8 +1263,8 @@ int atomGapLength;
 int atomGapLength2;
 int charGapLength;
 int charGapLength2;
-int receiveEQFlag;
-int xmitEQFlag;
+//int receiveEQFlag;
+//int xmitEQFlag;
 int centerTuneFlag = 0;
 int x1AdjMax = 0;  //AFP 2-6-23
 unsigned long cwTimer;
