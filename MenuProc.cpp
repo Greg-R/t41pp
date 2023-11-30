@@ -784,6 +784,7 @@ int EEPROMOptions() {        // 0               1                2              
   const char *EEPROMOpts[] = { "Save Current", "Load Defaults", "Get Favorite", "Set Favorite", "Copy EEPROM->SD", "Copy SD->EEPROM", "SD File->Serial", "Defaults->Serial", "Current->Serial", "Cancel" };
   int defaultOpt = 0;
   config_t* tempConfig = new config_t;  // A temporary config_t struct to copy EEPROM data into.
+  config_t defaultConfig;  // The configuration defaults.
   defaultOpt = SubmenuSelect(EEPROMOpts, 10, defaultOpt);
   switch (defaultOpt) {
     case 0:  // Save current EEPROMData struct to EEPROM non-volatile memory.
@@ -820,7 +821,7 @@ int EEPROMOptions() {        // 0               1                2              
       break;
 
     case 7:           // Defaults->Serial
-      EEPROMDataDefaultsToSerial(filename);  // Show the EEPROMData struct defaults.
+      saveConfiguration(filename, defaultConfig, false);  // Write current EEPROMData struct to the Serial monitor.    
       break;
 
     case 8:           // Current->Serial

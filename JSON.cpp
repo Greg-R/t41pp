@@ -64,6 +64,7 @@ EEPROMData.currentFreqA  = doc["currentFreqA"];
 EEPROMData.currentFreqB  = doc["currentFreqB"];
 EEPROMData.freqCorrectionFactor  = doc["freqCorrectionFactor"];
 for(int i = 0; i < 14; i++) EEPROMData.equalizerRec[i] = doc["equalizerRec"][i];
+for(int i = 0; i < 14; i++) EEPROMData.equalizerXmt[i] = doc["equalizerXmt"][i];
 EEPROMData.equalizerXmt[0]  = doc["equalizerXmt"][0];
 EEPROMData.currentMicThreshold  = doc["currentMicThreshold"];
 EEPROMData.currentMicCompRatio  = doc["currentMicCompRatio"];
@@ -162,6 +163,7 @@ FLASHMEM void saveConfiguration(const char *filename, const config_t &EEPROMData
   doc["currentFreqB"] = EEPROMData.currentFreqB;
   doc["freqCorrectionFactor"] = EEPROMData.freqCorrectionFactor;
   for(int i = 0; i < 14; i++) doc["equalizerRec"][i] = EEPROMData.equalizerRec[i];
+  for(int i = 0; i < 14; i++) doc["equalizerXmt"][i] = EEPROMData.equalizerXmt[i];  
   doc["currentMicThreshold"] = EEPROMData.currentMicThreshold;
   doc["currentMicCompRatio"] = EEPROMData.currentMicCompRatio;
   doc["currentMicAttack"] = EEPROMData.currentMicAttack;

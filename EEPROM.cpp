@@ -95,27 +95,13 @@ void EEPROMRead() {
   Purpose: To save the configuration data (working variables) to EEPROM
 
   Parameter list:
-    struct config_t e[]       pointer to the EEPROM structure
+    struct EEPROMData       pointer to the EEPROM structure
 
   Return value;
     void
 *****/
 void EEPROMWrite() {
   EEPROM.put(EEPROM_BASE_ADDRESS, EEPROMData);
-}  // end void eeProm SAVE
-
-/*****
-  Purpose: To show the current EEPROM values. Used for debugging
-
-  Parameter list:
-    struct config_t e[]       pointer to the EEPROM structure
-
-  Return value;
-    void
-*****/
-
-// Prints the struct EEPROMData to the Serial
-void EEPROMShow(const char *filename) {
 }
 
 
@@ -334,63 +320,6 @@ RedrawDisplayScreen();  //  Need to refresh display here.
 *****/
 void UpdateEEPROMVersionNumber() {
   strcpy(EEPROMData.versionSettings, EEPROMSetVersion());  // Copy the latest version to EEPROM
-}
-
-
-/*****
-  Purpose: Reads the SD EEPROM data and writes it to the Serial object
-
-  Parameter list:
-   const char *filename
-
-  Return value;
-    int               0 = SD is untouched, 1 = has data
-
-void SDEEPROMDataToSerial(const char *filename) {
-  // Open file for reading
-  File file = SD.open(filename);
-  if (!file) {
-    Serial.println(F("Failed to read file"));
-    return;
-  }
-
-  // Extract each characters by one by one
-  while (file.available()) {
-    Serial.print((char)file.read());
-  }
-  Serial.println();
-
-  // Close the file
-  file.close();
-}
-*/
-
-
-/*****
-  Purpose: Writes EEPROMData defaults to the Serial monitor.
-
-  Parameter list:
-   const char *filename
-
-  Return value;
-    int               0 = SD is untouched, 1 = has data
-*****/
-void EEPROMDataDefaultsToSerial(const char *filename) {
-  // Open file for reading
-  File file = SD.open(filename);
-  if (!file) {
-    Serial.println(F("Failed to read file"));
-    return;
-  }
-
-  // Extract each characters by one by one
-  while (file.available()) {
-    Serial.print((char)file.read());
-  }
-  Serial.println();
-
-  // Close the file
-  file.close();
 }
 
 
