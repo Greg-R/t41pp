@@ -2578,7 +2578,8 @@ void setup() {
   }
 
   //TxRxFreq = EEPROMData.centerFreq + NCOFreq;
-  TxRxFreq = EEPROMData.lastFrequencies[EEPROMData.currentBand][EEPROMData.activeVFO];
+  // Initialize the frequency setting based on the last used frequency stored to EEPROM.
+  TxRxFreq = EEPROMData.centerFreq = EEPROMData.lastFrequencies[EEPROMData.currentBand][EEPROMData.activeVFO];
 
   InitializeDataArrays();
   splitOn = 0;  // Split VFO not active

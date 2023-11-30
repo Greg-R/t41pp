@@ -116,25 +116,6 @@ void EEPROMWrite() {
 
 // Prints the struct EEPROMData to the Serial
 void EEPROMShow(const char *filename) {
-
-//serializeJson(doc, EEPROMData);
-
-
-  // Write out a file.
-  // Open file for reading
- // File file = SD.open(filename);
- // if (!file) {
- //   Serial.println(F("Failed to read file"));
- //   return;
-//  }
-
-  // Extract each characters by one by one
- // while (file.available()) {
-//    Serial.print((char)file.read());
-//  }
-//  Serial.println();
-//  // Close the file
-//  file.close();
 }
 
 
@@ -149,7 +130,6 @@ void EEPROMShow(const char *filename) {
 *****/
 void EEPROMStuffFavorites(unsigned long current[]) {
   int i;
-
   for (i = 0; i < MAX_FAVORITES; i++) {
     current[i] = EEPROMData.favoriteFreqs[i];
   }
@@ -299,7 +279,6 @@ void GetFavoriteFrequency() {
       }
     }
     if (val == MENU_OPTION_SELECT) {
-
       EraseSpectrumDisplayContainer();
       currentMode = bands[EEPROMData.currentBand].mode;
       DrawSpectrumDisplayContainer();
@@ -326,7 +305,7 @@ void GetFavoriteFrequency() {
 
 
 /*****
-  Purpose: To load the default settings for EEPROM variables
+  Purpose: To load into active memory the default settings for EEPROM variables.
 
   Parameter list:
     struct config_t e[]       pointer to the EEPROM structure
@@ -338,72 +317,27 @@ void GetFavoriteFrequency() {
 void EEPROMDataDefaults() {
 config_t* defaultConfig = new config_t;  // Create a copy of the default configuration.
 EEPROMData = *defaultConfig;             // Copy the defaults to EEPROMData struct.
-//  Need to refresh display here.
+//  Need to refresh display here.  Is there a single command for this?
+      EraseSpectrumDisplayContainer();
+      currentMode = bands[EEPROMData.currentBand].mode;
+      DrawSpectrumDisplayContainer();
+      DrawFrequencyBarValue();
+      SetBand();
+      SetFreq();
+      ShowFrequency();
+      ShowSpectrumdBScale();
+      EraseMenus();
+      ResetTuning();
+      FilterBandwidth();
+      BandInformation();
+      NCOFreq = 0L;
+      DrawBandWidthIndicatorBar();  // AFP 10-20-22
+      digitalWrite(bandswitchPins[EEPROMData.currentBand], LOW);
+      SetFreq();
+      ShowSpectrumdBScale();
+      ShowSpectrum();
 }
 
-
-/*****
-  Purpose: Converts EEPROMData members and value to ASCII
-
-  Parameter list:
-    File file             file handle for the SD file
-    char *buffer          pointer to the EEPROMData member
-    int val               the current value of the member
-    int whatDataType      1 = int, 2 = long, 3 = float, 4 = string
-
-  Return value;
-    void
-
-*****/
-void ConvertForEEPROM(File file, char *buffer, int val, int whatDataType) {
-  char temp[10];
-
-  temp[0] = '\0';
-  switch (whatDataType) {
-    case 1:  // int
-      itoa(val, temp, DEC);
-      break;
-    case 2:  // long
-      ltoa(val, temp, DEC);
-      break;
-    case 3:                      // float
-      dtostrf(val, 9, 4, temp);  //Field of up to 9 digits with 4 decimal places
-      break;
-    case 4:
-      strcpy(temp, EEPROMSetVersion());
-      break;
-    default:
-#ifdef DEBUG
-      Serial.println("Error");
-#endif
-      break;
-  }
-  strcat(buffer, " = ");
-  strcat(buffer, temp);
-#ifdef DEBUG
-  Serial.println(buffer);
-#endif
-  file.println(buffer);
-  buffer[0] = '\0';
-}
-
-
-/*****
-  Purpose: See if the EEPROM has ever been set
-
-  Parameter list:
-    void
-
-  Return value;
-    int               1 = used before, 0 = nope
-*****/
-int ValidEEPROMData() {
-  int val = EEPROMData.switchValues[0];
-  if (val > 0 && val < 1023)
-    return VALID_EEPROM_DATA;  // return 1
-  else
-    return INVALID_EEPROM_DATA;  // return 0
-}
 
 /*****
   Purpose: Update the version number only in EEPROM

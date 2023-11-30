@@ -56,7 +56,7 @@ void ResetTuning()
   DrawBandWidthIndicatorBar();
   BandInformation();
   ShowFrequency();
-  //centerTuneFlag = 1;  Not necessary with new tuning scheme.  KF5N July 22, 2023
+  UpdateDecoderField();  // Update Morse decoder if used.
 }
 // ===== End AFP 10-11-22
 
