@@ -178,7 +178,6 @@ void ExecuteButtonPress(int val) {
 
     case MAIN_TUNE_INCREMENT:  // 14
       ButtonFreqIncrement();
-    //  UpdateEEPROMSyncIndicator(0);
       break;
 
     case RESET_TUNING:  // 15   AFP 10-11-22
