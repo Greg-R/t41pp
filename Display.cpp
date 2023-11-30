@@ -1455,7 +1455,7 @@ void RedrawDisplayScreen() {
   DrawSpectrumDisplayContainer();
   DrawFrequencyBarValue();
   ShowSpectrumdBScale();
-
+  UpdateDecoderField();
   UpdateInfoWindow();
 }
 

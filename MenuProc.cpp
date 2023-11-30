@@ -780,11 +780,10 @@ int VFOSelect() {
   Return value
     int           the user's choice
 *****/
-int EEPROMOptions() {
-  const char *EEPROMOpts[] = { "Save Current", "Load Defaults", "Get Favorite", "Set Favorite",
-                               "Copy EEPROM->SD", "Copy SD->EEPROM", "SD File->Serial", "Defaults->Serial", "Current->Serial", "Cancel" };
+int EEPROMOptions() {        // 0               1                2               3               4                  5                  6                  7                   8                  9
+  const char *EEPROMOpts[] = { "Save Current", "Load Defaults", "Get Favorite", "Set Favorite", "Copy EEPROM->SD", "Copy SD->EEPROM", "SD File->Serial", "Defaults->Serial", "Current->Serial", "Cancel" };
   int defaultOpt = 0;
-
+  config_t* tempConfig = new config_t;  // A temporary config_t struct to copy EEPROM data into.
   defaultOpt = SubmenuSelect(EEPROMOpts, 10, defaultOpt);
   switch (defaultOpt) {
     case 0:  // Save current EEPROMData struct to EEPROM non-volatile memory.
@@ -792,7 +791,7 @@ int EEPROMOptions() {
       break;
 
     case 1:
-      EEPROMDataDefaults();  // Restore defaults to EEPROMData struct.
+      EEPROMDataDefaults();  // Restore defaults to EEPROMData struct and refresh display.
       break;
 
     case 2:
@@ -803,11 +802,12 @@ int EEPROMOptions() {
       SetFavoriteFrequency();  // Set favorites
       break;
 
-    case 4:
-      saveConfiguration(filename, EEPROMData, true);  // Save current EEPROMData struct to SD
+    case 4:            // Copy EEPROM->SD.
+      EEPROM.get(EEPROM_BASE_ADDRESS, tempConfig);  // Read as one large chunk
+      saveConfiguration(filename, *tempConfig, true);  // Save EEPROM struct to SD
       break;
 
-    case 5:
+    case 5:            // Copy SD->EEPROMData
       loadConfiguration(filename, EEPROMData);  // Copy from SD to struct EEPROMData.
       tft.writeTo(L2);   // This is specifically to clear the bandwidth indicator bar.  KF5N August 7, 2023
       tft.clearMemory();
@@ -815,15 +815,15 @@ int EEPROMOptions() {
       RedrawDisplayScreen();  // Assume there are lots of changes and do a heavy-duty refresh.  KF5N August 7, 2023
       break;
 
-    case 6:
-      SDEEPROMDataToSerial(filename);  // Show the EEPROMData struct stored on the SD card.
+    case 6:           // SD File->Serial
+      saveConfiguration(filename, EEPROMData, false);
       break;
 
-    case 7:
+    case 7:           // Defaults->Serial
       EEPROMDataDefaultsToSerial(filename);  // Show the EEPROMData struct defaults.
       break;
 
-    case 8:
+    case 8:           // Current->Serial
       saveConfiguration(filename, EEPROMData, false);  // Write current EEPROMData struct to the Serial monitor.
       break;
 

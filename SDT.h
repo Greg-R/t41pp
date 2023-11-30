@@ -719,8 +719,6 @@ extern int atomGapLength;
 extern int atomGapLength2;
 extern int charGapLength;
 extern int charGapLength2;
-//extern int receiveEQFlag;
-//extern int xmitEQFlag;
 extern int centerTuneFlag;
 extern long valRef1;
 extern long valRef2;

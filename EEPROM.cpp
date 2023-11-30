@@ -308,34 +308,18 @@ void GetFavoriteFrequency() {
   Purpose: To load into active memory the default settings for EEPROM variables.
 
   Parameter list:
-    struct config_t e[]       pointer to the EEPROM structure
+    struct defaultConfig       pointer to the default EEPROMData structure
 
   Return value;
     void
 *****/
 
 void EEPROMDataDefaults() {
-config_t* defaultConfig = new config_t;  // Create a copy of the default configuration.
+struct config_t* defaultConfig = new config_t;  // Create a copy of the default configuration.
 EEPROMData = *defaultConfig;             // Copy the defaults to EEPROMData struct.
-//  Need to refresh display here.  Is there a single command for this?
-      EraseSpectrumDisplayContainer();
-      currentMode = bands[EEPROMData.currentBand].mode;
-      DrawSpectrumDisplayContainer();
-      DrawFrequencyBarValue();
-      SetBand();
-      SetFreq();
-      ShowFrequency();
-      ShowSpectrumdBScale();
-      EraseMenus();
-      ResetTuning();
-      FilterBandwidth();
-      BandInformation();
-      NCOFreq = 0L;
-      DrawBandWidthIndicatorBar();  // AFP 10-20-22
-      digitalWrite(bandswitchPins[EEPROMData.currentBand], LOW);
-      SetFreq();
-      ShowSpectrumdBScale();
-      ShowSpectrum();
+// Initialize the frequency setting based on the last used frequency stored to EEPROM.
+TxRxFreq = EEPROMData.centerFreq = EEPROMData.lastFrequencies[EEPROMData.currentBand][EEPROMData.activeVFO];
+RedrawDisplayScreen();  //  Need to refresh display here.
 }
 
 
@@ -361,7 +345,7 @@ void UpdateEEPROMVersionNumber() {
 
   Return value;
     int               0 = SD is untouched, 1 = has data
-*****/
+
 void SDEEPROMDataToSerial(const char *filename) {
   // Open file for reading
   File file = SD.open(filename);
@@ -379,6 +363,7 @@ void SDEEPROMDataToSerial(const char *filename) {
   // Close the file
   file.close();
 }
+*/
 
 
 /*****
