@@ -783,7 +783,7 @@ int VFOSelect() {
 int EEPROMOptions() {        // 0               1                2               3               4                  5                  6                  7                   8                  9
   const char *EEPROMOpts[] = { "Save Current", "Load Defaults", "Get Favorite", "Set Favorite", "Copy EEPROM->SD", "Copy SD->EEPROM", "SD File->Serial", "Defaults->Serial", "Current->Serial", "Cancel" };
   int defaultOpt = 0;
-  config_t* tempConfig = new config_t;  // A temporary config_t struct to copy EEPROM data into.
+  config_t tempConfig;  // A temporary config_t struct to copy EEPROM data into.
   config_t defaultConfig;  // The configuration defaults.
   defaultOpt = SubmenuSelect(EEPROMOpts, 10, defaultOpt);
   switch (defaultOpt) {
@@ -805,11 +805,12 @@ int EEPROMOptions() {        // 0               1                2              
 
     case 4:            // Copy EEPROM->SD.
       EEPROM.get(EEPROM_BASE_ADDRESS, tempConfig);  // Read as one large chunk
-      saveConfiguration(filename, *tempConfig, true);  // Save EEPROM struct to SD
+      saveConfiguration(filename, tempConfig, true);  // Save EEPROM struct to SD
       break;
 
-    case 5:            // Copy SD->EEPROMData
+    case 5:            // Copy SD->EEPROM
       loadConfiguration(filename, EEPROMData);  // Copy from SD to struct EEPROMData.
+      EEPROMWrite();
       tft.writeTo(L2);   // This is specifically to clear the bandwidth indicator bar.  KF5N August 7, 2023
       tft.clearMemory();
       tft.writeTo(L1);
