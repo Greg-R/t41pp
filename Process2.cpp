@@ -107,7 +107,7 @@ void CalibratePrologue() {
   EEPROMData.currentScale = userScale;                     //  Restore vertical scale to user preference.  KF5N
   ShowSpectrumdBScale();
   EEPROMData.xmtMode = userxmtMode;   // Restore the user's floor setting.  KF5N July 27, 2023
-  //EEPROMData.transmitPowerLevel = EEPROMData.transmitPowerLevelTemp;  // Restore the user's transmit power level setting.  KF5N August 15, 2023
+  EEPROMData.transmitPowerLevel = transmitPowerLevelTemp;  // Restore the user's transmit power level setting.  KF5N August 15, 2023
   EEPROMWrite();                                // Save calibration numbers and configuration.  KF5N August 12, 2023
   zoomIndex = userZoomIndex - 1;
   ButtonZoom();     // Restore the user's zoom setting.  Note that this function also modifies EEPROMData.spectrum_zoom.
